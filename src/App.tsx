@@ -1,199 +1,125 @@
 import "@mantine/core/styles.css";
-import { MantineProvider } from "@mantine/core";
+import {
+  Button,
+  Group,
+  MantineProvider,
+  TextInput,
+  Text,
+  Stack,
+  List,
+  ListItem,
+} from "@mantine/core";
+import { useField } from "@mantine/form";
 import { theme } from "./theme";
-import { useRef, useState } from "react";
 import GuessItem from "./components/GuessItem";
+import { Guess } from "./classes/guess";
+import { createContext, useContext, useState } from "react";
 
-export type Letter = {
-  value: string;
-  correctness: number;
-};
-
-export type Guess = {
-  wordString: string;
-  letters: Letter[];
-};
-
-type ValidationResponse = {
-  validated: boolean;
-  message: string;
-};
-
-type ValidationRequest = {
-  guess: string;
-  prevGuesses: string[];
-};
+export const GuessContext = createContext<(guess: Guess) => void>(() => {});
 
 export default function App() {
   const [results, setResults] = useState<string[]>([]);
   const [guesses, setGuesses] = useState<Guess[]>([]);
-  const [guessSuccess, setGuessSuccess] = useState<ValidationResponse>();
 
-  const guessGrid: React.ReactElement =
-    guesses.length == 0 ? (
-      <p>Your guesses will appear here.</p>
-    ) : (
-      <ul className="guess_container">
-        {guesses.map((guess, idx) => (
-          <GuessItem
-            key={idx}
-            guess={guess}
-            clickLetterAction={getNextLetterCorrectness}
-            removeAction={() => removeGuess(guess)}
-          />
-        ))}
-      </ul>
-    );
+  const guessField = useField({
+    initialValue: "",
+  });
 
-  const formRef = useRef<HTMLFormElement>(null);
+  const handleKeyDown = (event: { key: string }) => {
+    if (event.key === "Enter") {
+      tryAddGuess();
+    }
+  };
 
-  //Inform of issues with guess
-  const formMessage: React.ReactNode =
-    guessSuccess?.message !== null && guessSuccess?.validated == false ? (
-      <div className="form_message">
-        <p>{guessSuccess?.message}</p>
-      </div>
-    ) : null;
+  function tryAddGuess() {
+    const guessValue = guessField.getValue();
+    const validationResponse = validateGuess(guessValue, guesses);
+
+    if (!validationResponse.validated) {
+      guessField.setError(validationResponse.message);
+      return;
+    }
+
+    const guess: Guess = new Guess(guessValue);
+    setGuesses([...guesses, guess]);
+    guessField.setValue("");
+  }
 
   return (
     <MantineProvider theme={theme}>
       <h1>Wordle Helper</h1>
-      <p>Provides possible words from what you've guessed.</p>
-      <form
-        className="add_guess_form"
-        ref={formRef}
-        onSubmit={(e) => {
-          e.preventDefault();
-          const formData = new FormData(e.currentTarget);
-          const guess = formData.get("guess") as string;
-          validateGuess({ guess, prevGuesses: guessesToStringArray(guesses) });
-        }}
-      >
-        <input name="guess" placeholder="Enter guess" />
-        <button type="submit">Add</button>
-      </form>
-      {formMessage}
-      {guessGrid}
-      <button
-        disabled={guesses.length == 0}
-        onClick={async () => {
-          await getPossibleWords(guesses);
-        }}
-      >
-        Get Possible Words!
-      </button>
-      <ul>
+      <Text>Provides possible words from what you've guessed.</Text>
+      <Group>
+        <TextInput
+          {...guessField.getInputProps()}
+          label="Guess"
+          placeholder="Enter your guess"
+          onKeyDown={handleKeyDown}
+        />
+        <Button onClick={tryAddGuess}>Add</Button>
+      </Group>
+      <GuessContext value={(guess: Guess) => removeGuess(guess)}>
+        <Stack>
+          {guesses.map((guess, idx) => (
+            <GuessItem key={idx} guess={guess} />
+          ))}
+        </Stack>
+      </GuessContext>
+      <Button disabled={guesses.length == 0}>Get Possible Words!</Button>
+      <List>
         {results.map((word, idx) => (
-          <li key={idx} className="result_item">
+          <ListItem key={idx} className="result_item">
             {capitalizeFirstLetter(word)}
-          </li>
+          </ListItem>
         ))}
-      </ul>
+      </List>
     </MantineProvider>
   );
 
-  //API call. Check if guess is valid
-  async function validateGuess(
-    guessValidReq: ValidationRequest
-  ): Promise<ValidationResponse> {
-    const headers: Headers = new Headers();
-    headers.set("Content-Type", "application/json");
-    headers.set("Accept", "application/json");
-
-    const request: RequestInfo = new Request(`${BACKEND}/guess/validate`, {
-      method: "POST",
-      headers: headers,
-      body: JSON.stringify(guessValidReq),
-    });
-
-    const response: ValidationResponse = await fetch(request)
-      .then((res) => res.json())
-      .then((data) => ({
-        validated: data.validated,
-        message: data.message,
-      }))
-      .catch(() => ({
-        validated: false,
-        message: "A server error occured",
-      }));
-
-    if (response.validated) {
-      formRef.current?.reset();
-      setGuesses([...guesses, stringToGuess(guessValidReq.guess)]);
-    }
-    setGuessSuccess(response);
-
-    return response;
-  }
-
-  //API call. Get possible words from guesses
-  async function getPossibleWords(guesses: Guess[]): Promise<string[]> {
-    const headers: Headers = new Headers();
-    headers.set("Content-Type", "application/json");
-    headers.set("Accept", "application/json");
-
-    const request: RequestInfo = new Request(`${BACKEND}/guess/possiblewords`, {
-      method: "POST",
-      headers: headers,
-      body: JSON.stringify(guesses),
-    });
-
-    const response: string[] = await fetch(request)
-      .then((res) => res.json())
-      .catch((error) => {
-        console.log(error);
-        return [];
-      });
-
-    setResults(response);
-
-    return response;
-  }
-
   //Set array to one not containing guess
   function removeGuess(guess: Guess) {
-    setGuesses(guesses.filter((g) => g.wordString != guess.wordString));
+    setGuesses(guesses.filter((g) => g.wordString !== guess.wordString));
   }
-
-  //Set new array of guesses where letter has new correctness
-  function getNextLetterCorrectness(letter: Letter) {
-    const newGuesses: Guess[] = guesses.map((guess) => ({
-      ...guess,
-      letters: guess.letters.map((l) =>
-        l === letter
-          ? { ...l, correctness: cycleLetterCorrectness(l.correctness) }
-          : l
-      ),
-    }));
-
-    setGuesses(newGuesses);
-  }
-}
-
-//Increment correctness value
-function cycleLetterCorrectness(correctness: number): number {
-  return correctness >= 2 ? 0 : correctness + 1;
-}
-
-function guessesToStringArray(guesses: Guess[]): string[] {
-  const stringGuesses: string[] = guesses.map((guess) => guess.wordString);
-  return stringGuesses;
-}
-
-function stringToGuess(guessString: string): Guess {
-  const letters: Letter[] = guessString.split("").map((letterString) => ({
-    value: letterString,
-    correctness: 0,
-  }));
-
-  const guess: Guess = {
-    wordString: guessString,
-    letters: letters,
-  };
-
-  return guess;
 }
 
 function capitalizeFirstLetter(word: string): string {
   return word.charAt(0).toUpperCase() + word.slice(1);
+}
+
+interface validationResponse {
+  validated: boolean;
+  message: string;
+}
+
+function validateGuess(guess: string, guesses: Guess[]): validationResponse {
+  guess = guess.trim();
+  const minLength: number = 1;
+  const allowedLength: number =
+    guesses.length > 0 ? guesses[0].wordString.length : -1;
+
+  const response: validationResponse = {
+    validated: false,
+    message: "",
+  };
+
+  if (guess.length < minLength) {
+    response.message = "Must be at least 1 character";
+  } else if (allowedLength > 0 && guess.length != allowedLength) {
+    response.message = "Must be the same length (" + allowedLength + ")";
+  } else if (alreadyGuessed(guess, guesses)) {
+    response.message = "Already guessed";
+  } else {
+    response.validated = true;
+  }
+
+  return response;
+}
+
+function alreadyGuessed(guess: string, guesses: Guess[]): boolean {
+  guess = guess.toUpperCase();
+  for (const aGuess of guesses) {
+    if (guess === aGuess.wordString) return true;
+  }
+
+  return false;
 }

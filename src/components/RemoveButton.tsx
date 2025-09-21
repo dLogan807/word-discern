@@ -1,15 +1,28 @@
-import React from "react";
-import "./RemoveButton.css";
+import React, { useContext } from "react";
 import { IconTrash } from "@tabler/icons-react";
+import { ActionIcon } from "@mantine/core";
+import classes from "./RemoveButton.module.css";
+import { Guess } from "../classes/guess";
+import { GuessContext } from "../App";
 
 export default function RemoveButton({
-  clickAction,
+  guess,
 }: {
-  clickAction: () => void;
+  guess: Guess;
 }): React.ReactElement {
+  const removeGuess = useContext(GuessContext);
+
   return (
-    <button className="remove_button" onClick={() => clickAction()}>
+    <ActionIcon
+      variant="light"
+      color="red"
+      aria-label="Remove"
+      onClick={() => removeGuess(guess)}
+      classNames={{
+        root: classes.root,
+      }}
+    >
       <IconTrash />
-    </button>
+    </ActionIcon>
   );
 }
