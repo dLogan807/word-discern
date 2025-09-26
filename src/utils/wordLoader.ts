@@ -12,7 +12,7 @@ function parseWordsToSets(words: string[]): Map<number, Set<string>> {
     word = word.trim();
 
     if (word && containsOnlyLetters(word)) {
-      if (wordSets.has(word.length)) {
+      if (!wordSets.has(word.length)) {
         wordSets.set(word.length, new Set<string>());
       }
 
@@ -27,6 +27,7 @@ function parseWordsToSets(words: string[]): Map<number, Set<string>> {
       `Failed to load ${failedParseWords.length} words: ${failedParseWords}`
     );
   }
+
   return wordSets;
 }
 
@@ -59,7 +60,6 @@ function printWords(wordSets: Map<number, Set<string>>) {
     const wordStrings: string[] = [];
 
     for (const word of value) {
-      //Needs optimising
       wordStrings.push(word);
     }
     console.log(`${wordStrings.length} words of length ${key}:`);

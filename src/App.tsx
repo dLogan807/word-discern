@@ -99,18 +99,18 @@ function capitalizeFirstLetter(word: string): string {
   return word.charAt(0).toUpperCase() + word.slice(1);
 }
 
-interface validationResponse {
+interface ValidationResponse {
   validated: boolean;
   message: string;
 }
 
-function validateGuess(guess: string, guesses: Guess[]): validationResponse {
+function validateGuess(guess: string, guesses: Guess[]): ValidationResponse {
   guess = guess.trim();
   const minLength: number = 1;
   const allowedLength: number =
     guesses.length > 0 ? guesses[0].wordString.length : -1;
 
-  const response: validationResponse = {
+  const response: ValidationResponse = {
     validated: false,
     message: "",
   };
