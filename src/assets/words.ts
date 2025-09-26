@@ -14,7 +14,7 @@ prominently displayed and the text of this document must be included
 verbatim.
 */
 
-export const sortedWords: string[] = [
+export const defaultWords: string[] = [
   "aa",
   "ab",
   "ad",

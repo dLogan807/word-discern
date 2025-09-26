@@ -13,8 +13,9 @@ import { useField } from "@mantine/form";
 import { theme } from "./theme";
 import GuessItem from "./components/GuessItem";
 import { Guess } from "./classes/guess";
-import { createContext, useState } from "react";
-import { getDefaultWordSets } from "./utils/wordLoader";
+import { createContext, useMemo, useState } from "react";
+import { defaultWords } from "./assets/words";
+import { parseWordsToSets } from "./utils/wordLoader";
 
 export const GuessContext = createContext<{
   removeGuess: (guess: Guess) => void;
@@ -28,7 +29,11 @@ export default function App() {
   const [results, setResults] = useState<string[]>([]);
   const [guesses, setGuesses] = useState<Guess[]>([]);
 
-  getDefaultWordSets();
+  let onlyLettersAllowed = true;
+  const wordSets = useMemo(
+    () => parseWordsToSets(defaultWords, onlyLettersAllowed),
+    [defaultWords]
+  );
 
   const guessField = useField({
     initialValue: "",
@@ -129,9 +134,13 @@ function validateGuess(guess: string, guesses: Guess[]): ValidationResponse {
 }
 
 function alreadyGuessed(guess: string, guesses: Guess[]): boolean {
-  guess = guess.toUpperCase();
   for (const aGuess of guesses) {
-    if (guess === aGuess.wordString) return true;
+    if (
+      guess.localeCompare(aGuess.wordString, undefined, {
+        sensitivity: "accent",
+      }) === 0
+    )
+      return true;
   }
 
   return false;

@@ -1,34 +1,38 @@
-import { sortedWords } from "../assets/words";
-
-export function getDefaultWordSets(): Map<number, Set<string>> {
-  return parseWordsToSets(sortedWords);
-}
-
-function parseWordsToSets(words: string[]): Map<number, Set<string>> {
+export function parseWordsToSets(
+  words: string[],
+  onlyLettersAllowed: boolean
+): Map<number, Set<string>> {
   const wordSets = new Map<number, Set<string>>();
-  const failedParseWords: string[] = [];
+  const invalidWords: string[] = [];
 
   for (let word of words) {
     word = word.trim();
 
-    if (word && containsOnlyLetters(word)) {
+    if (isValidWord(word, onlyLettersAllowed)) {
       if (!wordSets.has(word.length)) {
         wordSets.set(word.length, new Set<string>());
       }
 
       wordSets.get(word.length)?.add(word);
     } else {
-      failedParseWords.push(word);
+      invalidWords.push(word);
     }
   }
 
-  if (failedParseWords.length > 0) {
+  if (invalidWords.length > 0) {
     console.warn(
-      `Failed to load ${failedParseWords.length} words: ${failedParseWords}`
+      `Failed to load ${invalidWords.length} words: ${invalidWords}`
     );
   }
 
   return wordSets;
+}
+
+function isValidWord(word: string, onlyLettersAllowed: boolean): boolean {
+  return (
+    word !== null &&
+    ((onlyLettersAllowed && containsOnlyLetters(word)) || !onlyLettersAllowed)
+  );
 }
 
 function containsOnlyLetters(word: string): boolean {
@@ -51,10 +55,10 @@ async function loadLocalTextFiles(
     })
   );
 
-  return parseWordsToSets(allFilesWords);
+  return parseWordsToSets(allFilesWords, true);
 }
 
-function printWords(wordSets: Map<number, Set<string>>) {
+function printWordSets(wordSets: Map<number, Set<string>>) {
   console.log("--- Loaded Word Sets ---");
   wordSets.forEach((value, key) => {
     const wordStrings: string[] = [];
