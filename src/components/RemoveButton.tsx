@@ -17,7 +17,7 @@ export default function RemoveButton({
       variant="light"
       color="red"
       aria-label="Remove"
-      onClick={() => removeGuess(guess)}
+      onClick={() => removeGuess.removeGuess(guess)}
       classNames={{
         root: classes.root,
       }}

@@ -13,31 +13,37 @@ import { useField } from "@mantine/form";
 import { theme } from "./theme";
 import GuessItem from "./components/GuessItem";
 import { Guess } from "./classes/guess";
-import { createContext, useContext, useState } from "react";
+import { createContext, useState } from "react";
+import { getDefaultWordSets } from "./utils/wordLoader";
 
-export const GuessContext = createContext<(guess: Guess) => void>(() => {});
+export const GuessContext = createContext<{
+  removeGuess: (guess: Guess) => void;
+  updateGuess: (guess: Guess) => void;
+}>({
+  removeGuess: () => {},
+  updateGuess: () => {},
+});
 
 export default function App() {
   const [results, setResults] = useState<string[]>([]);
   const [guesses, setGuesses] = useState<Guess[]>([]);
 
+  getDefaultWordSets();
+
   const guessField = useField({
     initialValue: "",
   });
 
-  const handleKeyDown = (event: { key: string }) => {
-    if (event.key === "Enter") {
-      tryAddGuess();
-    }
-  };
+  function handleKeyDown(event: { key: string }) {
+    if (event.key === "Enter") tryAddGuess();
+  }
 
   function tryAddGuess() {
     const guessValue = guessField.getValue();
     const validationResponse = validateGuess(guessValue, guesses);
 
     if (!validationResponse.validated) {
-      guessField.setError(validationResponse.message);
-      return;
+      return guessField.setError(validationResponse.message);
     }
 
     const guess: Guess = new Guess(guessValue);
@@ -45,9 +51,23 @@ export default function App() {
     guessField.setValue("");
   }
 
+  function removeGuess(guessToRemove: Guess) {
+    setGuesses(
+      guesses.filter((g) => g.wordString !== guessToRemove.wordString)
+    );
+  }
+
+  function updateGuess(updatedGuess: Guess) {
+    setGuesses(
+      guesses.map((g) =>
+        g.wordString === updatedGuess.wordString ? updatedGuess : g
+      )
+    );
+  }
+
   return (
     <MantineProvider theme={theme}>
-      <h1>Wordle Helper</h1>
+      <h1>Word Discern</h1>
       <Text>Provides possible words from what you've guessed.</Text>
       <Group>
         <TextInput
@@ -58,7 +78,7 @@ export default function App() {
         />
         <Button onClick={tryAddGuess}>Add</Button>
       </Group>
-      <GuessContext value={(guess: Guess) => removeGuess(guess)}>
+      <GuessContext value={{ removeGuess, updateGuess }}>
         <Stack>
           {guesses.map((guess, idx) => (
             <GuessItem key={idx} guess={guess} />
@@ -68,18 +88,11 @@ export default function App() {
       <Button disabled={guesses.length == 0}>Get Possible Words!</Button>
       <List>
         {results.map((word, idx) => (
-          <ListItem key={idx} className="result_item">
-            {capitalizeFirstLetter(word)}
-          </ListItem>
+          <ListItem key={idx}>{capitalizeFirstLetter(word)}</ListItem>
         ))}
       </List>
     </MantineProvider>
   );
-
-  //Set array to one not containing guess
-  function removeGuess(guess: Guess) {
-    setGuesses(guesses.filter((g) => g.wordString !== guess.wordString));
-  }
 }
 
 function capitalizeFirstLetter(word: string): string {

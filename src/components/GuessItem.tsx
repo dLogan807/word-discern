@@ -12,7 +12,7 @@ export default function GuessItem({
   return (
     <Group>
       {guess.letters.map((letter, idx) => (
-        <LetterButton key={idx} letter={letter} />
+        <LetterButton key={idx} letter={letter} guess={guess} />
       ))}
       <RemoveButton guess={guess} />
     </Group>
