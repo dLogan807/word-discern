@@ -30,7 +30,7 @@ export default function App() {
   const [guesses, setGuesses] = useState<Guess[]>([]);
 
   let onlyLettersAllowed = true;
-  const wordSets = useMemo(
+  const wordSets: Map<number, Set<string>> = useMemo(
     () => parseWordsToSets(defaultWords, onlyLettersAllowed),
     [defaultWords]
   );
@@ -45,7 +45,11 @@ export default function App() {
 
   function tryAddGuess() {
     const guessValue = guessField.getValue();
-    const validationResponse = validateGuess(guessValue, guesses);
+    const validationResponse = validateGuess(
+      guessValue,
+      guesses,
+      wordSets.get(guessValue.length)
+    );
 
     if (!validationResponse.validated) {
       return guessField.setError(validationResponse.message);
@@ -109,7 +113,11 @@ interface ValidationResponse {
   message: string;
 }
 
-function validateGuess(guess: string, guesses: Guess[]): ValidationResponse {
+function validateGuess(
+  guess: string,
+  guesses: Guess[],
+  wordSet: Set<string> | undefined
+): ValidationResponse {
   guess = guess.trim();
   const minLength: number = 1;
   const allowedLength: number =
@@ -121,11 +129,13 @@ function validateGuess(guess: string, guesses: Guess[]): ValidationResponse {
   };
 
   if (guess.length < minLength) {
-    response.message = "Must be at least 1 character";
+    response.message = "Empty guess";
   } else if (allowedLength > 0 && guess.length != allowedLength) {
-    response.message = "Must be the same length (" + allowedLength + ")";
+    response.message = `Different length (${guess.length} vs ${allowedLength})`;
   } else if (alreadyGuessed(guess, guesses)) {
     response.message = "Already guessed";
+  } else if (!wordSet || !wordSet.has(guess)) {
+    response.message = "Not in word list";
   } else {
     response.validated = true;
   }

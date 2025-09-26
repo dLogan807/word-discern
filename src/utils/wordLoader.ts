@@ -29,10 +29,9 @@ export function parseWordsToSets(
 }
 
 function isValidWord(word: string, onlyLettersAllowed: boolean): boolean {
-  return (
-    word !== null &&
-    ((onlyLettersAllowed && containsOnlyLetters(word)) || !onlyLettersAllowed)
-  );
+  const stringValid: boolean = word !== null && word !== "";
+
+  return stringValid && (!onlyLettersAllowed || containsOnlyLetters(word));
 }
 
 function containsOnlyLetters(word: string): boolean {
