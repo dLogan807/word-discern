@@ -1,6 +1,6 @@
 export function parseWordsToSets(
   words: string[],
-  onlyLettersAllowed: boolean
+  specialCharsAllowed: boolean
 ): Map<number, Set<string>> {
   const wordSets = new Map<number, Set<string>>();
   const invalidWords: string[] = [];
@@ -8,7 +8,7 @@ export function parseWordsToSets(
   for (let word of words) {
     word = word.trim();
 
-    if (isValidWord(word, onlyLettersAllowed)) {
+    if (isValidWord(word, specialCharsAllowed)) {
       if (!wordSets.has(word.length)) {
         wordSets.set(word.length, new Set<string>());
       }
@@ -28,10 +28,10 @@ export function parseWordsToSets(
   return wordSets;
 }
 
-function isValidWord(word: string, onlyLettersAllowed: boolean): boolean {
+function isValidWord(word: string, specialCharsAllowed: boolean): boolean {
   const stringValid: boolean = word !== null && word !== "";
 
-  return stringValid && (!onlyLettersAllowed || containsOnlyLetters(word));
+  return stringValid && (specialCharsAllowed || containsOnlyLetters(word));
 }
 
 function containsOnlyLetters(word: string): boolean {
@@ -49,7 +49,7 @@ async function loadLocalTextFiles(
     filePaths.map(async (filePath: string) => {
       const file: string = (await import(`${filePath}?raw`)).default;
       const splitRegex: RegExp = /;|,| |\n/;
-      const words: string[] = file.split(splitRegex);
+      const words: string[] = file.split(splitRegex).map((word) => word.trim());
       allFilesWords = [...allFilesWords, ...words];
     })
   );

@@ -1,0 +1,49 @@
+import { Guess } from "../classes/guess";
+
+interface ValidationResponse {
+  validated: boolean;
+  message: string;
+}
+
+export function validateGuess(
+  guess: string,
+  guesses: Guess[],
+  wordSet: Set<string> | undefined
+): ValidationResponse {
+  guess = guess.trim();
+  const minLength: number = 1;
+  const allowedLength: number =
+    guesses.length > 0 ? guesses[0].wordString.length : -1;
+
+  const response: ValidationResponse = {
+    validated: false,
+    message: "",
+  };
+
+  if (guess.length < minLength) {
+    response.message = "Empty guess";
+  } else if (allowedLength > 0 && guess.length != allowedLength) {
+    response.message = `Different length (${guess.length} vs ${allowedLength})`;
+  } else if (alreadyGuessed(guess, guesses)) {
+    response.message = "Already guessed";
+  } else if (!wordSet || !wordSet.has(guess)) {
+    response.message = "Not in word list";
+  } else {
+    response.validated = true;
+  }
+
+  return response;
+}
+
+function alreadyGuessed(guess: string, guesses: Guess[]): boolean {
+  for (const aGuess of guesses) {
+    if (
+      guess.localeCompare(aGuess.wordString, undefined, {
+        sensitivity: "accent",
+      }) === 0
+    )
+      return true;
+  }
+
+  return false;
+}

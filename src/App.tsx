@@ -8,6 +8,10 @@ import {
   Stack,
   List,
   ListItem,
+  Title,
+  Switch,
+  Collapse,
+  Box,
 } from "@mantine/core";
 import { useField } from "@mantine/form";
 import { theme } from "./theme";
@@ -15,7 +19,11 @@ import GuessItem from "./components/GuessItem";
 import { Guess } from "./classes/guess";
 import { createContext, useMemo, useState } from "react";
 import { defaultWords } from "./assets/words";
-import { parseWordsToSets } from "./utils/wordLoader";
+import { parseWordsToSets } from "./utils/wordLoading";
+import { validateGuess } from "./utils/guessValidation";
+import CustomWordsInput from "./components/CustomWordsInput";
+import { useDisclosure } from "@mantine/hooks";
+import { IconBook, IconBook2 } from "@tabler/icons-react";
 
 export const GuessContext = createContext<{
   removeGuess: (guess: Guess) => void;
@@ -25,15 +33,26 @@ export const GuessContext = createContext<{
   updateGuess: () => {},
 });
 
+export const CustomWordsContext = createContext<{
+  updateCustomWords: (words: string[], specialCharsAllowed: boolean) => void;
+}>({
+  updateCustomWords: () => {},
+});
+
 export default function App() {
   const [results, setResults] = useState<string[]>([]);
   const [guesses, setGuesses] = useState<Guess[]>([]);
 
-  let onlyLettersAllowed = true;
+  const [customWordSets, setCustomWordSets] =
+    useState<Map<number, Set<string>>>();
+
   const wordSets: Map<number, Set<string>> = useMemo(
-    () => parseWordsToSets(defaultWords, onlyLettersAllowed),
+    () => parseWordsToSets(defaultWords, false),
     [defaultWords]
   );
+
+  const [mergedWordSets, setMergedWordSets] =
+    useState<Map<number, Set<string>>>();
 
   const guessField = useField({
     initialValue: "",
@@ -74,10 +93,36 @@ export default function App() {
     );
   }
 
+  function updateCustomWords(words: string[], specialCharsAllowed: boolean) {
+    setCustomWordSets(parseWordsToSets(words, specialCharsAllowed));
+  }
+
+  const [wordsInputOpened, changeWordsInputOpened] = useDisclosure(false);
+
+  const bookIcon = wordsInputOpened ? <IconBook /> : <IconBook2 />;
+
   return (
     <MantineProvider theme={theme}>
-      <h1>Word Discern</h1>
-      <Text>Provides possible words from what you've guessed.</Text>
+      <Title>Word Discern</Title>
+      <Text>Finds possible words from what you've guessed.</Text>
+      <Box maw={400} mx="auto">
+        <Group justify="center" mb={5}>
+          <Button
+            onClick={changeWordsInputOpened.toggle}
+            rightSection={bookIcon}
+          >
+            Add custom words
+          </Button>
+        </Group>
+
+        <Collapse in={wordsInputOpened}>
+          <CustomWordsContext value={{ updateCustomWords }}>
+            <CustomWordsInput />
+          </CustomWordsContext>
+        </Collapse>
+      </Box>
+
+      <Switch label="Keyboard Mode" />
       <Group>
         <TextInput
           {...guessField.getInputProps()}
@@ -89,15 +134,15 @@ export default function App() {
       </Group>
       <GuessContext value={{ removeGuess, updateGuess }}>
         <Stack>
-          {guesses.map((guess, idx) => (
-            <GuessItem key={idx} guess={guess} />
+          {guesses.map((guess, i) => (
+            <GuessItem key={i} guess={guess} />
           ))}
         </Stack>
       </GuessContext>
-      <Button disabled={guesses.length == 0}>Get Possible Words!</Button>
+      <Button disabled={!guesses.length}>Get Possible Words!</Button>
       <List>
-        {results.map((word, idx) => (
-          <ListItem key={idx}>{capitalizeFirstLetter(word)}</ListItem>
+        {results.map((word, i) => (
+          <ListItem key={i}>{capitalizeFirstLetter(word)}</ListItem>
         ))}
       </List>
     </MantineProvider>
@@ -106,52 +151,4 @@ export default function App() {
 
 function capitalizeFirstLetter(word: string): string {
   return word.charAt(0).toUpperCase() + word.slice(1);
-}
-
-interface ValidationResponse {
-  validated: boolean;
-  message: string;
-}
-
-function validateGuess(
-  guess: string,
-  guesses: Guess[],
-  wordSet: Set<string> | undefined
-): ValidationResponse {
-  guess = guess.trim();
-  const minLength: number = 1;
-  const allowedLength: number =
-    guesses.length > 0 ? guesses[0].wordString.length : -1;
-
-  const response: ValidationResponse = {
-    validated: false,
-    message: "",
-  };
-
-  if (guess.length < minLength) {
-    response.message = "Empty guess";
-  } else if (allowedLength > 0 && guess.length != allowedLength) {
-    response.message = `Different length (${guess.length} vs ${allowedLength})`;
-  } else if (alreadyGuessed(guess, guesses)) {
-    response.message = "Already guessed";
-  } else if (!wordSet || !wordSet.has(guess)) {
-    response.message = "Not in word list";
-  } else {
-    response.validated = true;
-  }
-
-  return response;
-}
-
-function alreadyGuessed(guess: string, guesses: Guess[]): boolean {
-  for (const aGuess of guesses) {
-    if (
-      guess.localeCompare(aGuess.wordString, undefined, {
-        sensitivity: "accent",
-      }) === 0
-    )
-      return true;
-  }
-
-  return false;
 }
