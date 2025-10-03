@@ -18,13 +18,16 @@ import { useField } from "@mantine/form";
 import { theme } from "./theme";
 import GuessItem from "./components/GuessItem";
 import { Guess } from "./classes/guess";
-import { createContext, useMemo, useState } from "react";
-import { defaultWords } from "./assets/words";
-import { parseWordsToSets } from "./utils/wordLoading";
+import { createContext, useEffect, useState } from "react";
+import { DEFAULT_WORDS } from "./assets/words";
+import { ParsedWordSets, parseWordsToSets } from "./utils/wordLoading";
 import { validateGuess } from "./utils/guessValidation";
-import CustomWordsInput from "./components/CustomWordsInput";
+import WordInputForm, {
+  CustomWordsFormData,
+} from "./components/CustomWordsForm";
 import { useDisclosure } from "@mantine/hooks";
 import { IconBook, IconBook2 } from "@tabler/icons-react";
+import { DEFAULT_CUSTOM_WORDS_FORM } from "./components/CustomWordsForm";
 
 export const GuessContext = createContext<{
   removeGuess: (guess: Guess) => void;
@@ -34,26 +37,26 @@ export const GuessContext = createContext<{
   updateGuess: () => {},
 });
 
-export const CustomWordsContext = createContext<{
-  updateCustomWords: (words: string[], specialCharsAllowed: boolean) => void;
-}>({
-  updateCustomWords: () => {},
-});
-
 export default function App() {
   const [results, setResults] = useState<string[]>([]);
   const [guesses, setGuesses] = useState<Guess[]>([]);
 
-  const [customWordSets, setCustomWordSets] =
-    useState<Map<number, Set<string>>>();
+  const [customWordsFormData, setCustomWordsFormData] =
+    useState<CustomWordsFormData>(DEFAULT_CUSTOM_WORDS_FORM);
 
-  const wordSets: Map<number, Set<string>> = useMemo(
-    () => parseWordsToSets(defaultWords, false),
-    [defaultWords]
+  useEffect(() => {
+    const mergedWords: string[] = customWordsFormData.replaceDefaultWords
+      ? customWordsFormData.words
+      : [...DEFAULT_WORDS, ...customWordsFormData.words];
+
+    setParsedWordSets(
+      parseWordsToSets(mergedWords, customWordsFormData.allowSpecialChars)
+    );
+  }, [customWordsFormData]);
+
+  const [parsedWordSets, setParsedWordSets] = useState<ParsedWordSets>(
+    parseWordsToSets(DEFAULT_WORDS, false)
   );
-
-  const [mergedWordSets, setMergedWordSets] =
-    useState<Map<number, Set<string>>>();
 
   const guessField = useField({
     initialValue: "",
@@ -68,7 +71,7 @@ export default function App() {
     const validationResponse = validateGuess(
       guessValue,
       guesses,
-      wordSets.get(guessValue.length)
+      parsedWordSets.wordSets.get(guessValue.length)
     );
 
     if (!validationResponse.validated) {
@@ -94,18 +97,35 @@ export default function App() {
     );
   }
 
-  function updateCustomWords(words: string[], specialCharsAllowed: boolean) {
-    setCustomWordSets(parseWordsToSets(words, specialCharsAllowed));
-  }
-
   const [wordsInputOpened, changeWordsInputOpened] = useDisclosure(false);
 
   const bookIcon = wordsInputOpened ? <IconBook /> : <IconBook2 />;
+
+  function LoadedWordsBadges() {
+    const customWordNum: number = customWordsFormData.replaceDefaultWords
+      ? parsedWordSets.succeeded.length
+      : Math.abs(DEFAULT_WORDS.length - parsedWordSets.succeeded.length);
+
+    return (
+      <Group>
+        <Badge variant="light">
+          {parsedWordSets.succeeded.length} total words
+        </Badge>
+        <Badge variant="light" color="yellow">
+          {customWordNum} custom
+        </Badge>
+        <Badge variant="light" color="red">
+          {parsedWordSets.failed.length} failed to load
+        </Badge>
+      </Group>
+    );
+  }
 
   return (
     <MantineProvider theme={theme}>
       <Title>Word Discern</Title>
       <Text>Finds possible words from what you've guessed.</Text>
+
       <Box maw={400} mx="auto">
         <Group mb={10}>
           <Button
@@ -114,13 +134,13 @@ export default function App() {
           >
             Add custom words
           </Button>
-          <Badge variant="light">0 custom words loaded</Badge>
         </Group>
 
         <Collapse in={wordsInputOpened}>
-          <CustomWordsContext value={{ updateCustomWords }}>
-            <CustomWordsInput />
-          </CustomWordsContext>
+          <Stack>
+            <LoadedWordsBadges />
+            <WordInputForm updateCustomWords={setCustomWordsFormData} />
+          </Stack>
         </Collapse>
       </Box>
 

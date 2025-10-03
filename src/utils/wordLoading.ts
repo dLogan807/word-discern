@@ -1,9 +1,16 @@
+export interface ParsedWordSets {
+  succeeded: string[];
+  failed: string[];
+  wordSets: Map<number, Set<string>>;
+}
+
 export function parseWordsToSets(
   words: string[],
   specialCharsAllowed: boolean
-): Map<number, Set<string>> {
+): ParsedWordSets {
   const wordSets = new Map<number, Set<string>>();
-  const invalidWords: string[] = [];
+  const succeeded: string[] = [];
+  const failed: string[] = [];
 
   for (let word of words) {
     word = word.trim();
@@ -14,18 +21,17 @@ export function parseWordsToSets(
       }
 
       wordSets.get(word.length)?.add(word);
+      succeeded.push(word);
     } else {
-      invalidWords.push(word);
+      failed.push(word);
     }
   }
 
-  if (invalidWords.length > 0) {
-    console.warn(
-      `Failed to load ${invalidWords.length} words: ${invalidWords}`
-    );
+  if (failed.length > 0) {
+    console.warn(`Failed to load ${failed.length} words: ${failed}`);
   }
 
-  return wordSets;
+  return { wordSets: wordSets, failed: failed, succeeded: succeeded };
 }
 
 function isValidWord(word: string, specialCharsAllowed: boolean): boolean {
@@ -52,22 +58,6 @@ export function getWordArray(text: string): string[] {
     .filter((word) => word.length > 0);
 
   return words;
-}
-
-async function loadLocalTextFiles(
-  filePaths: string[]
-): Promise<Map<number, Set<string>>> {
-  let allFilesWords: string[] = [];
-
-  await Promise.all(
-    filePaths.map(async (filePath: string) => {
-      const file: string = (await import(`${filePath}?raw`)).default;
-      const words: string[] = getWordArray(file);
-      allFilesWords = [...allFilesWords, ...words];
-    })
-  );
-
-  return parseWordsToSets(allFilesWords, true);
 }
 
 function printWordSets(wordSets: Map<number, Set<string>>) {

@@ -1,5 +1,3 @@
-import { useContext, useEffect, useState } from "react";
-import { CustomWordsContext } from "../App";
 import {
   Button,
   Checkbox,
@@ -15,27 +13,12 @@ import { useForm } from "@mantine/form";
 import classes from "./CustomWords.module.css";
 import { parse, ParseError, printParseErrorCode } from "jsonc-parser";
 import { getWordArray } from "../utils/wordLoading";
+import { useState } from "react";
 
 enum WordInput {
   TEXT = "text",
   JSON = "json",
   FILE = "file",
-}
-
-export default function CustomWordsInput() {
-  const { updateCustomWords } = useContext(CustomWordsContext);
-
-  const [wordFormData, setWordFormData] = useState<CustomWordsFormData>({
-    words: [],
-    allowSpecialChars: true,
-    replaceDefaultWords: false,
-  });
-
-  useEffect(() => {
-    console.log({ wordFormData }, "changed");
-  }, [wordFormData]);
-
-  return <WordInputForm setWordFormData={setWordFormData} />;
 }
 
 function SpacedCodeBlocks({
@@ -58,16 +41,22 @@ function SpacedCodeBlocks({
   );
 }
 
-interface CustomWordsFormData {
+export interface CustomWordsFormData {
   words: string[];
   allowSpecialChars: boolean;
   replaceDefaultWords: boolean;
 }
 
-function WordInputForm({
-  setWordFormData,
+export const DEFAULT_CUSTOM_WORDS_FORM: CustomWordsFormData = {
+  words: [],
+  allowSpecialChars: false,
+  replaceDefaultWords: false,
+};
+
+export default function WordInputForm({
+  updateCustomWords,
 }: {
-  setWordFormData: (formData: CustomWordsFormData) => void;
+  updateCustomWords: (formData: CustomWordsFormData) => void;
 }) {
   const [inputMode, setInputMode] = useState<WordInput>(WordInput.TEXT);
 
@@ -80,8 +69,8 @@ function WordInputForm({
       text: "",
       json: "",
       file: null,
-      allowSpecialChars: true,
-      replaceDefaultWords: false,
+      allowSpecialChars: DEFAULT_CUSTOM_WORDS_FORM.allowSpecialChars,
+      replaceDefaultWords: DEFAULT_CUSTOM_WORDS_FORM.replaceDefaultWords,
     },
   });
 
@@ -148,7 +137,7 @@ function WordInputForm({
     form.setFieldError(inputMode, error);
     if (error) return;
 
-    setWordFormData({
+    updateCustomWords({
       words: words,
       allowSpecialChars: formValues.allowSpecialChars,
       replaceDefaultWords: formValues.replaceDefaultWords,
@@ -160,7 +149,7 @@ function WordInputForm({
 
     form.resetField(inputMode);
     form.clearFieldError(inputMode);
-    setWordFormData({
+    updateCustomWords({
       words: [],
       allowSpecialChars: formValues.allowSpecialChars,
       replaceDefaultWords: formValues.replaceDefaultWords,
