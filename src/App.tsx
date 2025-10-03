@@ -12,6 +12,7 @@ import {
   Switch,
   Collapse,
   Box,
+  Badge,
 } from "@mantine/core";
 import { useField } from "@mantine/form";
 import { theme } from "./theme";
@@ -106,13 +107,14 @@ export default function App() {
       <Title>Word Discern</Title>
       <Text>Finds possible words from what you've guessed.</Text>
       <Box maw={400} mx="auto">
-        <Group justify="center" mb={5}>
+        <Group mb={10}>
           <Button
             onClick={changeWordsInputOpened.toggle}
             rightSection={bookIcon}
           >
             Add custom words
           </Button>
+          <Badge variant="light">0 custom words loaded</Badge>
         </Group>
 
         <Collapse in={wordsInputOpened}>

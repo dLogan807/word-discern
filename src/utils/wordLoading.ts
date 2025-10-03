@@ -40,6 +40,20 @@ function containsOnlyLetters(word: string): boolean {
   return allLettersRegex.test(word);
 }
 
+export function getWordArray(text: string): string[] {
+  let words: string[] = [];
+
+  if (!text || text.length == 0) return words;
+
+  const splitRegex: RegExp = /;|,| |\n/;
+  words = text
+    .split(splitRegex)
+    .map((word) => word.trim())
+    .filter((word) => word.length > 0);
+
+  return words;
+}
+
 async function loadLocalTextFiles(
   filePaths: string[]
 ): Promise<Map<number, Set<string>>> {
@@ -48,8 +62,7 @@ async function loadLocalTextFiles(
   await Promise.all(
     filePaths.map(async (filePath: string) => {
       const file: string = (await import(`${filePath}?raw`)).default;
-      const splitRegex: RegExp = /;|,| |\n/;
-      const words: string[] = file.split(splitRegex).map((word) => word.trim());
+      const words: string[] = getWordArray(file);
       allFilesWords = [...allFilesWords, ...words];
     })
   );
