@@ -14,6 +14,7 @@ import classes from "./CustomWords.module.css";
 import { parse, ParseError, printParseErrorCode } from "jsonc-parser";
 import { getWordArray } from "../utils/wordLoading";
 import { useState } from "react";
+import { IconFileUpload } from "@tabler/icons-react";
 
 enum WordInput {
   TEXT = "text",
@@ -145,15 +146,8 @@ export default function WordInputForm({
   }
 
   function resetCurrentField() {
-    const formValues = form.getValues();
-
     form.resetField(inputMode);
     form.clearFieldError(inputMode);
-    updateCustomWords({
-      words: [],
-      allowSpecialChars: formValues.allowSpecialChars,
-      replaceDefaultWords: formValues.replaceDefaultWords,
-    });
   }
 
   const hiddenInputClass = (inputType: WordInput) => {
@@ -163,6 +157,7 @@ export default function WordInputForm({
           root: classes.hidden_input,
         };
   };
+  const fileIcon = <IconFileUpload />;
 
   return (
     <Stack>
@@ -225,6 +220,7 @@ export default function WordInputForm({
               <SpacedCodeBlocks preface="Accepts: " values={validFileTypes} />
             }
             placeholder="Upload"
+            leftSection={fileIcon}
             accept={validFileTypes.join(",")}
             clearable
             clearButtonProps={{

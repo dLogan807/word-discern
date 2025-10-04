@@ -32,7 +32,7 @@ export default function LetterButton({
         updateGuess(guess);
       }}
     >
-      {letter.value}
+      {letter.value.toLocaleUpperCase()}
     </Button>
   );
 }

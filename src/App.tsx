@@ -28,6 +28,7 @@ import WordInputForm, {
 import { useDisclosure } from "@mantine/hooks";
 import { IconBook, IconBook2 } from "@tabler/icons-react";
 import { DEFAULT_CUSTOM_WORDS_FORM } from "./components/CustomWordsForm";
+import getResults from "./utils/resultBuilder";
 
 export const GuessContext = createContext<{
   removeGuess: (guess: Guess) => void;
@@ -38,12 +39,11 @@ export const GuessContext = createContext<{
 });
 
 export default function App() {
-  const [results, setResults] = useState<string[]>([]);
-  const [guesses, setGuesses] = useState<Guess[]>([]);
-
   const [customWordsFormData, setCustomWordsFormData] =
     useState<CustomWordsFormData>(DEFAULT_CUSTOM_WORDS_FORM);
-
+  const [parsedWordSets, setParsedWordSets] = useState<ParsedWordSets>(
+    parseWordsToSets(DEFAULT_WORDS, false)
+  );
   useEffect(() => {
     const mergedWords: string[] = customWordsFormData.replaceDefaultWords
       ? customWordsFormData.words
@@ -54,9 +54,8 @@ export default function App() {
     );
   }, [customWordsFormData]);
 
-  const [parsedWordSets, setParsedWordSets] = useState<ParsedWordSets>(
-    parseWordsToSets(DEFAULT_WORDS, false)
-  );
+  const [guesses, setGuesses] = useState<Guess[]>([]);
+  const [results, setResults] = useState<string[]>([]);
 
   const guessField = useField({
     initialValue: "",
@@ -97,8 +96,22 @@ export default function App() {
     );
   }
 
-  const [wordsInputOpened, changeWordsInputOpened] = useDisclosure(false);
+  function updateResults() {
+    if (guesses.length == 0 || !guesses[0]) {
+      return setResults([]);
+    }
 
+    const guessLength = guesses[0].wordString.length;
+    const wordSets = parsedWordSets.wordSets.get(guessLength);
+
+    if (wordSets == null) {
+      return setResults([]);
+    }
+
+    setResults(getResults(wordSets, guesses));
+  }
+
+  const [wordsInputOpened, changeWordsInputOpened] = useDisclosure(false);
   const bookIcon = wordsInputOpened ? <IconBook /> : <IconBook2 />;
 
   function LoadedWordsBadges() {
@@ -161,7 +174,9 @@ export default function App() {
           ))}
         </Stack>
       </GuessContext>
-      <Button disabled={!guesses.length}>Get Possible Words!</Button>
+      <Button disabled={!guesses.length} onClick={updateResults}>
+        Get Possible Words!
+      </Button>
       <List>
         {results.map((word, i) => (
           <ListItem key={i}>{capitalizeFirstLetter(word)}</ListItem>

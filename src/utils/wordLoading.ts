@@ -59,16 +59,3 @@ export function getWordArray(text: string): string[] {
 
   return words;
 }
-
-function printWordSets(wordSets: Map<number, Set<string>>) {
-  console.log("--- Loaded Word Sets ---");
-  wordSets.forEach((value, key) => {
-    const wordStrings: string[] = [];
-
-    for (const word of value) {
-      wordStrings.push(word);
-    }
-    console.log(`${wordStrings.length} words of length ${key}:`);
-    console.log(JSON.stringify(wordStrings));
-  });
-}
