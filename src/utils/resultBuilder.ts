@@ -26,23 +26,21 @@ function parseGuesses(guesses: Guess[]): ParsedGuesses {
   };
 
   for (const guess of guesses) {
-    for (let i = 0; i < guess.letters.length; i++) {
-      const thisChar = guess.letters[i];
-
-      if (thisChar.correctness == LetterCorrectness.Correct) {
-        parseResult.correctPosChars[i] = thisChar.value;
-        continue;
+    guess.letters.forEach((char, i) => {
+      if (char.correctness == LetterCorrectness.Correct) {
+        parseResult.correctPosChars[i] = char.value;
+        return;
       }
 
       if (parseResult.blackListedPosChars[i] == null) {
         parseResult.blackListedPosChars[i] = new Set<string>();
       }
-      parseResult.blackListedPosChars[i].add(thisChar.value);
+      parseResult.blackListedPosChars[i].add(char.value);
 
-      if (thisChar.correctness === LetterCorrectness.WrongPosition) {
-        parseResult.requiredSomewhereChars.add(thisChar.value);
+      if (char.correctness === LetterCorrectness.WrongPosition) {
+        parseResult.requiredSomewhereChars.add(char.value);
       }
-    }
+    });
   }
 
   return parseResult;
@@ -60,19 +58,11 @@ function matchGuessesWithWords(
     ]);
 
     for (let i = 0; i < word.length; i++) {
-      const requiredCharMissing =
-        guessData.correctPosChars[i] !== undefined &&
-        !stringsAreEqual(guessData.correctPosChars[i], word[i]);
-
-      if (requiredCharMissing) {
+      if (requiredCharMissing(guessData.correctPosChars[i], word[i])) {
         continue wordLoop;
       }
 
-      const charAtBadPos =
-        guessData.blackListedPosChars[i] !== undefined &&
-        guessData.blackListedPosChars[i].has(word[i]);
-
-      if (charAtBadPos) {
+      if (charAtBadPos(guessData.blackListedPosChars[i], word[i])) {
         continue wordLoop;
       }
 
@@ -87,4 +77,22 @@ function matchGuessesWithWords(
   }
 
   return results;
+}
+
+function requiredCharMissing(
+  requiredChar: string | undefined,
+  charToCompare: string
+): boolean {
+  return (
+    requiredChar != undefined && !stringsAreEqual(requiredChar, charToCompare)
+  );
+}
+
+function charAtBadPos(
+  blackListedCharArray: Set<string> | undefined,
+  charToCompare: string
+): boolean {
+  return (
+    blackListedCharArray != undefined && blackListedCharArray.has(charToCompare)
+  );
 }
