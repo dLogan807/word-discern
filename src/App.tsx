@@ -116,14 +116,11 @@ export default function App() {
 
   function LoadedWordsBadges() {
     const customWordNum: number = customWordsFormData.replaceDefaultWords
-      ? parsedWordSets.succeeded.length
-      : Math.abs(DEFAULT_WORDS.length - parsedWordSets.succeeded.length);
-
+      ? parsedWordSets.wordNum
+      : parsedWordSets.wordNum - DEFAULT_WORDS.length;
     return (
       <Group>
-        <Badge variant="light">
-          {parsedWordSets.succeeded.length} total words
-        </Badge>
+        <Badge variant="light">{parsedWordSets.wordNum} total words</Badge>
         <Badge variant="light" color="yellow">
           {customWordNum} custom
         </Badge>

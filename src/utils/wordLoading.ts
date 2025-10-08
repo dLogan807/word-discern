@@ -1,6 +1,6 @@
 export interface ParsedWordSets {
-  succeeded: string[];
   failed: string[];
+  wordNum: number;
   wordSets: Map<number, Set<string>>;
 }
 
@@ -9,7 +9,7 @@ export function parseWordsToSets(
   specialCharsAllowed: boolean
 ): ParsedWordSets {
   const wordSets = new Map<number, Set<string>>();
-  const succeeded: string[] = [];
+  const succeeded = new Set<string>();
   const failed: string[] = [];
 
   for (let word of words) {
@@ -21,7 +21,7 @@ export function parseWordsToSets(
       }
 
       wordSets.get(word.length)?.add(word);
-      succeeded.push(word);
+      succeeded.add(word);
     } else {
       failed.push(word);
     }
@@ -31,7 +31,11 @@ export function parseWordsToSets(
     console.warn(`Failed to load ${failed.length} words: ${failed}`);
   }
 
-  return { wordSets: wordSets, failed: failed, succeeded: succeeded };
+  return {
+    wordSets: wordSets,
+    wordNum: succeeded.size,
+    failed: failed,
+  };
 }
 
 function isValidWord(word: string, specialCharsAllowed: boolean): boolean {

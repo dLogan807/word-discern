@@ -19,7 +19,6 @@ interface ParsedGuesses {
 
 function parseGuesses(guesses: Guess[]): ParsedGuesses {
   const guessLength: number = guesses[0].wordString.length;
-
   const parseResult: ParsedGuesses = {
     correctPosChars: new Array(guessLength),
     blackListedPosChars: new Array(guessLength),
