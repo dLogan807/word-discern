@@ -26,7 +26,15 @@ import WordInputForm, {
   CustomWordsFormData,
 } from "./components/CustomWordsForm";
 import { useDisclosure } from "@mantine/hooks";
-import { IconBook, IconBook2 } from "@tabler/icons-react";
+import {
+  IconAdjustments,
+  IconBook,
+  IconBook2,
+  IconCheck,
+  IconCopyOff,
+  IconList,
+  IconX,
+} from "@tabler/icons-react";
 import { DEFAULT_CUSTOM_WORDS_FORM } from "./components/CustomWordsForm";
 import getResults from "./utils/resultBuilder";
 
@@ -115,18 +123,61 @@ export default function App() {
   const bookIcon = wordsInputOpened ? <IconBook /> : <IconBook2 />;
 
   function LoadedWordsBadges() {
-    const customWordNum: number = customWordsFormData.replaceDefaultWords
+    const customWordsInUse: number = customWordsFormData.replaceDefaultWords
       ? parsedWordSets.wordNum
       : parsedWordSets.wordNum - DEFAULT_WORDS.length;
+
+    const validCustomWords: number =
+      customWordsFormData.words.length - parsedWordSets.failed.length;
+
+    const wordsAlreadyExisting: number = validCustomWords - customWordsInUse;
+
+    const customWordsText =
+      customWordsFormData.words.length == 0 || validCustomWords == 0
+        ? "No custom words loaded"
+        : `${validCustomWords} valid custom words parsed`;
+
+    const iconSize = 16;
+
     return (
       <Group>
-        <Badge variant="light">{parsedWordSets.wordNum} total words</Badge>
-        <Badge variant="light" color="yellow">
-          {customWordNum} custom
+        <Badge leftSection={<IconList size={iconSize} />} variant="light">
+          {parsedWordSets.wordNum} total words
         </Badge>
-        <Badge variant="light" color="red">
-          {parsedWordSets.failed.length} failed to load
+        <Badge
+          leftSection={<IconAdjustments size={iconSize} />}
+          variant="light"
+          color="yellow"
+        >
+          {customWordsText}
         </Badge>
+        {wordsAlreadyExisting && (
+          <Badge
+            leftSection={<IconCopyOff size={iconSize} />}
+            variant="light"
+            color="yellow"
+          >
+            {wordsAlreadyExisting} already existed in word list
+          </Badge>
+        )}
+        {customWordsInUse && (
+          <Badge
+            leftSection={<IconCheck size={iconSize} />}
+            variant="light"
+            color="green"
+          >
+            {customWordsInUse} added to word list
+          </Badge>
+        )}
+        {parsedWordSets.failed.length && (
+          <Badge
+            leftSection={<IconX size={iconSize} />}
+            variant="light"
+            color="red"
+          >
+            {parsedWordSets.failed.length} Invalid words
+          </Badge>
+        )}
       </Group>
     );
   }

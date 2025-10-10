@@ -13,7 +13,9 @@ export function parseWordsToSets(
   const failed: string[] = [];
 
   for (let word of words) {
-    word = word.trim();
+    if (typeof word === "string") {
+      word = word.trim();
+    }
 
     if (isValidWord(word, specialCharsAllowed)) {
       if (!wordSets.has(word.length)) {

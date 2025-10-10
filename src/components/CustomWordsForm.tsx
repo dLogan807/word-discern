@@ -178,7 +178,7 @@ export default function WordInputForm({
             resetCurrentField();
           }}
         >
-          Reset
+          Clear Field
         </Button>
       </Group>
       <form>
