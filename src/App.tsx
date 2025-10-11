@@ -10,8 +10,7 @@ import {
   ListItem,
   Title,
   Switch,
-  Collapse,
-  Box,
+  Accordion,
 } from "@mantine/core";
 import { useField } from "@mantine/form";
 import { theme } from "./theme";
@@ -24,8 +23,7 @@ import { validateGuess } from "./utils/guessValidation";
 import WordInputForm, {
   CustomWordsFormData,
 } from "./components/CustomWordsForm";
-import { useDisclosure } from "@mantine/hooks";
-import { IconBook, IconBook2 } from "@tabler/icons-react";
+import { IconBook2 } from "@tabler/icons-react";
 import { DEFAULT_CUSTOM_WORDS_FORM } from "./components/CustomWordsForm";
 import getResults from "./utils/resultBuilder";
 import LoadedWordsBadges from "./components/LoadedWordBadges";
@@ -60,10 +58,6 @@ export default function App() {
   const guessField = useField({
     initialValue: "",
   });
-
-  //For hiding custom words input form
-  const [wordsInputOpened, changeWordsInputOpened] = useDisclosure(false);
-  const bookIcon = wordsInputOpened ? <IconBook /> : <IconBook2 />;
 
   //Enter when adding a guess
   function handleKeyDown(event: { key: string }) {
@@ -116,60 +110,62 @@ export default function App() {
     setResults(getResults(wordSets, guesses));
   }
 
+  const bookIcon = <IconBook2 />;
+  const accordionText: string = "Add custom words";
+
   return (
     <MantineProvider theme={theme}>
-      <Title>Word Discern</Title>
-      <Text>Finds possible words from what you've guessed.</Text>
+      <Stack>
+        <Title>Word Discern</Title>
+        <Text>Finds possible words from what you've guessed.</Text>
 
-      <Box maw={400} mx="auto">
-        <Group mb={10}>
-          <Button
-            onClick={changeWordsInputOpened.toggle}
-            rightSection={bookIcon}
-          >
-            Add custom words
-          </Button>
+        <Accordion>
+          <Accordion.Item key={accordionText} value={accordionText}>
+            <Accordion.Control icon={bookIcon}>
+              {accordionText}
+            </Accordion.Control>
+            <Accordion.Panel>
+              <Stack>
+                <LoadedWordsBadges
+                  replaceDefaultWords={customWordsFormData.replaceDefaultWords}
+                  numDefaultWords={DEFAULT_WORDS.length}
+                  numWordsParsed={parsedWordSets.wordNum}
+                  numCustomFormWords={customWordsFormData.words.length}
+                  failedWords={parsedWordSets.failed}
+                />
+                <WordInputForm updateCustomWords={setCustomWordsFormData} />
+              </Stack>
+            </Accordion.Panel>
+          </Accordion.Item>
+        </Accordion>
+
+        <Switch label="Keyboard Mode" />
+
+        <Group>
+          <TextInput
+            {...guessField.getInputProps()}
+            label="Guess"
+            placeholder="Enter your guess"
+            onKeyDown={handleKeyDown}
+          />
+          <Button onClick={tryAddGuess}>Add</Button>
         </Group>
-
-        <Collapse in={wordsInputOpened}>
+        <GuessContext value={{ removeGuess, updateGuess }}>
           <Stack>
-            <LoadedWordsBadges
-              replaceDefaultWords={customWordsFormData.replaceDefaultWords}
-              numDefaultWords={DEFAULT_WORDS.length}
-              numWordsParsed={parsedWordSets.wordNum}
-              numCustomFormWords={customWordsFormData.words.length}
-              numFailedWords={parsedWordSets.failed.length}
-            />
-            <WordInputForm updateCustomWords={setCustomWordsFormData} />
+            {guesses.map((guess, i) => (
+              <GuessItem key={i} guess={guess} />
+            ))}
           </Stack>
-        </Collapse>
-      </Box>
-
-      <Switch label="Keyboard Mode" />
-      <Group>
-        <TextInput
-          {...guessField.getInputProps()}
-          label="Guess"
-          placeholder="Enter your guess"
-          onKeyDown={handleKeyDown}
-        />
-        <Button onClick={tryAddGuess}>Add</Button>
-      </Group>
-      <GuessContext value={{ removeGuess, updateGuess }}>
-        <Stack>
-          {guesses.map((guess, i) => (
-            <GuessItem key={i} guess={guess} />
+        </GuessContext>
+        <Button disabled={!guesses.length} onClick={updateResults}>
+          Get Possible Words!
+        </Button>
+        <List>
+          {results.map((word, i) => (
+            <ListItem key={i}>{capitalizeFirstLetter(word)}</ListItem>
           ))}
-        </Stack>
-      </GuessContext>
-      <Button disabled={!guesses.length} onClick={updateResults}>
-        Get Possible Words!
-      </Button>
-      <List>
-        {results.map((word, i) => (
-          <ListItem key={i}>{capitalizeFirstLetter(word)}</ListItem>
-        ))}
-      </List>
+        </List>
+      </Stack>
     </MantineProvider>
   );
 }

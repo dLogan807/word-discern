@@ -1,0 +1,10 @@
+.failed_words_button {
+  --button-padding-x: 0;
+  --button-bd: calc(0.0625rem * var(--mantine-scale)) solid transparent;
+  margin: 0;
+  height: auto;
+
+  &:hover {
+    opacity: 0.9;
+  }
+}

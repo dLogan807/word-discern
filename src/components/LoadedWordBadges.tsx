@@ -1,4 +1,4 @@
-import { Group } from "@mantine/core";
+import { Button, Group, Popover, ScrollArea, Text } from "@mantine/core";
 import {
   IconAdjustments,
   IconCheck,
@@ -7,25 +7,26 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import WordInfoBadge from "./WordInfoBadge";
+import classes from "./LoadedWordBadges.module.css";
 
 export default function LoadedWordsBadges({
   replaceDefaultWords,
   numDefaultWords,
   numWordsParsed,
   numCustomFormWords,
-  numFailedWords,
+  failedWords,
 }: {
   replaceDefaultWords: boolean;
   numDefaultWords: number;
   numWordsParsed: number;
   numCustomFormWords: number;
-  numFailedWords: number;
+  failedWords: string[];
 }) {
   const customWordsInUse: number = replaceDefaultWords
     ? numWordsParsed
     : numWordsParsed - numDefaultWords;
 
-  const validCustomWords: number = numCustomFormWords - numFailedWords;
+  const validCustomWords: number = numCustomFormWords - failedWords.length;
 
   const wordsAlreadyExisting: number = validCustomWords - customWordsInUse;
 
@@ -47,9 +48,6 @@ export default function LoadedWordsBadges({
   const addedWordsText: string = `${customWordsInUse} added to word list`;
   const addedWordsIcon = <IconCheck size={iconSize} />;
 
-  const failedWordsText: string = `${numFailedWords} Invalid words`;
-  const failedWordsIcon = <IconX size={iconSize} />;
-
   return (
     <Group>
       <WordInfoBadge icon={totalWordsIcon}>{totalWordsText}</WordInfoBadge>
@@ -66,11 +64,41 @@ export default function LoadedWordsBadges({
           {addedWordsText}
         </WordInfoBadge>
       )}
-      {numFailedWords && (
-        <WordInfoBadge color="red" icon={failedWordsIcon}>
-          {failedWordsText}
-        </WordInfoBadge>
+      {failedWords.length && (
+        <FailedWordsBadge failedWords={failedWords} iconSize={iconSize} />
       )}
     </Group>
+  );
+}
+
+function FailedWordsBadge({
+  failedWords,
+  iconSize,
+}: {
+  failedWords: string[];
+  iconSize: number;
+}) {
+  const failedWordsText: string = `${failedWords.length} Invalid words`;
+  const failedWordsIcon = <IconX size={iconSize} />;
+  return (
+    <Popover position="bottom" withArrow shadow="md">
+      <Popover.Target>
+        <Button
+          variant="transparent"
+          classNames={{
+            root: classes.failed_words_button,
+          }}
+        >
+          <WordInfoBadge color="red" icon={failedWordsIcon} clickable={true}>
+            {failedWordsText}
+          </WordInfoBadge>
+        </Button>
+      </Popover.Target>
+      <Popover.Dropdown>
+        <ScrollArea.Autosize mah={250} maw={250}>
+          <Text>{failedWords.join(", ")}</Text>
+        </ScrollArea.Autosize>
+      </Popover.Dropdown>
+    </Popover>
   );
 }
