@@ -12,7 +12,6 @@ import {
   Switch,
   Collapse,
   Box,
-  Badge,
 } from "@mantine/core";
 import { useField } from "@mantine/form";
 import { theme } from "./theme";
@@ -26,17 +25,10 @@ import WordInputForm, {
   CustomWordsFormData,
 } from "./components/CustomWordsForm";
 import { useDisclosure } from "@mantine/hooks";
-import {
-  IconAdjustments,
-  IconBook,
-  IconBook2,
-  IconCheck,
-  IconCopyOff,
-  IconList,
-  IconX,
-} from "@tabler/icons-react";
+import { IconBook, IconBook2 } from "@tabler/icons-react";
 import { DEFAULT_CUSTOM_WORDS_FORM } from "./components/CustomWordsForm";
 import getResults from "./utils/resultBuilder";
+import LoadedWordsBadges from "./components/LoadedWordBadges";
 
 export const GuessContext = createContext<{
   removeGuess: (guess: Guess) => void;
@@ -69,6 +61,11 @@ export default function App() {
     initialValue: "",
   });
 
+  //For hiding custom words input form
+  const [wordsInputOpened, changeWordsInputOpened] = useDisclosure(false);
+  const bookIcon = wordsInputOpened ? <IconBook /> : <IconBook2 />;
+
+  //Enter when adding a guess
   function handleKeyDown(event: { key: string }) {
     if (event.key === "Enter") tryAddGuess();
   }
@@ -119,69 +116,6 @@ export default function App() {
     setResults(getResults(wordSets, guesses));
   }
 
-  const [wordsInputOpened, changeWordsInputOpened] = useDisclosure(false);
-  const bookIcon = wordsInputOpened ? <IconBook /> : <IconBook2 />;
-
-  function LoadedWordsBadges() {
-    const customWordsInUse: number = customWordsFormData.replaceDefaultWords
-      ? parsedWordSets.wordNum
-      : parsedWordSets.wordNum - DEFAULT_WORDS.length;
-
-    const validCustomWords: number =
-      customWordsFormData.words.length - parsedWordSets.failed.length;
-
-    const wordsAlreadyExisting: number = validCustomWords - customWordsInUse;
-
-    const customWordsText =
-      customWordsFormData.words.length == 0 || validCustomWords == 0
-        ? "No custom words loaded"
-        : `${validCustomWords} valid custom words parsed`;
-
-    const iconSize = 16;
-
-    return (
-      <Group>
-        <Badge leftSection={<IconList size={iconSize} />} variant="light">
-          {parsedWordSets.wordNum} total words
-        </Badge>
-        <Badge
-          leftSection={<IconAdjustments size={iconSize} />}
-          variant="light"
-          color="yellow"
-        >
-          {customWordsText}
-        </Badge>
-        {wordsAlreadyExisting && (
-          <Badge
-            leftSection={<IconCopyOff size={iconSize} />}
-            variant="light"
-            color="yellow"
-          >
-            {wordsAlreadyExisting} already existed in word list
-          </Badge>
-        )}
-        {customWordsInUse && (
-          <Badge
-            leftSection={<IconCheck size={iconSize} />}
-            variant="light"
-            color="green"
-          >
-            {customWordsInUse} added to word list
-          </Badge>
-        )}
-        {parsedWordSets.failed.length && (
-          <Badge
-            leftSection={<IconX size={iconSize} />}
-            variant="light"
-            color="red"
-          >
-            {parsedWordSets.failed.length} Invalid words
-          </Badge>
-        )}
-      </Group>
-    );
-  }
-
   return (
     <MantineProvider theme={theme}>
       <Title>Word Discern</Title>
@@ -199,7 +133,13 @@ export default function App() {
 
         <Collapse in={wordsInputOpened}>
           <Stack>
-            <LoadedWordsBadges />
+            <LoadedWordsBadges
+              replaceDefaultWords={customWordsFormData.replaceDefaultWords}
+              numDefaultWords={DEFAULT_WORDS.length}
+              numWordsParsed={parsedWordSets.wordNum}
+              numCustomFormWords={customWordsFormData.words.length}
+              numFailedWords={parsedWordSets.failed.length}
+            />
             <WordInputForm updateCustomWords={setCustomWordsFormData} />
           </Stack>
         </Collapse>
