@@ -2,8 +2,8 @@ import React, { useContext } from "react";
 import { IconTrash } from "@tabler/icons-react";
 import { ActionIcon } from "@mantine/core";
 import classes from "./RemoveButton.module.css";
-import { Guess } from "../classes/guess";
-import { GuessContext } from "../App";
+import { Guess } from "../../classes/guess";
+import { GuessContext } from "../Guesses/Guesses";
 
 export default function RemoveButton({
   guess,
@@ -19,7 +19,7 @@ export default function RemoveButton({
       aria-label="Remove"
       onClick={() => removeGuess.removeGuess(guess)}
       classNames={{
-        root: classes.root,
+        root: classes.remove_button,
       }}
     >
       <IconTrash />

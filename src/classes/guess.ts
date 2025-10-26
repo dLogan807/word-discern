@@ -1,11 +1,11 @@
 import { Letter, LetterCorrectness } from "./letter";
-import { Word } from "./word";
 
-export class Guess extends Word {
+export class Guess {
   letters: Letter[];
+  wordString: string;
 
   constructor(wordString: string) {
-    super(wordString);
+    this.wordString = wordString;
 
     this.letters = [];
     for (const char of this.wordString) {

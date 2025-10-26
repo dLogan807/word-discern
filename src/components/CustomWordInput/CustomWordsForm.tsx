@@ -12,7 +12,7 @@ import {
 import { useForm } from "@mantine/form";
 import classes from "./CustomWords.module.css";
 import { parse, ParseError, printParseErrorCode } from "jsonc-parser";
-import { getWordArray } from "../utils/wordLoading";
+import { getWordArray } from "../../utils/wordLoading";
 import { useState } from "react";
 import { IconFileUpload } from "@tabler/icons-react";
 

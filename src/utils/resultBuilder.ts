@@ -4,11 +4,13 @@ import { stringsAreEqual } from "./guessValidation";
 
 export default function getResults(
   wordSet: Set<string>,
-  guesses: Guess[]
+  guesses: Guess[],
+  shuffled?: boolean
 ): string[] {
   const parseResult = parseGuesses(guesses);
+  const results = matchGuessesWithWords(wordSet, parseResult);
 
-  return matchGuessesWithWords(wordSet, parseResult);
+  return shuffled ? shuffleArray(results) : results;
 }
 
 interface ParsedGuesses {
@@ -58,12 +60,11 @@ function matchGuessesWithWords(
     ]);
 
     for (let i = 0; i < word.length; i++) {
-      if (requiredCharMissing(guessData.correctPosChars[i], word[i])) {
-        continue wordLoop;
-      }
-
-      if (charAtBadPos(guessData.blackListedPosChars[i], word[i])) {
-        continue wordLoop;
+      if (
+        requiredCharMissing(guessData.correctPosChars[i], word[i]) ||
+        charAtBadPos(guessData.blackListedPosChars[i], word[i])
+      ) {
+        continue wordLoop; //Need to refactor this to remove reliance on
       }
 
       requiredSomewhereCharsCopy.delete(word[i]);
@@ -77,6 +78,24 @@ function matchGuessesWithWords(
   }
 
   return results;
+}
+
+function shuffleArray<T>(array: T[]): T[] {
+  const minRand = 0;
+  const maxRand = array.length - 1;
+
+  array.forEach((element, index) => {
+    const randomIndex = getRandomNum(minRand, maxRand);
+    const randomElement = array[randomIndex];
+    array[randomIndex] = element;
+    array[index] = randomElement;
+  });
+
+  return array;
+}
+
+function getRandomNum(min: number, max: number) {
+  return Math.floor(Math.random() * (max - min + 1));
 }
 
 function requiredCharMissing(

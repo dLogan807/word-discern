@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useContext } from "react";
 import classes from "./LetterButton.module.css";
 import { Property } from "csstype";
-import { Letter } from "../classes/letter";
+import { Letter } from "../../classes/letter";
 import { Button } from "@mantine/core";
-import { GuessContext } from "../App";
-import { Guess } from "../classes/guess";
+import { Guess } from "../../classes/guess";
+import { GuessContext } from "../Guesses/Guesses";
 
 export default function LetterButton({
   letter,
@@ -25,7 +25,7 @@ export default function LetterButton({
     <Button
       color={backgroundColor}
       classNames={{
-        root: classes.root,
+        root: classes.letter_button,
       }}
       onClick={() => {
         letter.cycleLetterCorrectness();

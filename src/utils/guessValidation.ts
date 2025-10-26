@@ -23,7 +23,7 @@ export function validateGuess(
   if (guess.length < minLength) {
     response.message = "Empty guess";
   } else if (allowedLength > 0 && guess.length != allowedLength) {
-    response.message = `Different length (${guess.length} vs ${allowedLength})`;
+    response.message = `Different length to previous guesses (${guess.length} vs ${allowedLength})`;
   } else if (alreadyGuessed(guess, guesses)) {
     response.message = "Already guessed";
   } else if (!wordSet || !wordSet.has(guess)) {

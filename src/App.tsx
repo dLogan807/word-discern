@@ -1,42 +1,38 @@
 import "@mantine/core/styles.css";
 import {
+  AppShell,
+  Burger,
   Button,
+  ColorSchemeScript,
   Group,
   MantineProvider,
-  TextInput,
-  Text,
-  Stack,
-  List,
-  ListItem,
-  Title,
   Switch,
-  Accordion,
+  Text,
+  Title,
 } from "@mantine/core";
-import { useField } from "@mantine/form";
 import { theme } from "./theme";
-import GuessItem from "./components/GuessItem";
-import { Guess } from "./classes/guess";
-import { createContext, useEffect, useState } from "react";
+import { useDisclosure } from "@mantine/hooks";
+import CustomWordsAccordion from "./components/CustomWordInput/CustomWordsAccordion";
 import { DEFAULT_WORDS } from "./assets/words";
-import { ParsedWordSets, parseWordsToSets } from "./utils/wordLoading";
-import { validateGuess } from "./utils/guessValidation";
-import WordInputForm, {
-  CustomWordsFormData,
-} from "./components/CustomWordsForm";
-import { IconBook2 } from "@tabler/icons-react";
-import { DEFAULT_CUSTOM_WORDS_FORM } from "./components/CustomWordsForm";
+import Results from "./components/Results/Results";
+import { useEffect, useState } from "react";
+import { Guess } from "./classes/guess";
 import getResults from "./utils/resultBuilder";
-import LoadedWordsBadges from "./components/LoadedWordBadges";
-
-export const GuessContext = createContext<{
-  removeGuess: (guess: Guess) => void;
-  updateGuess: (guess: Guess) => void;
-}>({
-  removeGuess: () => {},
-  updateGuess: () => {},
-});
+import {
+  CustomWordsFormData,
+  DEFAULT_CUSTOM_WORDS_FORM,
+} from "./components/CustomWordInput/CustomWordsForm";
+import { ParsedWordSets, parseWordsToSets } from "./utils/wordLoading";
+import Guesses from "./components/Guesses/Guesses";
+import { ThemeSelector } from "./components/ThemeSelector/ThemeSelector";
 
 export default function App() {
+  const [navbarOpened, { toggle }] = useDisclosure();
+
+  const [guesses, setGuesses] = useState<Guess[]>([]);
+  const [results, setResults] = useState<string[]>([]);
+  const [shuffleResults, setShuffleResults] = useState<boolean>(false);
+
   const [customWordsFormData, setCustomWordsFormData] =
     useState<CustomWordsFormData>(DEFAULT_CUSTOM_WORDS_FORM);
   const [parsedWordSets, setParsedWordSets] = useState<ParsedWordSets>(
@@ -52,49 +48,6 @@ export default function App() {
     );
   }, [customWordsFormData]);
 
-  const [guesses, setGuesses] = useState<Guess[]>([]);
-  const [results, setResults] = useState<string[]>([]);
-
-  const guessField = useField({
-    initialValue: "",
-  });
-
-  //Enter when adding a guess
-  function handleKeyDown(event: { key: string }) {
-    if (event.key === "Enter") tryAddGuess();
-  }
-
-  function tryAddGuess() {
-    const guessValue = guessField.getValue();
-    const validationResponse = validateGuess(
-      guessValue,
-      guesses,
-      parsedWordSets.wordSets.get(guessValue.length)
-    );
-
-    if (!validationResponse.validated) {
-      return guessField.setError(validationResponse.message);
-    }
-
-    const guess: Guess = new Guess(guessValue);
-    setGuesses([...guesses, guess]);
-    guessField.setValue("");
-  }
-
-  function removeGuess(guessToRemove: Guess) {
-    setGuesses(
-      guesses.filter((g) => g.wordString !== guessToRemove.wordString)
-    );
-  }
-
-  function updateGuess(updatedGuess: Guess) {
-    setGuesses(
-      guesses.map((g) =>
-        g.wordString === updatedGuess.wordString ? updatedGuess : g
-      )
-    );
-  }
-
   function updateResults() {
     if (guesses.length == 0 || !guesses[0]) {
       return setResults([]);
@@ -107,69 +60,72 @@ export default function App() {
       return setResults([]);
     }
 
-    setResults(getResults(wordSets, guesses));
+    setResults(getResults(wordSets, guesses, shuffleResults));
   }
 
-  const bookIcon = <IconBook2 />;
-  const accordionText: string = "Add custom words";
-
   return (
-    <MantineProvider theme={theme}>
-      <Stack>
-        <Title>Word Discern</Title>
-        <Text>Finds possible words from what you've guessed.</Text>
+    <>
+      <ColorSchemeScript defaultColorScheme="dark" />
+      <MantineProvider theme={theme} defaultColorScheme="dark">
+        <AppShell
+          padding="md"
+          header={{ height: 60 }}
+          navbar={{
+            width: 300,
+            breakpoint: "sm",
+            collapsed: { mobile: !navbarOpened },
+          }}
+        >
+          <AppShell.Header>
+            <Group>
+              <Burger
+                opened={navbarOpened}
+                onClick={toggle}
+                hiddenFrom="sm"
+                size="sm"
+              />
 
-        <Accordion>
-          <Accordion.Item key={accordionText} value={accordionText}>
-            <Accordion.Control icon={bookIcon}>
-              {accordionText}
-            </Accordion.Control>
-            <Accordion.Panel>
-              <Stack>
-                <LoadedWordsBadges
-                  replaceDefaultWords={customWordsFormData.replaceDefaultWords}
-                  numDefaultWords={DEFAULT_WORDS.length}
-                  numWordsParsed={parsedWordSets.wordNum}
-                  numCustomFormWords={customWordsFormData.words.length}
-                  failedWords={parsedWordSets.failed}
-                />
-                <WordInputForm updateCustomWords={setCustomWordsFormData} />
-              </Stack>
-            </Accordion.Panel>
-          </Accordion.Item>
-        </Accordion>
+              <Title>Word Discern</Title>
+              <Text>Finds possible words from what you've guessed.</Text>
+            </Group>
+          </AppShell.Header>
 
-        <Switch label="Keyboard Mode" />
+          <AppShell.Navbar>
+            <ThemeSelector />
+            <CustomWordsAccordion
+              badgeData={{
+                replaceDefaultWords: customWordsFormData.replaceDefaultWords,
+                numDefaultWords: DEFAULT_WORDS.length,
+                numWordsParsed: parsedWordSets.wordNum,
+                numCustomFormWords: customWordsFormData.words.length,
+                failedWords: parsedWordSets.failed,
+              }}
+              setFormData={setCustomWordsFormData}
+            />
+            <Switch
+              label="Shuffle results"
+              checked={shuffleResults}
+              onChange={(event) =>
+                setShuffleResults(event.currentTarget.checked)
+              }
+            />
+          </AppShell.Navbar>
 
-        <Group>
-          <TextInput
-            {...guessField.getInputProps()}
-            label="Guess"
-            placeholder="Enter your guess"
-            onKeyDown={handleKeyDown}
-          />
-          <Button onClick={tryAddGuess}>Add</Button>
-        </Group>
-        <GuessContext value={{ removeGuess, updateGuess }}>
-          <Stack>
-            {guesses.map((guess, i) => (
-              <GuessItem key={i} guess={guess} />
-            ))}
-          </Stack>
-        </GuessContext>
-        <Button disabled={!guesses.length} onClick={updateResults}>
-          Get Possible Words!
-        </Button>
-        <List>
-          {results.map((word, i) => (
-            <ListItem key={i}>{capitalizeFirstLetter(word)}</ListItem>
-          ))}
-        </List>
-      </Stack>
-    </MantineProvider>
+          <AppShell.Main>
+            <Switch label="Keyboard Mode" />
+
+            <Guesses
+              guesses={guesses}
+              setGuesses={setGuesses}
+              wordSets={parsedWordSets.wordSets}
+            />
+            <Button disabled={!guesses.length} onClick={updateResults}>
+              Get Possible Words!
+            </Button>
+            <Results results={results} />
+          </AppShell.Main>
+        </AppShell>
+      </MantineProvider>
+    </>
   );
-}
-
-function capitalizeFirstLetter(word: string): string {
-  return word.charAt(0).toUpperCase() + word.slice(1);
 }

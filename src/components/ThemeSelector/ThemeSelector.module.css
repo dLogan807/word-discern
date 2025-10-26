@@ -1,0 +1,12 @@
+.theme_icon_container {
+  --ai-size: var(--ai-size-lg);
+  --ai-bg: var(--mantine-color-default);
+  --ai-hover: var(--mantine-color-default-hover);
+  --ai-color: var(--mantine-color-default-color) !important;
+  --ai-bd: calc(0.0625rem * var(--mantine-scale)) solid
+    var(--mantine-color-default-border);
+}
+
+.icon {
+  stroke-width: 1.5;
+}
