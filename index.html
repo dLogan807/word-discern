@@ -8,6 +8,30 @@
       content="minimum-scale=1, initial-scale=1, width=device-width, user-scalable=no"
     />
     <title>Word Discern</title>
+    <script data-mantine-script="true">
+      //Mantine ColorSchemeScript
+      try {
+        var _colorScheme = window.localStorage.getItem(
+          "mantine-color-scheme-value"
+        );
+        var colorScheme =
+          _colorScheme === "light" ||
+          _colorScheme === "dark" ||
+          _colorScheme === "auto"
+            ? _colorScheme
+            : "auto";
+        var computedColorScheme =
+          colorScheme !== "auto"
+            ? colorScheme
+            : window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+        document.documentElement.setAttribute(
+          "data-mantine-color-scheme",
+          computedColorScheme
+        );
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

@@ -3,7 +3,6 @@ import {
   AppShell,
   Burger,
   Button,
-  ColorSchemeScript,
   Group,
   MantineProvider,
   Switch,
@@ -65,8 +64,7 @@ export default function App() {
 
   return (
     <>
-      <ColorSchemeScript defaultColorScheme="dark" />
-      <MantineProvider theme={theme} defaultColorScheme="dark">
+      <MantineProvider theme={theme} defaultColorScheme="auto">
         <AppShell
           padding="md"
           header={{ height: 60 }}
@@ -77,7 +75,7 @@ export default function App() {
           }}
         >
           <AppShell.Header>
-            <Group>
+            <Group justify="space-between">
               <Burger
                 opened={navbarOpened}
                 onClick={toggle}
@@ -87,11 +85,11 @@ export default function App() {
 
               <Title>Word Discern</Title>
               <Text>Finds possible words from what you've guessed.</Text>
+              <ThemeSelector />
             </Group>
           </AppShell.Header>
 
           <AppShell.Navbar>
-            <ThemeSelector />
             <CustomWordsAccordion
               badgeData={{
                 replaceDefaultWords: customWordsFormData.replaceDefaultWords,
