@@ -15,12 +15,18 @@ import { parse, ParseError, printParseErrorCode } from "jsonc-parser";
 import { getWordArray } from "../../utils/wordLoading";
 import { useState } from "react";
 import { IconFileUpload } from "@tabler/icons-react";
+import LoadedWordsBadges, {
+  WordBadgeData,
+} from "./WordBadges/LoadedWordBadges";
 
 enum WordInput {
   TEXT = "text",
   JSON = "json",
   FILE = "file",
 }
+
+const VALID_CODE_SEPARATORS: string[] = [",", "space", "newline", ";"];
+const VALID_FILE_TYPES: string[] = [".txt", ".json"];
 
 function SpacedCodeBlocks({
   preface,
@@ -54,15 +60,14 @@ export const DEFAULT_CUSTOM_WORDS_FORM: CustomWordsFormData = {
   replaceDefaultWords: false,
 };
 
-export default function WordInputForm({
-  updateCustomWords,
+export default function CustomWordsForm({
+  setFormData,
+  badgeData,
 }: {
-  updateCustomWords: (formData: CustomWordsFormData) => void;
+  setFormData: (formData: CustomWordsFormData) => void;
+  badgeData: WordBadgeData;
 }) {
   const [inputMode, setInputMode] = useState<WordInput>(WordInput.TEXT);
-
-  const validCodeSeparators: string[] = [",", "space", "newline", ";"];
-  const validFileTypes: string[] = [".txt", ".json"];
 
   const form = useForm({
     mode: "uncontrolled",
@@ -138,7 +143,7 @@ export default function WordInputForm({
     form.setFieldError(inputMode, error);
     if (error) return;
 
-    updateCustomWords({
+    setFormData({
       words: words,
       allowSpecialChars: formValues.allowSpecialChars,
       replaceDefaultWords: formValues.replaceDefaultWords,
@@ -161,6 +166,7 @@ export default function WordInputForm({
 
   return (
     <Stack>
+      <LoadedWordsBadges data={badgeData} />
       <Group>
         <SegmentedControl
           value={inputMode}
@@ -191,7 +197,7 @@ export default function WordInputForm({
             description={
               <SpacedCodeBlocks
                 preface="Separators accepted: "
-                values={validCodeSeparators}
+                values={VALID_CODE_SEPARATORS}
               />
             }
             placeholder="a,list,of,words"
@@ -203,7 +209,7 @@ export default function WordInputForm({
             classNames={hiddenInputClass(WordInput.JSON)}
             key={form.key(WordInput.JSON)}
             {...form.getInputProps(WordInput.JSON)}
-            aria-label="Your json array of words"
+            aria-label="Your JSON array of words"
             placeholder='["a","list","of","words"]'
             validationError={validateJSON(form.getValues().json)}
             formatOnBlur={true}
@@ -217,11 +223,11 @@ export default function WordInputForm({
             {...form.getInputProps(WordInput.FILE)}
             aria-label="Upload word list file"
             description={
-              <SpacedCodeBlocks preface="Accepts: " values={validFileTypes} />
+              <SpacedCodeBlocks preface="Accepts: " values={VALID_FILE_TYPES} />
             }
             placeholder="Upload"
             leftSection={fileIcon}
-            accept={validFileTypes.join(",")}
+            accept={VALID_FILE_TYPES.join(",")}
             clearable
             clearButtonProps={{
               onClick: () => {

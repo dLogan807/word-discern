@@ -15,18 +15,12 @@ export default function WordInfoBadge({
   icon = icon ?? null;
   color = color ?? "blue";
 
-  const clickableClass = clickable
-    ? {
-        root: classes.clickable_badge,
-      }
-    : {};
-
   return (
     <Badge
       leftSection={icon}
       variant="light"
       color={color}
-      classNames={clickableClass}
+      classNames={{ root: clickable ? classes.clickable_badge : undefined }}
     >
       {children}
     </Badge>
