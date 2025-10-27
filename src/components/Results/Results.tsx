@@ -67,8 +67,6 @@ function ResultChars({ result }: { result: string }) {
     new Array<boolean>(result.length).fill(false)
   );
 
-  const revealIcon = allRevealed ? <IconEye /> : <IconEyeOff />;
-
   function updateRevealedChar(index: number, revealed: boolean) {
     revealedChars[index] = revealed;
     setRevealedChars(
@@ -85,12 +83,15 @@ function ResultChars({ result }: { result: string }) {
     });
 
     if (revealedCount === 0 && allRevealed) {
-      setRevealedChars(new Array<boolean>(result.length).fill(false));
-      setAllRevealed(false);
+      fillRevealedArray(false);
     } else if (revealedCount === result.length && !allRevealed) {
-      setRevealedChars(new Array<boolean>(result.length).fill(true));
-      setAllRevealed(true);
+      fillRevealedArray(true);
     }
+  }
+
+  function fillRevealedArray(revealed: boolean) {
+    setRevealedChars(new Array<boolean>(result.length).fill(revealed));
+    setAllRevealed(revealed);
   }
 
   return (
@@ -106,7 +107,7 @@ function ResultChars({ result }: { result: string }) {
         </Text>
       ))}
       <ActionIcon onClick={() => setAllRevealed(!allRevealed)} variant="light">
-        {revealIcon}
+        {allRevealed ? <IconEye /> : <IconEyeOff />}
       </ActionIcon>
     </Group>
   );

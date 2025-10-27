@@ -10,7 +10,7 @@ export default function getResults(
   const parseResult = parseGuesses(guesses);
   const results = matchGuessesWithWords(wordSet, parseResult);
 
-  return shuffled ? shuffleArray(results) : results;
+  return shuffled ? shuffleArray(results) : results.sort();
 }
 
 interface ParsedGuesses {
