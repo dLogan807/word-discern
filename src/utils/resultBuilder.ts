@@ -29,23 +29,35 @@ function parseGuesses(guesses: Guess[]): ParsedGuesses {
 
   for (const guess of guesses) {
     guess.letters.forEach((char, i) => {
-      if (char.correctness == LetterCorrectness.Correct) {
-        parseResult.correctPosChars[i] = char.value;
-        return;
-      }
-
       if (parseResult.blackListedPosChars[i] == null) {
         parseResult.blackListedPosChars[i] = new Set<string>();
       }
-      parseResult.blackListedPosChars[i].add(char.value);
 
-      if (char.correctness === LetterCorrectness.WrongPosition) {
-        parseResult.requiredSomewhereChars.add(char.value);
+      if (char.correctness == LetterCorrectness.Correct) {
+        parseResult.correctPosChars[i] = char.value;
+
+        parseResult.blackListedPosChars[i].delete(char.value);
+        return;
+      }
+
+      if (canBlacklistLetter(parseResult.correctPosChars[i], char.value)) {
+        parseResult.blackListedPosChars[i].add(char.value);
+
+        if (char.correctness === LetterCorrectness.WrongPosition) {
+          parseResult.requiredSomewhereChars.add(char.value);
+        }
       }
     });
   }
 
   return parseResult;
+}
+
+function canBlacklistLetter(
+  correctLetter: string | undefined,
+  thisLetter: string
+) {
+  return correctLetter === undefined || correctLetter !== thisLetter;
 }
 
 function matchGuessesWithWords(
@@ -54,48 +66,30 @@ function matchGuessesWithWords(
 ): string[] {
   const results: string[] = [];
 
-  wordLoop: for (const word of wordSet) {
+  for (const word of wordSet) {
     const requiredSomewhereCharsCopy: Set<string> = new Set<string>([
       ...guessData.requiredSomewhereChars,
     ]);
+    let invalidWord = false;
 
     for (let i = 0; i < word.length; i++) {
       if (
         requiredCharMissing(guessData.correctPosChars[i], word[i]) ||
         charAtBadPos(guessData.blackListedPosChars[i], word[i])
       ) {
-        continue wordLoop; //Need to refactor this to remove reliance on
+        invalidWord = true;
+        break;
       }
 
       requiredSomewhereCharsCopy.delete(word[i]);
     }
 
-    if (requiredSomewhereCharsCopy.size != 0) {
-      continue;
+    if (!invalidWord && requiredSomewhereCharsCopy.size == 0) {
+      results.push(word);
     }
-
-    results.push(word);
   }
 
   return results;
-}
-
-function shuffleArray<T>(array: T[]): T[] {
-  const minRand = 0;
-  const maxRand = array.length - 1;
-
-  array.forEach((element, index) => {
-    const randomIndex = getRandomNum(minRand, maxRand);
-    const randomElement = array[randomIndex];
-    array[randomIndex] = element;
-    array[index] = randomElement;
-  });
-
-  return array;
-}
-
-function getRandomNum(min: number, max: number) {
-  return Math.floor(Math.random() * (max - min + 1));
 }
 
 function requiredCharMissing(
@@ -114,4 +108,22 @@ function charAtBadPos(
   return (
     blackListedCharArray != undefined && blackListedCharArray.has(charToCompare)
   );
+}
+
+function shuffleArray<T>(array: T[]): T[] {
+  const minRand = 0;
+  const maxRand = array.length - 1;
+
+  array.forEach((element, index) => {
+    const randomIndex = getRandomNum(minRand, maxRand);
+    const randomElement = array[randomIndex];
+    array[randomIndex] = element;
+    array[index] = randomElement;
+  });
+
+  return array;
+}
+
+function getRandomNum(min: number, max: number) {
+  return Math.floor(Math.random() * (max - min + 1));
 }
