@@ -60,6 +60,10 @@ export default function App() {
     );
   }, [storedCustomWordsFormData]);
 
+  useEffect(() => {
+    updateResults();
+  }, [shuffleResults]);
+
   function updateResults() {
     if (guesses.length == 0 || !guesses[0]) {
       return setResults([]);
