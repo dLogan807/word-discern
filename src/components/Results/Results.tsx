@@ -40,29 +40,31 @@ export default function Results({
 
   return (
     <>
-      {results.length > 0 ? (
-        <Stack
-          classNames={{
-            root: classes.results_container,
-          }}
-        >
-          <Text>
-            {results.length} possible word{results.length == 1 ? "" : "s"}
-          </Text>
-          <List
-            classNames={{
-              item: classes.result_list_item,
-            }}
-          >
-            {resultGroups}
-          </List>
-          {results.length > 5 && trimmedResults.length < results.length && (
-            <Button onClick={loadMoreResults}>Show more words</Button>
-          )}
-        </Stack>
-      ) : (
-        <Text>No results</Text>
-      )}
+      <Stack
+        classNames={{
+          root: classes.results_container,
+        }}
+      >
+        {results.length > 0 ? (
+          <>
+            <Text>
+              {results.length} possible word{results.length == 1 ? "" : "s"}:
+            </Text>
+            <List
+              classNames={{
+                item: classes.result_list_item,
+              }}
+            >
+              {resultGroups}
+            </List>
+            {results.length > 5 && trimmedResults.length < results.length && (
+              <Button onClick={loadMoreResults}>Show more words</Button>
+            )}
+          </>
+        ) : (
+          <Text>No results :(</Text>
+        )}
+      </Stack>
     </>
   );
 }
@@ -93,11 +95,11 @@ function ResultChars({
     );
 
     let revealedCount = 0;
-    revealedChars.forEach((charHidden) => {
-      if (charHidden) {
+    for (const revealedChar of revealedChars) {
+      if (revealedChar) {
         revealedCount++;
       }
-    });
+    }
 
     if (revealedCount === 0 && allHidden) {
       fillHiddenArray(false);

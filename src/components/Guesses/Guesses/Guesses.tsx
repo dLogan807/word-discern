@@ -20,7 +20,7 @@ export default function Guesses({
   setGuesses,
 }: {
   guesses: Guess[];
-  wordSets: Map<number, Set<string>>;
+  wordSets: Map<number, Set<string>> | undefined;
   setGuesses: (value: Guess[]) => void;
 }) {
   const guessField = useField({
@@ -36,7 +36,7 @@ export default function Guesses({
     const validationResponse = validateGuess(
       guessValue,
       guesses,
-      wordSets.get(guessValue.length)
+      wordSets ? wordSets.get(guessValue.length) : wordSets
     );
 
     if (!validationResponse.validated) {

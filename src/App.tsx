@@ -16,6 +16,7 @@ import {
   Dispatch,
   SetStateAction,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import { Guess } from "./classes/guess";
@@ -39,8 +40,10 @@ export default function App() {
 
   const [guesses, setGuesses] = useState<Guess[]>([]);
   const [results, setResults] = useState<string[]>([]);
+  const [showResults, setShowResults] = useState(false);
   const [shuffleResults, setShuffleResults] = useState<boolean>(true);
   const [defaultHidden, setDefaultHidden] = useState<boolean>(true);
+  const onlyAllowWordListGuessesRef = useRef(true);
 
   const [storedCustomWordsFormData, setStoredCustomWordsFormData] =
     useState<CustomWordsFormData>(DEFAULT_CUSTOM_WORDS_FORM);
@@ -61,6 +64,8 @@ export default function App() {
     if (guesses.length == 0 || !guesses[0]) {
       return setResults([]);
     }
+
+    setShowResults(true);
 
     const guessLength = guesses[0].wordString.length;
     const wordSets = parsedWordSets.wordSets.get(guessLength);
@@ -122,12 +127,18 @@ export default function App() {
             <Guesses
               guesses={guesses}
               setGuesses={setGuesses}
-              wordSets={parsedWordSets.wordSets}
+              wordSets={
+                onlyAllowWordListGuessesRef
+                  ? parsedWordSets.wordSets
+                  : undefined
+              }
             />
             <Button disabled={!guesses.length} onClick={updateResults}>
               Get Possible Words!
             </Button>
-            <Results results={results} defaultHidden={defaultHidden} />
+            {showResults && (
+              <Results results={results} defaultHidden={defaultHidden} />
+            )}
           </AppShell.Main>
         </AppShell>
       </MantineProvider>

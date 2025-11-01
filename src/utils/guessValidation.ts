@@ -8,7 +8,7 @@ interface ValidationResponse {
 export function validateGuess(
   guess: string,
   guesses: Guess[],
-  wordSet: Set<string> | undefined
+  wordSet?: Set<string> | undefined
 ): ValidationResponse {
   guess = guess.trim();
   const minLength: number = 1;
@@ -26,7 +26,7 @@ export function validateGuess(
     response.message = `Different length to previous guesses (${guess.length} vs ${allowedLength})`;
   } else if (alreadyGuessed(guess, guesses)) {
     response.message = "Already guessed";
-  } else if (!wordSet || !wordSet.has(guess.toLocaleLowerCase())) {
+  } else if (wordSet && !wordSet.has(guess.toLocaleLowerCase())) {
     response.message = "Not in word list";
   } else {
     response.validated = true;

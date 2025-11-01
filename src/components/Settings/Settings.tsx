@@ -31,6 +31,11 @@ export default function Settings(props: SettingsProps) {
         label="Keyboard Mode"
         classNames={{ root: classes.setting_switch }}
       />
+      <Checkbox
+        label="Only allow guesses contained in the word list"
+        classNames={{ root: classes.setting_switch }}
+        defaultChecked
+      />
       <SettingsDivider title="Results" icon={<IconClipboardData size={20} />} />
       <Checkbox
         label="Shuffled"
