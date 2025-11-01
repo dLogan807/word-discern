@@ -1,8 +1,9 @@
 import React from "react";
-import RemoveButton from "./RemoveButton/RemoveButton";
-import LetterButton from "./LetterButton/LetterButton";
-import { Guess } from "../classes/guess";
+import RemoveButton from "../../RemoveButton/RemoveButton";
+import LetterButton from "../../LetterButton/LetterButton";
+import { Guess } from "../../../classes/guess";
 import { Group } from "@mantine/core";
+import classes from "./GuessItem.module.css";
 
 export default function GuessItem({
   guess,
@@ -10,7 +11,7 @@ export default function GuessItem({
   guess: Guess;
 }): React.ReactElement {
   return (
-    <Group>
+    <Group classNames={{ root: classes.guess_item }}>
       {guess.letters.map((letter, idx) => (
         <LetterButton key={idx} letter={letter} guess={guess} />
       ))}

@@ -26,7 +26,7 @@ export function validateGuess(
     response.message = `Different length to previous guesses (${guess.length} vs ${allowedLength})`;
   } else if (alreadyGuessed(guess, guesses)) {
     response.message = "Already guessed";
-  } else if (!wordSet || !wordSet.has(guess)) {
+  } else if (!wordSet || !wordSet.has(guess.toLocaleLowerCase())) {
     response.message = "Not in word list";
   } else {
     response.validated = true;

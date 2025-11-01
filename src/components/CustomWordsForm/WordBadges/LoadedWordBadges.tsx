@@ -17,24 +17,28 @@ export interface WordBadgeData {
   failedWords: string[];
 }
 
-export default function LoadedWordsBadges({ data }: { data: WordBadgeData }) {
-  const customWordsInUse: number = data.replaceDefaultWords
-    ? data.numWordsParsed
-    : data.numWordsParsed - data.numDefaultWords;
+export default function LoadedWordsBadges({
+  badgeData,
+}: {
+  badgeData: WordBadgeData;
+}) {
+  const customWordsInUse: number = badgeData.replaceDefaultWords
+    ? badgeData.numWordsParsed
+    : badgeData.numWordsParsed - badgeData.numDefaultWords;
 
   const validCustomWords: number =
-    data.numCustomFormWords - data.failedWords.length;
+    badgeData.numCustomFormWords - badgeData.failedWords.length;
 
   const wordsAlreadyExisting: number = validCustomWords - customWordsInUse;
 
   //Displayed badge text and icons
   const iconSize = 16;
 
-  const totalWordsText: string = `${data.numWordsParsed} total words`;
+  const totalWordsText: string = `${badgeData.numWordsParsed} total words`;
   const totalWordsIcon = <IconList size={iconSize} />;
 
   const customWordsText: string =
-    !data.numCustomFormWords || !validCustomWords
+    !badgeData.numCustomFormWords || !validCustomWords
       ? "No custom words loaded"
       : `${validCustomWords} valid custom words parsed`;
   const customWordsIcon = <IconAdjustments size={iconSize} />;
@@ -61,8 +65,11 @@ export default function LoadedWordsBadges({ data }: { data: WordBadgeData }) {
           {addedWordsText}
         </WordInfoBadge>
       )}
-      {data.failedWords.length && (
-        <FailedWordsBadge failedWords={data.failedWords} iconSize={iconSize} />
+      {badgeData.failedWords.length && (
+        <FailedWordsBadge
+          failedWords={badgeData.failedWords}
+          iconSize={iconSize}
+        />
       )}
     </Group>
   );

@@ -13,11 +13,9 @@ import { useForm } from "@mantine/form";
 import classes from "./CustomWords.module.css";
 import { parse, ParseError, printParseErrorCode } from "jsonc-parser";
 import { getWordArray } from "../../utils/wordLoading";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { IconFileUpload } from "@tabler/icons-react";
-import LoadedWordsBadges, {
-  WordBadgeData,
-} from "./WordBadges/LoadedWordBadges";
+import { CustomWordsFormContext } from "../../App";
 
 enum WordInput {
   TEXT = "text",
@@ -60,13 +58,8 @@ export const DEFAULT_CUSTOM_WORDS_FORM: CustomWordsFormData = {
   replaceDefaultWords: false,
 };
 
-export default function CustomWordsForm({
-  setFormData,
-  badgeData,
-}: {
-  setFormData: (formData: CustomWordsFormData) => void;
-  badgeData: WordBadgeData;
-}) {
+export default function CustomWordsForm() {
+  const updateFormData = useContext(CustomWordsFormContext);
   const [inputMode, setInputMode] = useState<WordInput>(WordInput.TEXT);
 
   const form = useForm({
@@ -143,7 +136,7 @@ export default function CustomWordsForm({
     form.setFieldError(inputMode, error);
     if (error) return;
 
-    setFormData({
+    updateFormData({
       words: words,
       allowSpecialChars: formValues.allowSpecialChars,
       replaceDefaultWords: formValues.replaceDefaultWords,
@@ -166,7 +159,6 @@ export default function CustomWordsForm({
 
   return (
     <Stack>
-      <LoadedWordsBadges data={badgeData} />
       <Group>
         <SegmentedControl
           value={inputMode}

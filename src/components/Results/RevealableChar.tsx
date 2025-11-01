@@ -5,29 +5,28 @@ import classes from "./RevealableChar.module.css";
 export default function RevealableChar({
   char,
   index,
-  reveal,
-  updateRevealed,
+  hide = true,
+  updateHidden,
 }: {
   char: string;
   index: number;
-  reveal?: boolean;
-  updateRevealed: (index: number, revealed: boolean) => void;
+  hide?: boolean;
+  updateHidden: (index: number, hidden: boolean) => void;
 }) {
-  reveal = reveal ?? false;
-  const [revealed, setRevealed] = useState<boolean>(reveal);
+  const [hidden, setHidden] = useState<boolean>(hide);
   useEffect(() => {
-    setRevealed(reveal);
-  }, [reveal]);
+    setHidden(hide);
+  }, [hide]);
 
   useEffect(() => {
-    updateRevealed(index, revealed);
-  }, [revealed]);
+    updateHidden(index, hidden);
+  }, [hidden]);
 
-  const shownChar = revealed ? char : "_";
+  const shownChar = hidden ? "_" : char;
 
   return (
     <Button
-      onClick={() => setRevealed(!revealed)}
+      onClick={() => setHidden(!hidden)}
       variant="outline"
       classNames={{
         root: classes.result_char_button,

@@ -12,7 +12,13 @@ import { useEffect, useState } from "react";
 import RevealableChar from "./RevealableChar";
 import classes from "./Results.module.css";
 
-export default function Results({ results }: { results: string[] }) {
+export default function Results({
+  results,
+  defaultHidden = true,
+}: {
+  results: string[];
+  defaultHidden?: boolean;
+}) {
   const [trimmedResults, setTrimmedResults] = useState<string[]>(
     results.slice(0, 5)
   );
@@ -27,7 +33,7 @@ export default function Results({ results }: { results: string[] }) {
   const resultGroups = trimmedResults.map((result) => {
     return (
       <ListItem key={result}>
-        <ResultChars result={result} />
+        <ResultChars result={result} defaultHidden={defaultHidden} />
       </ListItem>
     );
   });
@@ -50,7 +56,7 @@ export default function Results({ results }: { results: string[] }) {
           >
             {resultGroups}
           </List>
-          {results.length > 5 && (
+          {results.length > 5 && trimmedResults.length < results.length && (
             <Button onClick={loadMoreResults}>Show more words</Button>
           )}
         </Stack>
@@ -61,37 +67,48 @@ export default function Results({ results }: { results: string[] }) {
   );
 }
 
-function ResultChars({ result }: { result: string }) {
-  const [allRevealed, setAllRevealed] = useState<boolean>(false);
-  const [revealedChars, setRevealedChars] = useState<boolean[]>(
-    new Array<boolean>(result.length).fill(false)
+function ResultChars({
+  result,
+  defaultHidden = true,
+}: {
+  result: string;
+  defaultHidden?: boolean;
+}) {
+  const [allHidden, setAllHidden] = useState<boolean>(defaultHidden);
+  const [revealedChars, setHiddenChars] = useState<boolean[]>(
+    new Array<boolean>(result.length).fill(defaultHidden)
   );
 
-  function updateRevealedChar(index: number, revealed: boolean) {
-    revealedChars[index] = revealed;
-    setRevealedChars(
+  useEffect(() => {
+    setAllHidden(defaultHidden);
+    setHiddenChars(new Array<boolean>(result.length).fill(defaultHidden));
+  }, [defaultHidden, result]);
+
+  function updateHiddenChar(index: number, hidden: boolean) {
+    revealedChars[index] = hidden;
+    setHiddenChars(
       revealedChars.map((charState, idx) =>
-        idx === index ? revealed : charState
+        idx === index ? hidden : charState
       )
     );
 
     let revealedCount = 0;
-    revealedChars.forEach((charRevealed) => {
-      if (charRevealed) {
+    revealedChars.forEach((charHidden) => {
+      if (charHidden) {
         revealedCount++;
       }
     });
 
-    if (revealedCount === 0 && allRevealed) {
-      fillRevealedArray(false);
-    } else if (revealedCount === result.length && !allRevealed) {
-      fillRevealedArray(true);
+    if (revealedCount === 0 && allHidden) {
+      fillHiddenArray(false);
+    } else if (revealedCount === result.length && !allHidden) {
+      fillHiddenArray(true);
     }
   }
 
-  function fillRevealedArray(revealed: boolean) {
-    setRevealedChars(new Array<boolean>(result.length).fill(revealed));
-    setAllRevealed(revealed);
+  function fillHiddenArray(hidden: boolean) {
+    setHiddenChars(new Array<boolean>(result.length).fill(hidden));
+    setAllHidden(hidden);
   }
 
   return (
@@ -101,13 +118,13 @@ function ResultChars({ result }: { result: string }) {
           <RevealableChar
             char={char.toLocaleUpperCase()}
             index={idx}
-            reveal={allRevealed}
-            updateRevealed={updateRevealedChar}
+            hide={allHidden}
+            updateHidden={updateHiddenChar}
           />
         </Text>
       ))}
-      <ActionIcon onClick={() => setAllRevealed(!allRevealed)} variant="light">
-        {allRevealed ? <IconEye /> : <IconEyeOff />}
+      <ActionIcon onClick={() => setAllHidden(!allHidden)} variant="light">
+        {allHidden ? <IconEye /> : <IconEyeOff />}
       </ActionIcon>
     </Group>
   );

@@ -4,7 +4,7 @@ import { Property } from "csstype";
 import { Letter } from "../../classes/letter";
 import { Button } from "@mantine/core";
 import { Guess } from "../../classes/guess";
-import { GuessContext } from "../Guesses/Guesses";
+import { GuessContext } from "../Guesses/Guesses/Guesses";
 
 export default function LetterButton({
   letter,

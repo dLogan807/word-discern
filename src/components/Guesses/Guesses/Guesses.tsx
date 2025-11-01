@@ -1,9 +1,10 @@
-import { Button, Group, Stack, TextInput } from "@mantine/core";
+import { Button, Flex, Paper, Text, TextInput } from "@mantine/core";
 import { createContext } from "react";
-import { Guess } from "../../classes/guess";
-import GuessItem from "../GuessItem";
+import { Guess } from "../../../classes/guess";
+import GuessItem from "../GuessItem/GuessItem";
 import { useField } from "@mantine/form";
-import { validateGuess } from "../../utils/guessValidation";
+import { validateGuess } from "../../../utils/guessValidation";
+import classes from "./Guesses.module.css";
 
 export const GuessContext = createContext<{
   removeGuess: (guess: Guess) => void;
@@ -62,23 +63,25 @@ export default function Guesses({
   }
 
   return (
-    <Stack>
-      <Group>
-        <TextInput
-          {...guessField.getInputProps()}
-          label="Guess"
-          placeholder="Enter your guess"
-          onKeyDown={handleKeyDown}
-        />
-        <Button onClick={tryAddGuess}>Add</Button>
-      </Group>
+    <Paper>
+      <Paper>
+        <Text>Guess</Text>
+        <Flex classNames={{ root: classes.guess_input_container }}>
+          <TextInput
+            {...guessField.getInputProps()}
+            aria-label="Guess"
+            placeholder="Enter your guess"
+            onKeyDown={handleKeyDown}
+          />
+          <Button onClick={tryAddGuess}>Add</Button>
+        </Flex>
+      </Paper>
+
       <GuessContext value={{ removeGuess, updateGuess }}>
-        <Stack>
-          {guesses.map((guess, i) => (
-            <GuessItem key={i} guess={guess} />
-          ))}
-        </Stack>
+        {guesses.map((guess, i) => (
+          <GuessItem key={i} guess={guess} />
+        ))}
       </GuessContext>
-    </Stack>
+    </Paper>
   );
 }

@@ -3,36 +3,36 @@ import {
   AppShell,
   Burger,
   Button,
-  Checkbox,
-  Divider,
   Group,
   MantineProvider,
-  Paper,
-  Stack,
-  Switch,
-  Text,
   Title,
 } from "@mantine/core";
 import { theme } from "./theme";
 import { useDisclosure } from "@mantine/hooks";
 import { DEFAULT_WORDS } from "./assets/words";
 import Results from "./components/Results/Results";
-import { ReactElement, useEffect, useState } from "react";
+import {
+  createContext,
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 import { Guess } from "./classes/guess";
 import getResults from "./utils/resultBuilder";
-import CustomWordsForm, {
+import {
   CustomWordsFormData,
   DEFAULT_CUSTOM_WORDS_FORM,
 } from "./components/CustomWordsForm/CustomWordsForm";
 import { ParsedWordSets, parseWordsToSets } from "./utils/wordLoading";
-import Guesses from "./components/Guesses/Guesses";
+import Guesses from "./components/Guesses/Guesses/Guesses";
 import { ThemeSelector } from "./components/ThemeSelector/ThemeSelector";
+import Settings from "./components/Settings/Settings";
 import classes from "./App.module.css";
-import {
-  IconBook2,
-  IconClipboardData,
-  IconZoomQuestion,
-} from "@tabler/icons-react";
+
+export const CustomWordsFormContext = createContext<
+  Dispatch<SetStateAction<CustomWordsFormData>>
+>(() => {});
 
 export default function App() {
   const [navbarOpened, { toggle }] = useDisclosure();
@@ -40,21 +40,22 @@ export default function App() {
   const [guesses, setGuesses] = useState<Guess[]>([]);
   const [results, setResults] = useState<string[]>([]);
   const [shuffleResults, setShuffleResults] = useState<boolean>(true);
+  const [defaultHidden, setDefaultHidden] = useState<boolean>(true);
 
-  const [customWordsFormData, setCustomWordsFormData] =
+  const [storedCustomWordsFormData, setStoredCustomWordsFormData] =
     useState<CustomWordsFormData>(DEFAULT_CUSTOM_WORDS_FORM);
   const [parsedWordSets, setParsedWordSets] = useState<ParsedWordSets>(
     parseWordsToSets(DEFAULT_WORDS, false)
   );
   useEffect(() => {
-    const mergedWords: string[] = customWordsFormData.replaceDefaultWords
-      ? customWordsFormData.words
-      : [...DEFAULT_WORDS, ...customWordsFormData.words];
+    const mergedWords: string[] = storedCustomWordsFormData.replaceDefaultWords
+      ? storedCustomWordsFormData.words
+      : [...DEFAULT_WORDS, ...storedCustomWordsFormData.words];
 
     setParsedWordSets(
-      parseWordsToSets(mergedWords, customWordsFormData.allowSpecialChars)
+      parseWordsToSets(mergedWords, storedCustomWordsFormData.allowSpecialChars)
     );
-  }, [customWordsFormData]);
+  }, [storedCustomWordsFormData]);
 
   function updateResults() {
     if (guesses.length == 0 || !guesses[0]) {
@@ -99,50 +100,22 @@ export default function App() {
           </AppShell.Header>
 
           <AppShell.Navbar>
-            <Stack classNames={{ root: classes.settings }}>
-              <Title order={3}>Settings</Title>
-              <SettingsSection
-                title="Guess input"
-                icon={<IconZoomQuestion size={20} />}
+            <CustomWordsFormContext value={setStoredCustomWordsFormData}>
+              <Settings
+                wordBadgeData={{
+                  replaceDefaultWords:
+                    storedCustomWordsFormData.replaceDefaultWords,
+                  numDefaultWords: DEFAULT_WORDS.length,
+                  numWordsParsed: parsedWordSets.wordNum,
+                  numCustomFormWords: storedCustomWordsFormData.words.length,
+                  failedWords: parsedWordSets.failed,
+                }}
+                shuffleResults={shuffleResults}
+                setShuffleResults={setShuffleResults}
+                defaultHidden={defaultHidden}
+                setDefaultHidden={setDefaultHidden}
               />
-              <Switch
-                label="Keyboard Mode"
-                classNames={{ root: classes.setting_switch }}
-              />
-              <SettingsSection
-                title="Results"
-                icon={<IconClipboardData size={20} />}
-              />
-              <Checkbox
-                label="Shuffled"
-                checked={shuffleResults}
-                onChange={(event) =>
-                  setShuffleResults(event.currentTarget.checked)
-                }
-                classNames={{ root: classes.setting_switch }}
-              />
-              <Checkbox
-                label="Hidden by default"
-                classNames={{ root: classes.setting_switch }}
-              />
-              <SettingsSection
-                title="Custom words"
-                icon={<IconBook2 size={20} />}
-              />
-              <Paper classNames={{ root: classes.custom_words_container }}>
-                <CustomWordsForm
-                  setFormData={setCustomWordsFormData}
-                  badgeData={{
-                    replaceDefaultWords:
-                      customWordsFormData.replaceDefaultWords,
-                    numDefaultWords: DEFAULT_WORDS.length,
-                    numWordsParsed: parsedWordSets.wordNum,
-                    numCustomFormWords: customWordsFormData.words.length,
-                    failedWords: parsedWordSets.failed,
-                  }}
-                />
-              </Paper>
-            </Stack>
+            </CustomWordsFormContext>
           </AppShell.Navbar>
 
           <AppShell.Main>
@@ -154,39 +127,10 @@ export default function App() {
             <Button disabled={!guesses.length} onClick={updateResults}>
               Get Possible Words!
             </Button>
-            <Results results={results} />
+            <Results results={results} defaultHidden={defaultHidden} />
           </AppShell.Main>
         </AppShell>
       </MantineProvider>
-    </>
-  );
-}
-
-function SettingsSection({
-  title,
-  icon,
-}: {
-  title: string;
-  icon: ReactElement;
-}) {
-  //Note to self -> next add padding between settings section icon and title!
-  return (
-    <>
-      <Divider
-        my="xs"
-        labelPosition="left"
-        label={
-          <>
-            {icon}
-            <Title
-              order={6}
-              classNames={{ root: classes.settings_section_title }}
-            >
-              {title}
-            </Title>
-          </>
-        }
-      />
     </>
   );
 }

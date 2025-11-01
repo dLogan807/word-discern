@@ -13,15 +13,15 @@ export default function getResults(
   return shuffled ? shuffleArray(results) : results.sort();
 }
 
-interface ParsedGuesses {
+interface ParsedGuessesProps {
   correctPosChars: string[];
   blackListedPosChars: Array<Set<string>>;
   requiredSomewhereChars: Set<string>;
 }
 
-function parseGuesses(guesses: Guess[]): ParsedGuesses {
+function parseGuesses(guesses: Guess[]): ParsedGuessesProps {
   const guessLength: number = guesses[0].wordString.length;
-  const parseResult: ParsedGuesses = {
+  const parseResult: ParsedGuessesProps = {
     correctPosChars: new Array(guessLength),
     blackListedPosChars: new Array(guessLength),
     requiredSomewhereChars: new Set<string>(),
@@ -62,7 +62,7 @@ function canBlacklistLetter(
 
 function matchGuessesWithWords(
   wordSet: Set<string>,
-  guessData: ParsedGuesses
+  guessData: ParsedGuessesProps
 ): string[] {
   const results: string[] = [];
 
