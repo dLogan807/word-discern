@@ -32,7 +32,7 @@ export default function Settings(props: SettingsProps) {
         classNames={{ root: classes.setting_switch }}
       />
       <Checkbox
-        label="Only allow guesses contained in the word list"
+        label="Only allow words from the word list"
         classNames={{ root: classes.setting_switch }}
         defaultChecked
       />
@@ -46,7 +46,7 @@ export default function Settings(props: SettingsProps) {
         classNames={{ root: classes.setting_switch }}
       />
       <Checkbox
-        label="Hidden by default"
+        label="Hidden"
         checked={props.defaultHidden}
         onChange={(event) =>
           props.setDefaultHidden(event.currentTarget.checked)

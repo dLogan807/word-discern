@@ -19,21 +19,26 @@ export default function Results({
   results: string[];
   defaultHidden?: boolean;
 }) {
+  const numberToShow = 7;
   const [trimmedResults, setTrimmedResults] = useState<string[]>(
-    results.slice(0, 5)
+    results.slice(0, numberToShow)
   );
   useEffect(() => {
-    setTrimmedResults(results.slice(0, 5));
+    setTrimmedResults(results.slice(0, numberToShow));
   }, [results]);
 
   function loadMoreResults() {
-    setTrimmedResults(results.slice(0, trimmedResults.length + 5));
+    setTrimmedResults(results.slice(0, trimmedResults.length + numberToShow));
   }
 
   const resultGroups = trimmedResults.map((result) => {
     return (
       <ListItem key={result}>
-        <ResultChars result={result} defaultHidden={defaultHidden} />
+        {defaultHidden ? (
+          <ResultChars result={result} />
+        ) : (
+          <Text>{result}</Text>
+        )}
       </ListItem>
     );
   });
