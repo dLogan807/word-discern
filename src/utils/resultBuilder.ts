@@ -28,16 +28,27 @@ function parseGuesses(guesses: Guess[]): ParsedGuessesProps {
   };
 
   for (const guess of guesses) {
-    guess.letters.forEach((char, i) => {
-      if (parseResult.blackListedPosChars[i] == null) {
-        parseResult.blackListedPosChars[i] = new Set<string>();
+    const validCharOccurences = new Map<string, number>();
+
+    for (let i = 0; i < guess.letters.length; i++) {
+      const char = guess.letters[i];
+
+      if (char.correctness !== LetterCorrectness.NotPresent) {
+        const validOccurenceCount = validCharOccurences.get(char.value);
+        validCharOccurences.set(
+          char.value,
+          validOccurenceCount ? validOccurenceCount + 1 : 1
+        );
       }
 
-      if (char.correctness == LetterCorrectness.Correct) {
+      parseResult.blackListedPosChars[i] =
+        parseResult.blackListedPosChars[i] ?? new Set<string>();
+
+      if (char.correctness === LetterCorrectness.Correct) {
         parseResult.correctPosChars[i] = char.value;
 
         parseResult.blackListedPosChars[i].delete(char.value);
-        return;
+        continue;
       }
 
       if (canBlacklistLetter(parseResult.correctPosChars[i], char.value)) {
@@ -45,9 +56,15 @@ function parseGuesses(guesses: Guess[]): ParsedGuessesProps {
 
         if (char.correctness === LetterCorrectness.WrongPosition) {
           parseResult.requiredSomewhereChars.add(char.value);
+        } else if (!validCharOccurences.get(char.value)) {
+          for (let j = 0; j < guess.letters.length; j++) {
+            parseResult.blackListedPosChars[j] =
+              parseResult.blackListedPosChars[j] ?? new Set<string>();
+            parseResult.blackListedPosChars[j].add(char.value);
+          }
         }
       }
-    });
+    }
   }
 
   return parseResult;
@@ -111,19 +128,10 @@ function charAtBadPos(
 }
 
 function shuffleArray<T>(array: T[]): T[] {
-  const minRand = 0;
-  const maxRand = array.length - 1;
-
-  array.forEach((element, index) => {
-    const randomIndex = getRandomNum(minRand, maxRand);
-    const randomElement = array[randomIndex];
-    array[randomIndex] = element;
-    array[index] = randomElement;
-  });
-
+  //Fisher-Yates shuffle algorithm
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
   return array;
-}
-
-function getRandomNum(min: number, max: number) {
-  return Math.floor(Math.random() * (max - min + 1));
 }
