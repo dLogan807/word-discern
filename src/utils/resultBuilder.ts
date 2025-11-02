@@ -20,10 +20,13 @@ interface ParsedGuesses {
 }
 
 function parseGuesses(guesses: Guess[]): ParsedGuesses {
-  const guessLength: number = guesses[0].wordString.length;
+  const guessLength = guesses[0].wordString.length;
   const parseResult: ParsedGuesses = {
     correctPosChars: new Array(guessLength),
-    blackListedPosChars: new Array(guessLength),
+    blackListedPosChars: Array.from(
+      { length: guessLength },
+      () => new Set<string>()
+    ),
     requiredSomewhereChars: new Set<string>(),
   };
 
@@ -33,34 +36,28 @@ function parseGuesses(guesses: Guess[]): ParsedGuesses {
     for (let i = 0; i < guess.letters.length; i++) {
       const char = guess.letters[i];
 
-      //Cound how many times the char is correct or in the wrong position
+      //Count how many times the char is correct or in the wrong position
       if (char.correctness !== LetterCorrectness.NotPresent) {
-        const validOccurenceCount = validCharOccurences.get(char.value);
         validCharOccurences.set(
           char.value,
-          validOccurenceCount ? validOccurenceCount + 1 : 1
+          (validCharOccurences.get(char.value) ?? 0) + 1
         );
       }
 
-      parseResult.blackListedPosChars[i] =
-        parseResult.blackListedPosChars[i] ?? new Set<string>();
-
       if (char.correctness === LetterCorrectness.Correct) {
         parseResult.correctPosChars[i] = char.value;
-
         parseResult.blackListedPosChars[i].delete(char.value);
         continue;
       }
 
       //Blacklist chars from applicable indexes
-      if (canBlacklistLetter(parseResult.correctPosChars[i], char.value)) {
+      const correctLetter = parseResult.correctPosChars[i];
+      if (correctLetter === undefined || correctLetter !== char.value) {
         if (char.correctness === LetterCorrectness.WrongPosition) {
           parseResult.blackListedPosChars[i].add(char.value);
           parseResult.requiredSomewhereChars.add(char.value);
-        } else if (!validCharOccurences.get(char.value)) {
+        } else if (!validCharOccurences.has(char.value)) {
           for (let j = 0; j < guess.letters.length; j++) {
-            parseResult.blackListedPosChars[j] =
-              parseResult.blackListedPosChars[j] ?? new Set<string>();
             parseResult.blackListedPosChars[j].add(char.value);
           }
         }
@@ -71,13 +68,6 @@ function parseGuesses(guesses: Guess[]): ParsedGuesses {
   return parseResult;
 }
 
-function canBlacklistLetter(
-  correctLetter: string | undefined,
-  thisLetter: string
-) {
-  return correctLetter === undefined || correctLetter !== thisLetter;
-}
-
 function matchGuessesWithWords(
   wordSet: Set<string>,
   guessData: ParsedGuesses
@@ -85,9 +75,9 @@ function matchGuessesWithWords(
   const results: string[] = [];
 
   for (const word of wordSet) {
-    const requiredSomewhereCharsCopy: Set<string> = new Set<string>([
-      ...guessData.requiredSomewhereChars,
-    ]);
+    const requiredSomewhereCharsCopy: Set<string> = new Set<string>(
+      guessData.requiredSomewhereChars
+    );
     let invalidWord = false;
 
     for (let i = 0; i < word.length; i++) {
