@@ -9,7 +9,7 @@ import {
 } from "@mantine/core";
 import { IconEye, IconEyeOff } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
-import RevealableChar from "./RevealableChar";
+import RevealableChar from "@/components/Results/RevealableChar/RevealableChar";
 import classes from "./Results.module.css";
 
 export default function Results({

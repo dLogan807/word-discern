@@ -1,8 +1,8 @@
 import { Checkbox, Divider, Stack, Switch, Title } from "@mantine/core";
 import LoadedWordsBadges, {
   WordBadgeData,
-} from "../CustomWordsForm/WordBadges/LoadedWordBadges";
-import CustomWordsForm from "../CustomWordsForm/CustomWordsForm";
+} from "@/components/CustomWordsForm/WordBadges/LoadedWordBadges/LoadedWordBadges";
+import CustomWordsForm from "@/components/CustomWordsForm/CustomWordsForm";
 import {
   IconBook2,
   IconClipboardData,
@@ -17,6 +17,7 @@ interface SettingsProps {
   setShuffleResults: Dispatch<SetStateAction<boolean>>;
   defaultHidden: boolean;
   setDefaultHidden: Dispatch<SetStateAction<boolean>>;
+  setOnlyAllowWordListGuessesRef: (value: boolean) => void;
 }
 
 export default function Settings(props: SettingsProps) {
@@ -34,7 +35,9 @@ export default function Settings(props: SettingsProps) {
       <Checkbox
         label="Only allow words from the word list"
         classNames={{ root: classes.setting_switch }}
-        defaultChecked
+        onChange={(event) =>
+          props.setOnlyAllowWordListGuessesRef(event.currentTarget.checked)
+        }
       />
       <SettingsDivider title="Results" icon={<IconClipboardData size={20} />} />
       <Checkbox
@@ -53,7 +56,7 @@ export default function Settings(props: SettingsProps) {
         }
         classNames={{ root: classes.setting_switch }}
       />
-      <SettingsDivider title="Custom words" icon={<IconBook2 size={20} />} />
+      <SettingsDivider title="Word list" icon={<IconBook2 size={20} />} />
       <Stack classNames={{ root: classes.custom_words_container }}>
         <LoadedWordsBadges badgeData={props.wordBadgeData} />
         <CustomWordsForm />

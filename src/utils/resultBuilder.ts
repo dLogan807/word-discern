@@ -1,6 +1,6 @@
-import { Guess } from "../classes/guess";
-import { LetterCorrectness } from "../classes/letter";
-import { stringsAreEqual } from "./guessValidation";
+import { Guess } from "@/classes/guess";
+import { LetterCorrectness } from "@/classes/letter";
+import { stringsAreEqual } from "@/utils/guessValidation";
 
 export default function getResults(
   wordSet: Set<string>,
@@ -13,15 +13,15 @@ export default function getResults(
   return shuffled ? shuffleArray(results) : results.sort();
 }
 
-interface ParsedGuessesProps {
+interface ParsedGuesses {
   correctPosChars: string[];
   blackListedPosChars: Array<Set<string>>;
   requiredSomewhereChars: Set<string>;
 }
 
-function parseGuesses(guesses: Guess[]): ParsedGuessesProps {
+function parseGuesses(guesses: Guess[]): ParsedGuesses {
   const guessLength: number = guesses[0].wordString.length;
-  const parseResult: ParsedGuessesProps = {
+  const parseResult: ParsedGuesses = {
     correctPosChars: new Array(guessLength),
     blackListedPosChars: new Array(guessLength),
     requiredSomewhereChars: new Set<string>(),
@@ -33,6 +33,7 @@ function parseGuesses(guesses: Guess[]): ParsedGuessesProps {
     for (let i = 0; i < guess.letters.length; i++) {
       const char = guess.letters[i];
 
+      //Cound how many times the char is correct or in the wrong position
       if (char.correctness !== LetterCorrectness.NotPresent) {
         const validOccurenceCount = validCharOccurences.get(char.value);
         validCharOccurences.set(
@@ -51,10 +52,10 @@ function parseGuesses(guesses: Guess[]): ParsedGuessesProps {
         continue;
       }
 
+      //Blacklist chars from applicable indexes
       if (canBlacklistLetter(parseResult.correctPosChars[i], char.value)) {
-        parseResult.blackListedPosChars[i].add(char.value);
-
         if (char.correctness === LetterCorrectness.WrongPosition) {
+          parseResult.blackListedPosChars[i].add(char.value);
           parseResult.requiredSomewhereChars.add(char.value);
         } else if (!validCharOccurences.get(char.value)) {
           for (let j = 0; j < guess.letters.length; j++) {
@@ -79,7 +80,7 @@ function canBlacklistLetter(
 
 function matchGuessesWithWords(
   wordSet: Set<string>,
-  guessData: ParsedGuessesProps
+  guessData: ParsedGuesses
 ): string[] {
   const results: string[] = [];
 
@@ -127,8 +128,8 @@ function charAtBadPos(
   );
 }
 
+//Fisher-Yates shuffle algorithm
 function shuffleArray<T>(array: T[]): T[] {
-  //Fisher-Yates shuffle algorithm
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [array[i], array[j]] = [array[j], array[i]];

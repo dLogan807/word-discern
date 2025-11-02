@@ -15,11 +15,13 @@
     "@mantine/form": "^8.3.1",
     "@mantine/hooks": "8.3.1",
     "@tabler/icons-react": "^3.35.0",
+    "@types/node": "^24.9.2",
     "eslint": "^9.35.0",
     "eslint-config-mantine": "^4.0.3",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-react": "^7.37.5",
     "jsonc-parser": "^3.3.1",
+    "path": "^0.12.7",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "typescript-eslint": "^8.44.0"

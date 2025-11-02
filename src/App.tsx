@@ -7,10 +7,10 @@ import {
   MantineProvider,
   Title,
 } from "@mantine/core";
-import { theme } from "./theme";
+import { theme } from "@/theme";
 import { useDisclosure } from "@mantine/hooks";
-import { DEFAULT_WORDS } from "./assets/words";
-import Results from "./components/Results/Results";
+import { DEFAULT_WORDS } from "@/assets/words";
+import Results from "@/components/Results/Results";
 import {
   createContext,
   Dispatch,
@@ -19,16 +19,16 @@ import {
   useRef,
   useState,
 } from "react";
-import { Guess } from "./classes/guess";
-import getResults from "./utils/resultBuilder";
+import { Guess } from "@/classes/guess";
+import getResults from "@/utils/resultBuilder";
 import {
   CustomWordsFormData,
   DEFAULT_CUSTOM_WORDS_FORM,
-} from "./components/CustomWordsForm/CustomWordsForm";
-import { ParsedWordSets, parseWordsToSets } from "./utils/wordLoading";
-import Guesses from "./components/Guesses/Guesses/Guesses";
-import { ThemeSelector } from "./components/ThemeSelector/ThemeSelector";
-import Settings from "./components/Settings/Settings";
+} from "@/components/CustomWordsForm/CustomWordsForm";
+import { ParsedWordSets, parseWordsToSets } from "@/utils/wordLoading";
+import Guesses from "@/components/Guesses/Guesses";
+import { ThemeSelector } from "@/components/ThemeSelector/ThemeSelector";
+import Settings from "@/components/Settings/Settings";
 import classes from "./App.module.css";
 
 export const CustomWordsFormContext = createContext<
@@ -81,6 +81,11 @@ export default function App() {
     setResults(getResults(wordSets, guesses, shuffleResults));
   }
 
+  function setOnlyAllowWordListGuessesRef(value: boolean) {
+    onlyAllowWordListGuessesRef.current = value;
+    console.log(onlyAllowWordListGuessesRef.current);
+  }
+
   return (
     <>
       <MantineProvider theme={theme} defaultColorScheme="auto">
@@ -123,6 +128,7 @@ export default function App() {
                 setShuffleResults={setShuffleResults}
                 defaultHidden={defaultHidden}
                 setDefaultHidden={setDefaultHidden}
+                setOnlyAllowWordListGuessesRef={setOnlyAllowWordListGuessesRef}
               />
             </CustomWordsFormContext>
           </AppShell.Navbar>

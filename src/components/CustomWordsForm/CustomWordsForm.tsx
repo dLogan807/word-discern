@@ -10,12 +10,12 @@ import {
   Textarea,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import classes from "./CustomWords.module.css";
 import { parse, ParseError, printParseErrorCode } from "jsonc-parser";
-import { getWordArray } from "../../utils/wordLoading";
+import { getWordArray } from "@/utils/wordLoading";
 import { useContext, useState } from "react";
 import { IconFileUpload } from "@tabler/icons-react";
-import { CustomWordsFormContext } from "../../App";
+import { CustomWordsFormContext } from "@/App";
+import classes from "./CustomWords.module.css";
 
 enum WordInput {
   TEXT = "text",

@@ -1,7 +1,7 @@
 import React from "react";
-import RemoveButton from "../../RemoveButton/RemoveButton";
-import LetterButton from "../../LetterButton/LetterButton";
-import { Guess } from "../../../classes/guess";
+import RemoveButton from "@/components/Guesses/RemoveButton/RemoveButton";
+import LetterButton from "@/components/Guesses/LetterButton/LetterButton";
+import { Guess } from "@/classes/guess";
 import { Group } from "@mantine/core";
 import classes from "./GuessItem.module.css";
 

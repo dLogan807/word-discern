@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useContext } from "react";
-import classes from "./LetterButton.module.css";
 import { Property } from "csstype";
-import { Letter } from "../../classes/letter";
+import { Letter } from "@/classes/letter";
 import { Button } from "@mantine/core";
-import { Guess } from "../../classes/guess";
-import { GuessContext } from "../Guesses/Guesses/Guesses";
+import { Guess } from "@/classes/guess";
+import { GuessContext } from "@/components/Guesses/Guesses";
+import classes from "./LetterButton.module.css";
 
 export default function LetterButton({
   letter,

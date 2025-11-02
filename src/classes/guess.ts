@@ -1,4 +1,4 @@
-import { Letter, LetterCorrectness } from "./letter";
+import { Letter, LetterCorrectness } from "@/classes/letter";
 
 export class Guess {
   letters: Letter[];

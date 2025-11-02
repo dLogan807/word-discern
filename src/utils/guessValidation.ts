@@ -1,4 +1,4 @@
-import { Guess } from "../classes/guess";
+import { Guess } from "@/classes/guess";
 
 interface ValidationResponse {
   validated: boolean;
