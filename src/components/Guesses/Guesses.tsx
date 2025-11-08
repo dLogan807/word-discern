@@ -1,5 +1,5 @@
 import { Button, Flex, Paper, Text, TextInput } from "@mantine/core";
-import { createContext, useEffect } from "react";
+import { createContext } from "react";
 import { Guess } from "@/classes/guess";
 import GuessItem from "@/components/Guesses/GuessItem/GuessItem";
 import { useField } from "@mantine/form";
@@ -27,21 +27,17 @@ export default function Guesses({
     initialValue: "",
   });
 
-  //Maybe use a context to access the ref?
-  useEffect(() => {
-    console.log("word sets updated!");
-  }, [wordSets]);
-
   //Enter when adding a guess
   function handleKeyDown(event: { key: string }) {
     if (event.key === "Enter") tryAddGuess();
   }
+
   function tryAddGuess() {
     const guessValue = guessField.getValue();
     const validationResponse = validateGuess(
       guessValue,
       guesses,
-      wordSets ? wordSets.get(guessValue.length) : wordSets
+      wordSets ? wordSets.get(guessValue.length) : undefined
     );
 
     if (!validationResponse.validated) {

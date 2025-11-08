@@ -16,7 +16,6 @@ import {
   Dispatch,
   SetStateAction,
   useEffect,
-  useRef,
   useState,
 } from "react";
 import { Guess } from "@/classes/guess";
@@ -43,7 +42,8 @@ export default function App() {
   const [showResults, setShowResults] = useState(false);
   const [shuffleResults, setShuffleResults] = useState<boolean>(true);
   const [defaultHidden, setDefaultHidden] = useState<boolean>(true);
-  const onlyAllowWordListGuessesRef = useRef(true);
+  const [onlyAllowWordListGuesses, setOnlyAllowWordListGuesses] =
+    useState<boolean>(true);
 
   const [storedCustomWordsFormData, setStoredCustomWordsFormData] =
     useState<CustomWordsFormData>(DEFAULT_CUSTOM_WORDS_FORM);
@@ -79,11 +79,6 @@ export default function App() {
     }
 
     setResults(getResults(wordSets, guesses, shuffleResults));
-  }
-
-  function setOnlyAllowWordListGuessesRef(value: boolean) {
-    onlyAllowWordListGuessesRef.current = value;
-    console.log(onlyAllowWordListGuessesRef.current);
   }
 
   return (
@@ -128,7 +123,7 @@ export default function App() {
                 setShuffleResults={setShuffleResults}
                 defaultHidden={defaultHidden}
                 setDefaultHidden={setDefaultHidden}
-                setOnlyAllowWordListGuessesRef={setOnlyAllowWordListGuessesRef}
+                setOnlyAllowWordListGuessesRef={setOnlyAllowWordListGuesses}
               />
             </CustomWordsFormContext>
           </AppShell.Navbar>
@@ -138,9 +133,7 @@ export default function App() {
               guesses={guesses}
               setGuesses={setGuesses}
               wordSets={
-                onlyAllowWordListGuessesRef
-                  ? parsedWordSets.wordSets
-                  : undefined
+                onlyAllowWordListGuesses ? parsedWordSets.wordSets : undefined
               }
             />
             <Button disabled={!guesses.length} onClick={updateResults}>

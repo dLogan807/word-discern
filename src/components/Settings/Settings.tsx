@@ -38,6 +38,7 @@ export default function Settings(props: SettingsProps) {
         onChange={(event) =>
           props.setOnlyAllowWordListGuessesRef(event.currentTarget.checked)
         }
+        defaultChecked
       />
       <SettingsDivider title="Results" icon={<IconClipboardData size={20} />} />
       <Checkbox
