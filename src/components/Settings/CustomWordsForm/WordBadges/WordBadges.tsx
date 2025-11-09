@@ -1,13 +1,13 @@
-import { Button, Group, Popover, ScrollArea, Text } from "@mantine/core";
+import { Group } from "@mantine/core";
 import {
   IconAdjustments,
   IconCheck,
   IconCopyOff,
   IconList,
-  IconX,
 } from "@tabler/icons-react";
 import WordInfoBadge from "@/components/Settings/CustomWordsForm/WordBadges/WordInfoBadge/WordInfoBadge";
-import classes from "./LoadedWordBadges.module.css";
+import FailedWordsBadge from "@/components/Settings/CustomWordsForm/WordBadges/WordInfoBadge/FailedWordBadge/FailedWordBadge";
+import pluralize from "@/utils/pluralize";
 
 export interface WordBadgeData {
   replaceDefaultWords: boolean;
@@ -17,7 +17,7 @@ export interface WordBadgeData {
   failedWords: string[];
 }
 
-export default function LoadedWordsBadges({
+export default function WordsBadges({
   badgeData,
 }: {
   badgeData: WordBadgeData;
@@ -34,13 +34,19 @@ export default function LoadedWordsBadges({
   //Displayed badge text and icons
   const iconSize = 16;
 
-  const totalWordsText: string = `${badgeData.numWordsParsed} total words`;
+  const totalWordsText: string = `${badgeData.numWordsParsed} total ${pluralize(
+    badgeData.numWordsParsed,
+    "word"
+  )}`;
   const totalWordsIcon = <IconList size={iconSize} />;
 
   const customWordsText: string =
     !badgeData.numCustomFormWords || !validCustomWords
       ? "No custom words loaded"
-      : `${validCustomWords} valid custom words parsed`;
+      : `${validCustomWords} valid custom ${pluralize(
+          validCustomWords,
+          "word"
+        )} parsed`;
   const customWordsIcon = <IconAdjustments size={iconSize} />;
 
   const alreadyExistingText: string = `${wordsAlreadyExisting} already existed in word list`;
@@ -72,37 +78,5 @@ export default function LoadedWordsBadges({
         />
       )}
     </Group>
-  );
-}
-
-function FailedWordsBadge({
-  failedWords,
-  iconSize,
-}: {
-  failedWords: string[];
-  iconSize: number;
-}) {
-  const failedWordsText: string = `${failedWords.length} Invalid words`;
-  const failedWordsIcon = <IconX size={iconSize} />;
-  return (
-    <Popover position="bottom" withArrow shadow="md">
-      <Popover.Target>
-        <Button
-          variant="transparent"
-          classNames={{
-            root: classes.failed_words_button,
-          }}
-        >
-          <WordInfoBadge color="red" icon={failedWordsIcon} clickable={true}>
-            {failedWordsText}
-          </WordInfoBadge>
-        </Button>
-      </Popover.Target>
-      <Popover.Dropdown>
-        <ScrollArea.Autosize mah={250} maw={250}>
-          <Text>{failedWords.join(", ")}</Text>
-        </ScrollArea.Autosize>
-      </Popover.Dropdown>
-    </Popover>
   );
 }

@@ -50,6 +50,7 @@ export default function App() {
   const [parsedWordSets, setParsedWordSets] = useState<ParsedWordSets>(
     parseWordsToSets(DEFAULT_WORDS, false)
   );
+
   useEffect(() => {
     const mergedWords: string[] = storedCustomWordsFormData.replaceDefaultWords
       ? storedCustomWordsFormData.words
