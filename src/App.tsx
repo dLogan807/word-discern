@@ -23,9 +23,9 @@ import getResults from "@/utils/resultBuilder";
 import {
   CustomWordsFormData,
   DEFAULT_CUSTOM_WORDS_FORM,
-} from "@/components/CustomWordsForm/CustomWordsForm";
+} from "@/components/Settings/CustomWordsForm/CustomWordsForm";
 import { ParsedWordSets, parseWordsToSets } from "@/utils/wordLoading";
-import Guesses from "@/components/Guesses/Guesses";
+import Guesses from "@/components/Guesses/GuessInputList/GuessInputList";
 import { ThemeSelector } from "@/components/ThemeSelector/ThemeSelector";
 import Settings from "@/components/Settings/Settings";
 import classes from "./App.module.css";

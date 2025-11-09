@@ -3,7 +3,7 @@ import { Property } from "csstype";
 import { Letter } from "@/classes/letter";
 import { Button } from "@mantine/core";
 import { Guess } from "@/classes/guess";
-import { GuessContext } from "@/components/Guesses/Guesses";
+import { GuessContext } from "@/components/Guesses/GuessInputList/GuessInputList";
 import classes from "./LetterButton.module.css";
 
 export default function LetterButton({

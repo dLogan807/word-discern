@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { IconTrash } from "@tabler/icons-react";
 import { ActionIcon } from "@mantine/core";
 import { Guess } from "@/classes/guess";
-import { GuessContext } from "@/components/Guesses/Guesses";
+import { GuessContext } from "@/components/Guesses/GuessInputList/GuessInputList";
 import classes from "./RemoveButton.module.css";
 
 export default function RemoveButton({

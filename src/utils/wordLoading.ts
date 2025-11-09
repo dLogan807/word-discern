@@ -41,9 +41,11 @@ export function parseWordsToSets(
 }
 
 function isValidWord(word: string, specialCharsAllowed: boolean): boolean {
-  const stringValid: boolean = word !== null && word !== "";
-
-  return stringValid && (specialCharsAllowed || containsOnlyLetters(word));
+  return (
+    word !== null &&
+    word !== "" &&
+    (specialCharsAllowed || containsOnlyLetters(word))
+  );
 }
 
 function containsOnlyLetters(word: string): boolean {

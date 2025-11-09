@@ -6,7 +6,7 @@ import {
   IconList,
   IconX,
 } from "@tabler/icons-react";
-import WordInfoBadge from "@/components/CustomWordsForm/WordBadges/WordInfoBadge/WordInfoBadge";
+import WordInfoBadge from "@/components/Settings/CustomWordsForm/WordBadges/WordInfoBadge/WordInfoBadge";
 import classes from "./LoadedWordBadges.module.css";
 
 export interface WordBadgeData {

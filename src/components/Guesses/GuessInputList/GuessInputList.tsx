@@ -4,7 +4,7 @@ import { Guess } from "@/classes/guess";
 import GuessItem from "@/components/Guesses/GuessItem/GuessItem";
 import { useField } from "@mantine/form";
 import { validateGuess } from "@/utils/guessValidation";
-import classes from "./Guesses.module.css";
+import classes from "./GuessInputList.module.css";
 
 export const GuessContext = createContext<{
   removeGuess: (guess: Guess) => void;
@@ -14,7 +14,7 @@ export const GuessContext = createContext<{
   updateGuess: () => {},
 });
 
-export default function Guesses({
+export default function GuessInputList({
   guesses,
   wordSets,
   setGuesses,

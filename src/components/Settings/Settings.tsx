@@ -1,8 +1,8 @@
 import { Checkbox, Divider, Stack, Switch, Title } from "@mantine/core";
 import LoadedWordsBadges, {
   WordBadgeData,
-} from "@/components/CustomWordsForm/WordBadges/LoadedWordBadges/LoadedWordBadges";
-import CustomWordsForm from "@/components/CustomWordsForm/CustomWordsForm";
+} from "@/components/Settings/CustomWordsForm/WordBadges/LoadedWordBadges/LoadedWordBadges";
+import CustomWordsForm from "@/components/Settings/CustomWordsForm/CustomWordsForm";
 import {
   IconBook2,
   IconClipboardData,
