@@ -11,9 +11,8 @@ export function validateGuess(
   wordSet?: Set<string> | undefined
 ): ValidationResponse {
   guess = guess.trim();
-  const minLength: number = 1;
-  const allowedLength: number =
-    guesses.length > 0 ? guesses[0].wordString.length : -1;
+  const minLength = 1;
+  const allowedLength = guesses.length > 0 ? guesses[0].wordString.length : -1;
 
   const response: ValidationResponse = {
     validated: false,

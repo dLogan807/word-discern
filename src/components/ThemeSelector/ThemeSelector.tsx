@@ -14,7 +14,7 @@ export function ThemeSelector() {
     setColorScheme(computedColorScheme === "dark" ? "light" : "dark");
   };
 
-  const tooltipText: string =
+  const tooltipText =
     computedColorScheme === "light" ? "Light theme" : "Dark theme";
 
   return (

@@ -22,25 +22,25 @@ export default function WordsBadges({
 }: {
   badgeData: WordBadgeData;
 }) {
-  const customWordsInUse: number = badgeData.replaceDefaultWords
+  const customWordsInUse = badgeData.replaceDefaultWords
     ? badgeData.numWordsParsed
     : badgeData.numWordsParsed - badgeData.numDefaultWords;
 
-  const validCustomWords: number =
+  const validCustomWords =
     badgeData.numCustomFormWords - badgeData.failedWords.length;
 
-  const wordsAlreadyExisting: number = validCustomWords - customWordsInUse;
+  const wordsAlreadyExisting = validCustomWords - customWordsInUse;
 
   //Displayed badge text and icons
   const iconSize = 16;
 
-  const totalWordsText: string = `${badgeData.numWordsParsed} total ${pluralize(
+  const totalWordsText = `${badgeData.numWordsParsed} total ${pluralize(
     badgeData.numWordsParsed,
     "word"
   )}`;
   const totalWordsIcon = <IconList size={iconSize} />;
 
-  const customWordsText: string =
+  const customWordsText =
     !badgeData.numCustomFormWords || !validCustomWords
       ? "No custom words loaded"
       : `${validCustomWords} valid custom ${pluralize(
@@ -49,10 +49,10 @@ export default function WordsBadges({
         )} parsed`;
   const customWordsIcon = <IconAdjustments size={iconSize} />;
 
-  const alreadyExistingText: string = `${wordsAlreadyExisting} already existed in word list`;
+  const alreadyExistingText = `${wordsAlreadyExisting} already existed in word list`;
   const alreadyExistingIcon = <IconCopyOff size={iconSize} />;
 
-  const addedWordsText: string = `${customWordsInUse} added to word list`;
+  const addedWordsText = `${customWordsInUse} added to word list`;
   const addedWordsIcon = <IconCheck size={iconSize} />;
 
   return (
