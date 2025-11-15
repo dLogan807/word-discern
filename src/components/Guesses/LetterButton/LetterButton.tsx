@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import { Property } from "csstype";
 import { Letter } from "@/classes/letter";
-import { Button } from "@mantine/core";
+import { Flex, UnstyledButton } from "@mantine/core";
 import { Guess } from "@/classes/guess";
 import { GuessContext } from "@/components/Guesses/GuessInputList/GuessInputList";
 import classes from "./LetterButton.module.css";
@@ -23,31 +23,36 @@ export default function LetterButton({
   }, [letter.correctness]);
 
   return (
-    <Button
+    <UnstyledButton
       classNames={{
         root: classes.letter_button,
-        label: `${classes.letter_button_label} ${
-          flipped ? classes.letter_flipped : ""
-        }`.trim(),
-      }}
-      styles={{
-        label: {
-          backgroundColor: backgroundColor,
-        },
-      }}
-      onTransitionEnd={() => {
-        if (flipped) {
-          setFlipped(false);
-        }
       }}
       onClick={() => {
-        setFlipped(true);
-        letter.cycleLetterCorrectness();
+        setFlipped(!flipped);
         updateGuess(guess);
+        letter.cycleLetterCorrectness();
       }}
       variant="transparent"
     >
-      {letter.value.toLocaleUpperCase()}
-    </Button>
+      <Flex
+        classNames={{
+          root: `${classes.letter_button_inner} ${
+            flipped ? classes.letter_flipped : ""
+          }`.trim(),
+        }}
+        styles={{
+          root: {
+            backgroundColor: backgroundColor,
+          },
+        }}
+        onTransitionEnd={() => {
+          if (flipped) {
+            setFlipped(false);
+          }
+        }}
+      >
+        {letter.value.toLocaleUpperCase()}
+      </Flex>
+    </UnstyledButton>
   );
 }
