@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useRef } from "react";
 import { Property } from "csstype";
 import { Letter } from "@/classes/letter";
 import { Flex, UnstyledButton } from "@mantine/core";
@@ -17,23 +17,54 @@ export default function LetterButton({
     useState<Property.BackgroundColor>(letter.correctness);
   const [flipped, setFlipped] = useState(false);
   const { updateGuess } = useContext(GuessContext);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const animDuration = 200;
 
+  // Only change color once letter is hidden (flipped)
   useEffect(() => {
     if (!flipped) {
       setBackgroundColor(letter.correctness);
     }
   }, [flipped]);
 
+  const resetFlipped = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+
+    setFlipped(false);
+  };
+
+  const handleClick = () => {
+    setFlipped(!flipped);
+    updateGuess(guess);
+    letter.cycleLetterCorrectness();
+
+    // Fallback timeout to ensure state resets even if onTransitionEnd doesn't fire
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    timeoutRef.current = setTimeout(() => {
+      resetFlipped();
+    }, animDuration + 50);
+  };
+
+  // Cleanup timeout when unmounted
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
   return (
     <UnstyledButton
       classNames={{
         root: classes.letter_button,
       }}
-      onClick={() => {
-        setFlipped(!flipped);
-        updateGuess(guess);
-        letter.cycleLetterCorrectness();
-      }}
+      onClick={handleClick}
     >
       <Flex
         classNames={{
@@ -46,11 +77,7 @@ export default function LetterButton({
             backgroundColor: backgroundColor,
           },
         }}
-        onTransitionEnd={() => {
-          if (flipped) {
-            setFlipped(false);
-          }
-        }}
+        onTransitionEnd={resetFlipped}
       >
         {letter.value.toLocaleUpperCase()}
       </Flex>
