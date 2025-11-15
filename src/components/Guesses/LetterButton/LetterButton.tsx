@@ -19,8 +19,10 @@ export default function LetterButton({
   const { updateGuess } = useContext(GuessContext);
 
   useEffect(() => {
-    setBackgroundColor(letter.correctness);
-  }, [letter.correctness]);
+    if (!flipped) {
+      setBackgroundColor(letter.correctness);
+    }
+  }, [flipped]);
 
   return (
     <UnstyledButton
@@ -32,7 +34,6 @@ export default function LetterButton({
         updateGuess(guess);
         letter.cycleLetterCorrectness();
       }}
-      variant="transparent"
     >
       <Flex
         classNames={{
