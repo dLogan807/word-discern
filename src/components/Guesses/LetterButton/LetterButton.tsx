@@ -15,6 +15,7 @@ export default function LetterButton({
 }): React.ReactElement {
   const [backgroundColor, setBackgroundColor] =
     useState<Property.BackgroundColor>(letter.correctness);
+  const [flipped, setFlipped] = useState(false);
   const { updateGuess } = useContext(GuessContext);
 
   useEffect(() => {
@@ -23,14 +24,28 @@ export default function LetterButton({
 
   return (
     <Button
-      color={backgroundColor}
       classNames={{
         root: classes.letter_button,
+        label: `${classes.letter_button_label} ${
+          flipped ? classes.letter_flipped : ""
+        }`.trim(),
+      }}
+      styles={{
+        label: {
+          backgroundColor: backgroundColor,
+        },
+      }}
+      onTransitionEnd={() => {
+        if (flipped) {
+          setFlipped(false);
+        }
       }}
       onClick={() => {
+        setFlipped(true);
         letter.cycleLetterCorrectness();
         updateGuess(guess);
       }}
+      variant="transparent"
     >
       {letter.value.toLocaleUpperCase()}
     </Button>

@@ -5,3 +5,17 @@
   --button-radius: var(--mantine-radius-sm);
   --button-padding-x: 0;
 }
+
+.letter_button_label {
+  display: flex;
+  width: 100%;
+  color: white;
+  transition: transform 0.25s, background-color 0.5s;
+  transform: scaleY(1);
+  justify-content: center;
+  border-radius: var(--mantine-radius-sm);
+}
+
+.letter_flipped {
+  transform: scaleY(0.01);
+}
