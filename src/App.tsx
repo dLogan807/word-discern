@@ -5,6 +5,7 @@ import {
   Button,
   Group,
   MantineProvider,
+  ScrollArea,
   Title,
 } from "@mantine/core";
 import { theme } from "@/theme";
@@ -19,7 +20,7 @@ import {
   useState,
 } from "react";
 import { Guess } from "@/classes/guess";
-import getResults from "@/utils/resultBuilder";
+import getResults, { IResults } from "@/utils/resultBuilder";
 import {
   CustomWordsFormData,
   DEFAULT_CUSTOM_WORDS_FORM,
@@ -37,19 +38,24 @@ export const CustomWordsFormContext = createContext<
 export default function App() {
   const [navbarOpened, { toggle }] = useDisclosure();
 
+  // Word data
+  const blankResults: IResults = { words: [], revealedCharPositions: [] };
   const [guesses, setGuesses] = useState<Guess[]>([]);
-  const [results, setResults] = useState<string[]>([]);
-  const [showResults, setShowResults] = useState(false);
-  const [shuffleResults, setShuffleResults] = useState<boolean>(true);
-  const [defaultHidden, setDefaultHidden] = useState<boolean>(true);
-  const [onlyAllowWordListGuesses, setOnlyAllowWordListGuesses] =
-    useState<boolean>(true);
-
+  const [results, setResults] = useState<IResults>(blankResults);
   const [storedCustomWordsFormData, setStoredCustomWordsFormData] =
     useState<CustomWordsFormData>(DEFAULT_CUSTOM_WORDS_FORM);
   const [parsedWordSets, setParsedWordSets] = useState<ParsedWordSets>(
     parseWordsToSets(DEFAULT_WORDS, false)
   );
+
+  // Settings
+  const [showResults, setShowResults] = useState(false);
+  const [shuffleResults, setShuffleResults] = useState<boolean>(true);
+  const [hideResults, setHideResults] = useState<boolean>(true);
+  const [onlyHideUnknownChars, setOnlyHideUnknownChars] =
+    useState<boolean>(true);
+  const [onlyAllowWordListGuesses, setOnlyAllowWordListGuesses] =
+    useState<boolean>(true);
 
   useEffect(() => {
     const mergedWords: string[] = storedCustomWordsFormData.replaceDefaultWords
@@ -67,7 +73,7 @@ export default function App() {
 
   function updateResults() {
     if (guesses.length == 0 || !guesses[0]) {
-      return setResults([]);
+      return setResults(blankResults);
     }
 
     setShowResults(true);
@@ -76,7 +82,7 @@ export default function App() {
     const wordSets = parsedWordSets.wordSets.get(guessLength);
 
     if (wordSets == null) {
-      return setResults([]);
+      return setResults(blankResults);
     }
 
     setResults(getResults(wordSets, guesses, shuffleResults));
@@ -111,21 +117,25 @@ export default function App() {
 
           <AppShell.Navbar>
             <CustomWordsFormContext value={setStoredCustomWordsFormData}>
-              <Settings
-                wordBadgeData={{
-                  replaceDefaultWords:
-                    storedCustomWordsFormData.replaceDefaultWords,
-                  numDefaultWords: DEFAULT_WORDS.length,
-                  numWordsParsed: parsedWordSets.wordNum,
-                  numCustomFormWords: storedCustomWordsFormData.words.length,
-                  failedWords: parsedWordSets.failed,
-                }}
-                shuffleResults={shuffleResults}
-                setShuffleResults={setShuffleResults}
-                defaultHidden={defaultHidden}
-                setDefaultHidden={setDefaultHidden}
-                setOnlyAllowWordListGuessesRef={setOnlyAllowWordListGuesses}
-              />
+              <ScrollArea type="auto">
+                <Settings
+                  wordBadgeData={{
+                    replaceDefaultWords:
+                      storedCustomWordsFormData.replaceDefaultWords,
+                    numDefaultWords: DEFAULT_WORDS.length,
+                    numWordsParsed: parsedWordSets.wordNum,
+                    numCustomFormWords: storedCustomWordsFormData.words.length,
+                    failedWords: parsedWordSets.failed,
+                  }}
+                  shuffleResults={shuffleResults}
+                  setShuffleResults={setShuffleResults}
+                  hideResults={hideResults}
+                  setHideResults={setHideResults}
+                  onlyHideUnknownChars={onlyHideUnknownChars}
+                  setOnlyHideUnknownChars={setOnlyHideUnknownChars}
+                  setOnlyAllowWordListGuessesRef={setOnlyAllowWordListGuesses}
+                />
+              </ScrollArea>
             </CustomWordsFormContext>
           </AppShell.Navbar>
 
@@ -141,7 +151,15 @@ export default function App() {
               Get Possible Words!
             </Button>
             {showResults && (
-              <Results results={results} defaultHidden={defaultHidden} />
+              <Results
+                results={{
+                  ...results,
+                  revealedCharPositions: onlyHideUnknownChars
+                    ? []
+                    : results.revealedCharPositions,
+                }}
+                defaultHidden={hideResults}
+              />
             )}
           </AppShell.Main>
         </AppShell>

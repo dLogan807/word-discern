@@ -2,20 +2,37 @@ import { Guess } from "@/classes/guess";
 import { LetterCorrectness } from "@/classes/letter";
 import { stringsAreEqual } from "@/utils/guessValidation";
 
+export interface IResults {
+  words: string[];
+  revealedCharPositions: boolean[];
+}
+
 export default function getResults(
   wordSet: Set<string>,
   guesses: Guess[],
   shuffled?: boolean
-): string[] {
+): IResults {
   const parseResult = parseGuesses(guesses);
   const results = matchGuessesWithWords(wordSet, parseResult);
 
-  return shuffled ? shuffleArray(results) : results.sort();
+  shuffled ? shuffleArray(results) : results.sort();
+
+  const revealedCharPositions = parseResult.correctPosChars.map(
+    (char) => char !== undefined
+  );
+
+  return {
+    words: results,
+    revealedCharPositions: revealedCharPositions,
+  };
 }
 
 interface ParsedGuesses {
+  // Char that must be preset for a given index
   correctPosChars: string[];
+  // Set of blacklisted chars for each index
   blackListedPosChars: Array<Set<string>>;
+  // Set of chars that must be in the word somewhere
   requiredSomewhereChars: Set<string>;
 }
 
@@ -36,7 +53,7 @@ function parseGuesses(guesses: Guess[]): ParsedGuesses {
     for (let i = 0; i < guess.letters.length; i++) {
       const char = guess.letters[i];
 
-      //Count how many times the char is correct or in the wrong position
+      // Count how many times the char is correct or in the wrong position
       if (char.correctness !== LetterCorrectness.NotPresent) {
         validCharOccurences.set(
           char.value,
@@ -50,7 +67,7 @@ function parseGuesses(guesses: Guess[]): ParsedGuesses {
         continue;
       }
 
-      //Blacklist chars from applicable indexes
+      // Blacklist chars from applicable indexes
       const correctLetter = parseResult.correctPosChars[i];
       if (correctLetter === undefined || correctLetter !== char.value) {
         if (char.correctness === LetterCorrectness.WrongPosition) {
@@ -118,7 +135,7 @@ function charAtBadPos(
   );
 }
 
-//Fisher-Yates shuffle algorithm
+// Fisher-Yates shuffle algorithm
 function shuffleArray<T>(array: T[]): T[] {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));

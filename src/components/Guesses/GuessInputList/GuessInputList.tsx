@@ -1,4 +1,4 @@
-import { Button, Flex, Paper, Text, TextInput } from "@mantine/core";
+import { Box, Button, Flex, InputLabel, Paper, TextInput } from "@mantine/core";
 import { createContext } from "react";
 import { Guess } from "@/classes/guess";
 import GuessItem from "@/components/Guesses/GuessItem/GuessItem";
@@ -65,8 +65,8 @@ export default function GuessInputList({
 
   return (
     <Paper>
-      <Paper>
-        <Text>Guess</Text>
+      <Box>
+        <InputLabel>Guess</InputLabel>
         <Flex classNames={{ root: classes.guess_input_container }}>
           <TextInput
             {...guessField.getInputProps()}
@@ -76,7 +76,7 @@ export default function GuessInputList({
           />
           <Button onClick={tryAddGuess}>Add</Button>
         </Flex>
-      </Paper>
+      </Box>
 
       <GuessContext value={{ removeGuess, updateGuess }}>
         {guesses.map((guess, i) => (

@@ -11,24 +11,27 @@ import { IconEye, IconEyeOff } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import RevealableChar from "@/components/Results/RevealableChar/RevealableChar";
 import classes from "./Results.module.css";
+import { IResults } from "@/utils/resultBuilder";
 
 export default function Results({
   results,
   defaultHidden = true,
 }: {
-  results: string[];
+  results: IResults;
   defaultHidden?: boolean;
 }) {
   const numberToShow = 7;
   const [trimmedResults, setTrimmedResults] = useState<string[]>(
-    results.slice(0, numberToShow)
+    results.words.slice(0, numberToShow)
   );
   useEffect(() => {
-    setTrimmedResults(results.slice(0, numberToShow));
+    setTrimmedResults(results.words.slice(0, numberToShow));
   }, [results]);
 
   function loadMoreResults() {
-    setTrimmedResults(results.slice(0, trimmedResults.length + numberToShow));
+    setTrimmedResults(
+      results.words.slice(0, trimmedResults.length + numberToShow)
+    );
   }
 
   const resultGroups = trimmedResults.map((result) => {
@@ -50,10 +53,11 @@ export default function Results({
           root: classes.results_container,
         }}
       >
-        {results.length > 0 ? (
+        {results.words.length > 0 ? (
           <>
             <Text>
-              {results.length} possible word{results.length == 1 ? "" : "s"}:
+              {results.words.length} possible word
+              {results.words.length == 1 ? "" : "s"}:
             </Text>
             <List
               classNames={{
@@ -62,9 +66,10 @@ export default function Results({
             >
               {resultGroups}
             </List>
-            {results.length > 5 && trimmedResults.length < results.length && (
-              <Button onClick={loadMoreResults}>Show more words</Button>
-            )}
+            {results.words.length > 5 &&
+              trimmedResults.length < results.words.length && (
+                <Button onClick={loadMoreResults}>Show more words</Button>
+              )}
           </>
         ) : (
           <Text>No results :(</Text>

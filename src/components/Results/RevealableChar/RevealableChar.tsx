@@ -1,4 +1,4 @@
-import { Button } from "@mantine/core";
+import { Button, Text } from "@mantine/core";
 import { useEffect, useState } from "react";
 import classes from "./RevealableChar.module.css";
 
@@ -22,17 +22,17 @@ export default function RevealableChar({
     updateHidden(index, hidden);
   }, [hidden]);
 
-  const shownChar = hidden ? "_" : char;
+  const shownChar = hidden ? "?" : char;
 
   return (
     <Button
       onClick={() => setHidden(!hidden)}
-      variant="outline"
+      variant="default"
       classNames={{
         root: classes.result_char_button,
       }}
     >
-      {shownChar}
+      <Text>{shownChar}</Text>
     </Button>
   );
 }
