@@ -18,7 +18,7 @@ export default function LetterButton({
   const [flipped, setFlipped] = useState(false);
   const { updateGuess } = useContext(GuessContext);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const animDuration = 200;
+  const animDuration = 150;
 
   // Only change color once letter is hidden (flipped)
   useEffect(() => {
