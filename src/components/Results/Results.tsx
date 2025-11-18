@@ -87,33 +87,21 @@ function ResultChars({
   defaultHidden?: boolean;
 }) {
   const [allHidden, setAllHidden] = useState<boolean>(defaultHidden);
-  const [revealedChars, setHiddenChars] = useState<boolean[]>(
+  const [hiddenChars, setHiddenChars] = useState<boolean[]>(
     new Array<boolean>(result.length).fill(defaultHidden)
   );
 
-  useEffect(() => {
-    setAllHidden(defaultHidden);
-    setHiddenChars(new Array<boolean>(result.length).fill(defaultHidden));
-  }, [defaultHidden, result]);
-
   function updateHiddenChar(index: number, hidden: boolean) {
-    revealedChars[index] = hidden;
+    hiddenChars[index] = hidden;
     setHiddenChars(
-      revealedChars.map((charState, idx) =>
-        idx === index ? hidden : charState
-      )
+      hiddenChars.map((charState, idx) => (idx === index ? hidden : charState))
     );
 
-    let revealedCount = 0;
-    for (const revealedChar of revealedChars) {
-      if (revealedChar) {
-        revealedCount++;
-      }
-    }
+    let hiddenCount = hiddenChars.filter((char) => char).length;
 
-    if (revealedCount === 0 && allHidden) {
+    if (hiddenCount === 0 && allHidden) {
       fillHiddenArray(false);
-    } else if (revealedCount === result.length && !allHidden) {
+    } else if (hiddenCount === result.length && !allHidden) {
       fillHiddenArray(true);
     }
   }
