@@ -149,10 +149,7 @@ export default function App() {
                 onlyAllowWordListGuesses ? parsedWordSets.wordSets : undefined
               }
             />
-            <Button
-              disabled={!guesses.length}
-              onClick={() => handleGetPossibleWords()}
-            >
+            <Button disabled={!guesses.length} onClick={handleGetPossibleWords}>
               Get Possible Words!
             </Button>
 

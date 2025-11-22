@@ -30,7 +30,7 @@ export default function Results({
   const delayMult = 1.3;
   let delay = baseDelay;
 
-  // Reset the sdisplayed results
+  // Reset the displayed results
   useEffect(() => {
     delay = baseDelay;
     const currentNumberToShow = Math.min(10, results.words.length);
@@ -67,49 +67,43 @@ export default function Results({
           root: classes.results_container,
         }}
       >
-        {numberToShow > 0 ? (
-          <>
-            <Text>
-              {results.words.length} possible word
-              {results.words.length == 1 ? "" : "s"}:
-            </Text>
-            <List
-              classNames={{
-                item: classes.result_list_item,
-              }}
-            >
-              {results.words.map((result, idx) => {
-                delay =
-                  idx % numberToShow === 0 ? baseDelay : (delay *= delayMult);
+        <Text>
+          {numberToShow > 0
+            ? `${results.words.length} possible word${
+                results.words.length == 1 ? "" : "s"
+              }:`
+            : "No results :("}
+        </Text>
+        <List
+          classNames={{
+            item: classes.result_list_item,
+          }}
+        >
+          {results.words.map((result, idx) => {
+            delay = idx % numberToShow === 0 ? baseDelay : (delay *= delayMult);
 
-                return (
-                  <Transition
-                    mounted={mountedResults[idx] ?? false}
-                    transition="fade-down"
-                    enterDelay={delay}
-                    key={`${result}-${idx}-${resetKey}`}
-                  >
-                    {(transitionStyle) => (
-                      <ListItem style={{ ...transitionStyle, zIndex: 1 }}>
-                        {results.defaultHidden ? (
-                          <ResultChars result={result} />
-                        ) : (
-                          <Text>{result}</Text>
-                        )}
-                      </ListItem>
+            return (
+              <Transition
+                mounted={mountedResults[idx] ?? false}
+                transition="fade-down"
+                enterDelay={delay}
+                key={`${result}-${idx}-${resetKey}`}
+              >
+                {(transitionStyle) => (
+                  <ListItem style={{ ...transitionStyle, zIndex: 1 }}>
+                    {results.defaultHidden ? (
+                      <ResultChars result={result} />
+                    ) : (
+                      <Text>{result}</Text>
                     )}
-                  </Transition>
-                );
-              })}
-            </List>
-            {numResultsMounted < results.words.length && (
-              <Button onClick={() => handleShowMoreWords()}>
-                Show more words
-              </Button>
-            )}
-          </>
-        ) : (
-          <Text>No results :(</Text>
+                  </ListItem>
+                )}
+              </Transition>
+            );
+          })}
+        </List>
+        {numResultsMounted < results.words.length && (
+          <Button onClick={handleShowMoreWords}>Show more words</Button>
         )}
       </Stack>
     </>
