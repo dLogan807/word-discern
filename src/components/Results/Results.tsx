@@ -6,6 +6,7 @@ import {
   ListItem,
   Stack,
   Text,
+  Transition,
 } from "@mantine/core";
 import { IconEye, IconEyeOff } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
@@ -15,36 +16,49 @@ import { IResults } from "@/utils/resultBuilder";
 
 export default function Results({
   results,
-  defaultHidden = true,
+  triggerUpdate,
 }: {
   results: IResults;
-  defaultHidden?: boolean;
+  triggerUpdate: number;
 }) {
-  const numberToShow = 7;
-  const [trimmedResults, setTrimmedResults] = useState<string[]>(
-    results.words.slice(0, numberToShow)
-  );
+  const numberToShow: number = Math.min(10, results.words.length);
+  const [numResultsMounted, setNumResultsMounted] = useState(numberToShow);
+  const [mountedResults, setMountedResults] = useState<Array<boolean>>([]);
+  const [resetKey, setResetKey] = useState(0);
+
+  const baseDelay = 20;
+  const delayMult = 1.3;
+  let delay = baseDelay;
+
+  // Reset the sdisplayed results
   useEffect(() => {
-    setTrimmedResults(results.words.slice(0, numberToShow));
-  }, [results]);
+    delay = baseDelay;
+    const currentNumberToShow = Math.min(10, results.words.length);
+    const initialArray = new Array(results.words.length).fill(false);
+    initialArray.fill(true, 0, currentNumberToShow);
 
-  function loadMoreResults() {
-    setTrimmedResults(
-      results.words.slice(0, trimmedResults.length + numberToShow)
+    // Force a complete reset by incrementing the reset key
+    setResetKey((prev) => prev + 1);
+    setMountedResults([...initialArray]);
+    setNumResultsMounted(currentNumberToShow);
+  }, [triggerUpdate, results.words.length]);
+
+  function handleShowMoreWords() {
+    const oldNumMounted = numResultsMounted;
+    const newNumMounted = Math.min(
+      numResultsMounted + numberToShow,
+      results.words.length
     );
+
+    const newMountedResults = [...mountedResults].fill(
+      true,
+      oldNumMounted,
+      newNumMounted
+    );
+
+    setNumResultsMounted(newNumMounted);
+    setMountedResults(newMountedResults);
   }
-
-  const resultGroups = trimmedResults.map((result) => {
-    return (
-      <ListItem key={result}>
-        {defaultHidden ? (
-          <ResultChars result={result} />
-        ) : (
-          <Text>{result}</Text>
-        )}
-      </ListItem>
-    );
-  });
 
   return (
     <>
@@ -53,7 +67,7 @@ export default function Results({
           root: classes.results_container,
         }}
       >
-        {results.words.length > 0 ? (
+        {numberToShow > 0 ? (
           <>
             <Text>
               {results.words.length} possible word
@@ -64,12 +78,35 @@ export default function Results({
                 item: classes.result_list_item,
               }}
             >
-              {resultGroups}
+              {results.words.map((result, idx) => {
+                delay =
+                  idx % numberToShow === 0 ? baseDelay : (delay *= delayMult);
+
+                return (
+                  <Transition
+                    mounted={mountedResults[idx] ?? false}
+                    transition="fade-down"
+                    enterDelay={delay}
+                    key={`${result}-${idx}-${resetKey}`}
+                  >
+                    {(transitionStyle) => (
+                      <ListItem style={{ ...transitionStyle, zIndex: 1 }}>
+                        {results.defaultHidden ? (
+                          <ResultChars result={result} />
+                        ) : (
+                          <Text>{result}</Text>
+                        )}
+                      </ListItem>
+                    )}
+                  </Transition>
+                );
+              })}
             </List>
-            {results.words.length > 5 &&
-              trimmedResults.length < results.words.length && (
-                <Button onClick={loadMoreResults}>Show more words</Button>
-              )}
+            {numResultsMounted < results.words.length && (
+              <Button onClick={() => handleShowMoreWords()}>
+                Show more words
+              </Button>
+            )}
           </>
         ) : (
           <Text>No results :(</Text>

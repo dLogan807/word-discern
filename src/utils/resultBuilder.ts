@@ -5,6 +5,7 @@ import { stringsAreEqual } from "@/utils/guessValidation";
 export interface IResults {
   words: string[];
   revealedCharPositions: boolean[];
+  defaultHidden?: boolean;
 }
 
 export default function getResults(

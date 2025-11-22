@@ -48,8 +48,11 @@ export default function App() {
     parseWordsToSets(DEFAULT_WORDS, false)
   );
 
-  // Settings
+  // Result state
   const [showResults, setShowResults] = useState(false);
+  const [resultUpdateKey, setResultUpdateKey] = useState(0);
+
+  // Settings
   const [shuffleResults, setShuffleResults] = useState<boolean>(true);
   const [hideResults, setHideResults] = useState<boolean>(true);
   const [onlyHideUnknownChars, setOnlyHideUnknownChars] =
@@ -67,25 +70,24 @@ export default function App() {
     );
   }, [storedCustomWordsFormData]);
 
-  useEffect(() => {
-    updateResults();
-  }, [shuffleResults]);
-
-  function updateResults() {
-    if (guesses.length == 0 || !guesses[0]) {
-      return setResults(blankResults);
-    }
-
-    setShowResults(true);
+  function handleGetPossibleWords() {
+    if (guesses.length == 0 || !guesses[0]) return;
 
     const guessLength = guesses[0].wordString.length;
     const wordSets = parsedWordSets.wordSets.get(guessLength);
 
-    if (wordSets == null) {
-      return setResults(blankResults);
-    }
+    if (wordSets == null) return;
 
-    setResults(getResults(wordSets, guesses, shuffleResults));
+    setResults({
+      ...getResults(wordSets, guesses, shuffleResults),
+      revealedCharPositions: onlyHideUnknownChars
+        ? []
+        : results.revealedCharPositions,
+      defaultHidden: hideResults,
+    });
+
+    setResultUpdateKey((prev) => prev + 1);
+    setShowResults(true);
   }
 
   return (
@@ -147,19 +149,15 @@ export default function App() {
                 onlyAllowWordListGuesses ? parsedWordSets.wordSets : undefined
               }
             />
-            <Button disabled={!guesses.length} onClick={updateResults}>
+            <Button
+              disabled={!guesses.length}
+              onClick={() => handleGetPossibleWords()}
+            >
               Get Possible Words!
             </Button>
+
             {showResults && (
-              <Results
-                results={{
-                  ...results,
-                  revealedCharPositions: onlyHideUnknownChars
-                    ? []
-                    : results.revealedCharPositions,
-                }}
-                defaultHidden={hideResults}
-              />
+              <Results results={results} triggerUpdate={resultUpdateKey} />
             )}
           </AppShell.Main>
         </AppShell>
