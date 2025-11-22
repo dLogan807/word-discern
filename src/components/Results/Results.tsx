@@ -21,13 +21,15 @@ export default function Results({
   results: IResults;
   triggerUpdate: number;
 }) {
-  const numberToShow: number = Math.min(10, results.words.length);
+  const numberToShow: number = Math.min(15, results.words.length);
   const [numResultsMounted, setNumResultsMounted] = useState(numberToShow);
-  const [mountedResults, setMountedResults] = useState<Array<boolean>>([]);
+  const [mountedResults, setMountedResults] = useState<Array<boolean>>(
+    new Array(results.words.length).fill(false)
+  );
   const [resetKey, setResetKey] = useState(0);
 
   const baseDelay = 20;
-  const delayMult = 1.3;
+  const delayMult = 1.2;
   let delay = baseDelay;
 
   // Reset the displayed results
@@ -43,6 +45,9 @@ export default function Results({
 
   // Animate first results after a reset
   useEffect(() => {
+    // Prevent showing double results after a page reload
+    if (numResultsMounted === numberToShow) return;
+
     handleShowMoreWords();
   }, [resetKey]);
 

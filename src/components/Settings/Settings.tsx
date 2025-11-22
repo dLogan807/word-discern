@@ -12,6 +12,7 @@ import LoadedWordsBadges, {
 } from "@/components/Settings/CustomWordsForm/WordBadges/WordBadges";
 import CustomWordsForm from "@/components/Settings/CustomWordsForm/CustomWordsForm";
 import {
+  IconAccessible,
   IconBook2,
   IconClipboardData,
   IconRadiusBottomLeft,
@@ -32,12 +33,14 @@ interface SettingsProps {
 }
 
 export default function Settings(props: SettingsProps) {
+  const iconSize = 20;
+
   return (
     <Stack classNames={{ root: classes.settings }}>
       <Title order={3}>Settings</Title>
       <SettingsDivider
         title="Guess input"
-        icon={<IconZoomQuestion size={20} />}
+        icon={<IconZoomQuestion size={iconSize} />}
       />
       <Switch
         label="Keyboard Mode"
@@ -52,7 +55,10 @@ export default function Settings(props: SettingsProps) {
         }
         defaultChecked
       />
-      <SettingsDivider title="Results" icon={<IconClipboardData size={20} />} />
+      <SettingsDivider
+        title="Results"
+        icon={<IconClipboardData size={iconSize} />}
+      />
       <Checkbox
         label="Shuffled"
         checked={props.shuffleResults}
@@ -89,11 +95,21 @@ export default function Settings(props: SettingsProps) {
           />
         </Group>
       </Box>
-      <SettingsDivider title="Word list" icon={<IconBook2 size={20} />} />
+      <SettingsDivider title="Word list" icon={<IconBook2 size={iconSize} />} />
       <Stack classNames={{ root: classes.custom_words_container }}>
         <LoadedWordsBadges badgeData={props.wordBadgeData} />
         <CustomWordsForm />
       </Stack>
+      <SettingsDivider
+        title="Accessibility"
+        icon={<IconAccessible size={iconSize} />}
+      />
+      <Checkbox
+        label="Animations (WIP)"
+        checked={true}
+        classNames={{ root: classes.setting_switch }}
+        disabled
+      />
     </Stack>
   );
 }
