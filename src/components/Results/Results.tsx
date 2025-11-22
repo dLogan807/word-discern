@@ -33,15 +33,18 @@ export default function Results({
   // Reset the displayed results
   useEffect(() => {
     delay = baseDelay;
-    const currentNumberToShow = Math.min(10, results.words.length);
     const initialArray = new Array(results.words.length).fill(false);
-    initialArray.fill(true, 0, currentNumberToShow);
 
     // Force a complete reset by incrementing the reset key
     setResetKey((prev) => prev + 1);
-    setMountedResults([...initialArray]);
-    setNumResultsMounted(currentNumberToShow);
+    setMountedResults(initialArray);
+    setNumResultsMounted(0);
   }, [triggerUpdate, results.words.length]);
+
+  // Animate first results after a reset
+  useEffect(() => {
+    handleShowMoreWords();
+  }, [resetKey]);
 
   function handleShowMoreWords() {
     const oldNumMounted = numResultsMounted;
