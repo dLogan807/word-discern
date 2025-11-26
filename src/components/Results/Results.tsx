@@ -6,7 +6,6 @@ import {
   ListItem,
   Stack,
   Text,
-  Transition,
 } from "@mantine/core";
 import { IconEye, IconEyeOff } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
@@ -31,6 +30,7 @@ export default function Results({
   const baseDelay = 20;
   const delayMult = 1.2;
   let delay = baseDelay;
+  const totalDelay = baseDelay * delayMult ** numberToShow;
 
   // Reset the displayed results
   useEffect(() => {
@@ -90,28 +90,40 @@ export default function Results({
           {results.words.map((result, idx) => {
             delay = idx % numberToShow === 0 ? baseDelay : (delay *= delayMult);
 
+            if (!mountedResults[idx]) return null;
+
             return (
-              <Transition
-                mounted={mountedResults[idx] ?? false}
-                transition="fade-down"
-                enterDelay={delay}
+              <ListItem
                 key={`${result}-${idx}-${resetKey}`}
+                style={{
+                  animationName: classes.resultReveal,
+                  animationDuration: `${delay}ms`,
+                  animationDelay: `${delay}ms`,
+                  animationFillMode: "both",
+                }}
               >
-                {(transitionStyle) => (
-                  <ListItem style={{ ...transitionStyle, zIndex: 1 }}>
-                    {results.defaultHidden ? (
-                      <ResultChars result={result} />
-                    ) : (
-                      <Text>{result}</Text>
-                    )}
-                  </ListItem>
+                {results.defaultHidden ? (
+                  <ResultChars result={result} />
+                ) : (
+                  <Text>{result}</Text>
                 )}
-              </Transition>
+              </ListItem>
             );
           })}
         </List>
         {numResultsMounted < results.words.length && (
-          <Button onClick={handleShowMoreWords}>Show more words</Button>
+          <Button
+            key={numResultsMounted}
+            style={{
+              animationName: classes.resultReveal,
+              animationDuration: `${totalDelay}ms`,
+              animationDelay: `${totalDelay}ms`,
+              animationFillMode: "backwards",
+            }}
+            onClick={handleShowMoreWords}
+          >
+            Show more words
+          </Button>
         )}
       </Stack>
     </>

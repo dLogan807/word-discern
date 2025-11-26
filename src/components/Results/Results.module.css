@@ -6,3 +6,15 @@
 .result_list_item {
   margin-bottom: 0.5rem;
 }
+
+@keyframes resultReveal {
+  from {
+    opacity: 0;
+    transform: scale3d(1.2, 1.2, 1.2) translate(0, -5rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
