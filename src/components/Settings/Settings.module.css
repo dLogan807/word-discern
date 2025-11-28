@@ -6,6 +6,11 @@
   padding-left: 1rem;
 }
 
+.setting_slider {
+  padding: 0 1rem 0 1rem;
+  gap: 0.25rem;
+}
+
 .custom_words_container {
   margin-left: 1rem;
 }

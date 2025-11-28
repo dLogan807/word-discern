@@ -3,6 +3,8 @@ import {
   Checkbox,
   Divider,
   Group,
+  InputLabel,
+  Slider,
   Stack,
   Switch,
   Title,
@@ -23,13 +25,15 @@ import classes from "./Settings.module.css";
 
 interface SettingsProps {
   wordBadgeData: WordBadgeData;
+  setOnlyAllowWordListGuesses: Dispatch<SetStateAction<boolean>>;
   shuffleResults: boolean;
   setShuffleResults: Dispatch<SetStateAction<boolean>>;
   hideResults: boolean;
   setHideResults: Dispatch<SetStateAction<boolean>>;
   onlyHideUnknownChars: boolean;
   setOnlyHideUnknownChars: Dispatch<SetStateAction<boolean>>;
-  setOnlyAllowWordListGuessesRef: (value: boolean) => void;
+  numResultsShown: number;
+  setNumResultsShown: Dispatch<SetStateAction<number>>;
 }
 
 export default function Settings(props: SettingsProps) {
@@ -51,7 +55,7 @@ export default function Settings(props: SettingsProps) {
         label="Only allow words from the word list"
         classNames={{ root: classes.setting_switch }}
         onChange={(event) =>
-          props.setOnlyAllowWordListGuessesRef(event.currentTarget.checked)
+          props.setOnlyAllowWordListGuesses(event.currentTarget.checked)
         }
         defaultChecked
       />
@@ -95,6 +99,18 @@ export default function Settings(props: SettingsProps) {
           />
         </Group>
       </Box>
+      <Stack classNames={{ root: classes.setting_slider }}>
+        <InputLabel>Number displayed: {props.numResultsShown}</InputLabel>
+        <Slider
+          onChangeEnd={props.setNumResultsShown}
+          domain={[0, 100]}
+          defaultValue={20}
+          min={5}
+          max={100}
+          step={5}
+          size="lg"
+        />
+      </Stack>
       <SettingsDivider title="Word list" icon={<IconBook2 size={iconSize} />} />
       <Stack classNames={{ root: classes.custom_words_container }}>
         <LoadedWordsBadges badgeData={props.wordBadgeData} />

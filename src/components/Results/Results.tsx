@@ -12,15 +12,18 @@ import { useEffect, useState } from "react";
 import RevealableChar from "@/components/Results/RevealableChar/RevealableChar";
 import classes from "./Results.module.css";
 import { IResults } from "@/utils/resultBuilder";
+import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 
 export default function Results({
   results,
+  numberToShow,
   triggerUpdate,
 }: {
   results: IResults;
+  numberToShow: number;
   triggerUpdate: number;
 }) {
-  const numberToShow: number = Math.min(15, results.words.length);
+  numberToShow = Math.min(numberToShow, results.words.length);
   const [numResultsMounted, setNumResultsMounted] = useState(numberToShow);
   const [mountedResults, setMountedResults] = useState<Array<boolean>>(
     new Array(results.words.length).fill(false)
@@ -28,9 +31,10 @@ export default function Results({
   const [resetKey, setResetKey] = useState(0);
 
   const baseDelay = 20;
-  const delayMult = 1.2;
+  const delayMult = 1.05 + 1 / Math.max(numberToShow, 1);
   let delay = baseDelay;
-  const totalDelay = baseDelay * delayMult ** numberToShow;
+  let totalDelay = baseDelay * delayMult ** numberToShow;
+  totalDelay = totalDelay > 500 ? 500 : totalDelay;
 
   // Reset the displayed results
   useEffect(() => {
@@ -83,12 +87,14 @@ export default function Results({
             : "No results :("}
         </Text>
         <List
+          type="ordered"
           classNames={{
             item: classes.result_list_item,
           }}
         >
           {results.words.map((result, idx) => {
             delay = idx % numberToShow === 0 ? baseDelay : (delay *= delayMult);
+            if (delay > totalDelay) delay = totalDelay;
 
             if (!mountedResults[idx]) return null;
 
@@ -105,7 +111,7 @@ export default function Results({
                 {results.defaultHidden ? (
                   <ResultChars result={result} />
                 ) : (
-                  <Text>{result}</Text>
+                  <Text>{capitalizeFirstLetter(result)}</Text>
                 )}
               </ListItem>
             );

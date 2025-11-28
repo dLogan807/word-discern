@@ -53,12 +53,12 @@ export default function App() {
   const [resultUpdateKey, setResultUpdateKey] = useState(0);
 
   // Settings
-  const [shuffleResults, setShuffleResults] = useState<boolean>(true);
-  const [hideResults, setHideResults] = useState<boolean>(true);
-  const [onlyHideUnknownChars, setOnlyHideUnknownChars] =
-    useState<boolean>(true);
   const [onlyAllowWordListGuesses, setOnlyAllowWordListGuesses] =
-    useState<boolean>(true);
+    useState(true);
+  const [shuffleResults, setShuffleResults] = useState(true);
+  const [hideResults, setHideResults] = useState(true);
+  const [onlyHideUnknownChars, setOnlyHideUnknownChars] = useState(true);
+  const [numResultsShown, setNumResultsShown] = useState(20);
 
   useEffect(() => {
     const mergedWords: string[] = storedCustomWordsFormData.replaceDefaultWords
@@ -135,7 +135,9 @@ export default function App() {
                   setHideResults={setHideResults}
                   onlyHideUnknownChars={onlyHideUnknownChars}
                   setOnlyHideUnknownChars={setOnlyHideUnknownChars}
-                  setOnlyAllowWordListGuessesRef={setOnlyAllowWordListGuesses}
+                  setOnlyAllowWordListGuesses={setOnlyAllowWordListGuesses}
+                  numResultsShown={numResultsShown}
+                  setNumResultsShown={setNumResultsShown}
                 />
               </ScrollArea>
             </CustomWordsFormContext>
@@ -153,7 +155,11 @@ export default function App() {
             </Button>
 
             {showResults && (
-              <Results results={results} triggerUpdate={resultUpdateKey} />
+              <Results
+                results={results}
+                numberToShow={numResultsShown}
+                triggerUpdate={resultUpdateKey}
+              />
             )}
           </AppShell.Main>
         </AppShell>
