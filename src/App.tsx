@@ -26,7 +26,7 @@ import {
   DEFAULT_CUSTOM_WORDS_FORM,
 } from "@/components/Settings/CustomWordsForm/CustomWordsForm";
 import { ParsedWordSets, parseWordsToSets } from "@/utils/wordLoading";
-import Guesses from "@/components/Guesses/GuessInputList/GuessInputList";
+import GuessInputList from "@/components/Guesses/GuessInputList/GuessInputList";
 import { ThemeSelector } from "@/components/ThemeSelector/ThemeSelector";
 import Settings from "@/components/Settings/Settings";
 import classes from "./App.module.css";
@@ -74,12 +74,12 @@ export default function App() {
     if (guesses.length == 0 || !guesses[0]) return;
 
     const guessLength = guesses[0].wordString.length;
-    const wordSets = parsedWordSets.wordSets.get(guessLength);
+    const wordSet = parsedWordSets.wordSets.get(guessLength);
 
-    if (wordSets == null) return;
+    if (wordSet == null) return;
 
     setResults({
-      ...getResults(wordSets, guesses, shuffleResults),
+      ...getResults(wordSet, guesses, shuffleResults),
       revealedCharPositions: onlyHideUnknownChars
         ? []
         : results.revealedCharPositions,
@@ -142,12 +142,11 @@ export default function App() {
           </AppShell.Navbar>
 
           <AppShell.Main>
-            <Guesses
+            <GuessInputList
               guesses={guesses}
               setGuesses={setGuesses}
-              wordSets={
-                onlyAllowWordListGuesses ? parsedWordSets.wordSets : undefined
-              }
+              wordSets={parsedWordSets.wordSets}
+              onlyAllowWordListGuesses={onlyAllowWordListGuesses}
             />
             <Button disabled={!guesses.length} onClick={handleGetPossibleWords}>
               Get Possible Words!

@@ -16,12 +16,14 @@ export const GuessContext = createContext<{
 
 export default function GuessInputList({
   guesses,
-  wordSets,
   setGuesses,
+  wordSets,
+  onlyAllowWordListGuesses,
 }: {
   guesses: Guess[];
-  wordSets: Map<number, Set<string>> | undefined;
   setGuesses: (value: Guess[]) => void;
+  wordSets: Map<number, Set<string>>;
+  onlyAllowWordListGuesses: boolean;
 }) {
   const guessField = useField({
     initialValue: "",
@@ -37,7 +39,8 @@ export default function GuessInputList({
     const validationResponse = validateGuess(
       guessValue,
       guesses,
-      wordSets ? wordSets.get(guessValue.length) : undefined
+      wordSets.get(guessValue.length),
+      onlyAllowWordListGuesses
     );
 
     if (!validationResponse.validated) {
