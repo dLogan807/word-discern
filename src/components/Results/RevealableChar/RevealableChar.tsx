@@ -13,7 +13,7 @@ export default function RevealableChar({
   hide?: boolean;
   updateHidden: (index: number, hidden: boolean) => void;
 }) {
-  const [hidden, setHidden] = useState<boolean>(hide);
+  const [hidden, setHidden] = useState(hide);
   useEffect(() => {
     setHidden(hide);
   }, [hide]);

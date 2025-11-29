@@ -27,7 +27,7 @@ export default function Results({
 }) {
   numberToShow = Math.min(numberToShow, results.words.length);
   const [numResultsMounted, setNumResultsMounted] = useState(numberToShow);
-  const [mountedResults, setMountedResults] = useState<Array<boolean>>(
+  const [mountedResults, setMountedResults] = useState<boolean[]>(
     new Array(results.words.length).fill(false)
   );
   const [resetKey, setResetKey] = useState(0);
@@ -148,8 +148,8 @@ function ResultChars({
   result: string;
   defaultHidden?: boolean;
 }) {
-  const [allHidden, setAllHidden] = useState<boolean>(defaultHidden);
-  const [hiddenChars, setHiddenChars] = useState<boolean[]>(
+  const [allHidden, setAllHidden] = useState(defaultHidden);
+  const [hiddenChars, setHiddenChars] = useState(
     new Array<boolean>(result.length).fill(defaultHidden)
   );
 
