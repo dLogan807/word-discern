@@ -44,15 +44,13 @@ export default function LetterButton({
       onClick={handleClick}
     >
       <Box
+        key={`${flipped}`}
         className={classes.letter_button_inner}
         style={{
           backgroundColor: backgroundColor,
-          animationName: doAnimations
-            ? flipped
-              ? classes.letterFlipGrow
-              : classes.letterFlipShrink
-            : "",
+          animationName: classes.letterFlip,
           animationDuration: `${animDuration}ms`,
+          animationDirection: flipped ? "normal" : "reverse",
           animationFillMode: "both",
         }}
         onAnimationEnd={resetFlipped}

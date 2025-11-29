@@ -19,17 +19,7 @@
   font-size: var(--mantine-font-size-lg);
 }
 
-@keyframes letterFlipShrink {
-  from {
-    transform: scale(0.9, 0);
-  }
-
-  to {
-    transform: none;
-  }
-}
-
-@keyframes letterFlipGrow {
+@keyframes letterFlip {
   from {
     transform: none;
   }
