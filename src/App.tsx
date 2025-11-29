@@ -59,6 +59,7 @@ export default function App() {
   const [hideResults, setHideResults] = useState(true);
   const [onlyHideUnknownChars, setOnlyHideUnknownChars] = useState(true);
   const [numResultsShown, setNumResultsShown] = useState(20);
+  const [doAnimations, setDoAnimations] = useState(true);
 
   useEffect(() => {
     const mergedWords: string[] = storedCustomWordsFormData.replaceDefaultWords
@@ -138,6 +139,8 @@ export default function App() {
                   setOnlyAllowWordListGuesses={setOnlyAllowWordListGuesses}
                   numResultsShown={numResultsShown}
                   setNumResultsShown={setNumResultsShown}
+                  doAnimations={doAnimations}
+                  setDoAnimations={setDoAnimations}
                 />
               </ScrollArea>
             </CustomWordsFormContext>
@@ -149,6 +152,7 @@ export default function App() {
               setGuesses={setGuesses}
               wordSets={parsedWordSets.wordSets}
               onlyAllowWordListGuesses={onlyAllowWordListGuesses}
+              doAnimations={doAnimations}
             />
             <Button disabled={!guesses.length} onClick={handleGetPossibleWords}>
               Get Possible Words!
@@ -159,6 +163,7 @@ export default function App() {
                 results={results}
                 numberToShow={numResultsShown}
                 triggerUpdate={resultUpdateKey}
+                doAnimations={doAnimations}
               />
             )}
           </AppShell.Main>

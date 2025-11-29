@@ -9,9 +9,11 @@ import classes from "./GuessInputList.module.css";
 export const GuessContext = createContext<{
   removeGuess: (guess: Guess) => void;
   updateGuess: (guess: Guess) => void;
+  doAnimations: boolean;
 }>({
   removeGuess: () => {},
   updateGuess: () => {},
+  doAnimations: true,
 });
 
 export default function GuessInputList({
@@ -19,11 +21,13 @@ export default function GuessInputList({
   setGuesses,
   wordSets,
   onlyAllowWordListGuesses,
+  doAnimations,
 }: {
   guesses: Guess[];
   setGuesses: (value: Guess[]) => void;
   wordSets: Map<number, Set<string>>;
   onlyAllowWordListGuesses: boolean;
+  doAnimations: boolean;
 }) {
   const guessField = useField({
     initialValue: "",
@@ -81,7 +85,7 @@ export default function GuessInputList({
         </Flex>
       </Box>
 
-      <GuessContext value={{ removeGuess, updateGuess }}>
+      <GuessContext value={{ removeGuess, updateGuess, doAnimations }}>
         {guesses.map((guess, i) => (
           <GuessItem key={i} guess={guess} />
         ))}

@@ -34,6 +34,8 @@ interface SettingsProps {
   setOnlyHideUnknownChars: Dispatch<SetStateAction<boolean>>;
   numResultsShown: number;
   setNumResultsShown: Dispatch<SetStateAction<number>>;
+  doAnimations: boolean;
+  setDoAnimations: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function Settings(props: SettingsProps) {
@@ -73,7 +75,7 @@ export default function Settings(props: SettingsProps) {
       />
       <Box>
         <Checkbox
-          label="Hide results"
+          label="Hidden"
           checked={props.hideResults}
           onChange={(event) =>
             props.setHideResults(event.currentTarget.checked)
@@ -121,10 +123,10 @@ export default function Settings(props: SettingsProps) {
         icon={<IconAccessible size={iconSize} />}
       />
       <Checkbox
-        label="Animations (WIP)"
-        checked={true}
+        label="Animations"
         classNames={{ root: classes.setting_switch }}
-        disabled
+        checked={props.doAnimations}
+        onChange={(event) => props.setDoAnimations(event.currentTarget.checked)}
       />
     </Stack>
   );
@@ -138,22 +140,20 @@ function SettingsDivider({
   icon: ReactElement;
 }) {
   return (
-    <>
-      <Divider
-        my="xs"
-        labelPosition="left"
-        label={
-          <>
-            {icon}
-            <Title
-              order={6}
-              classNames={{ root: classes.settings_section_title }}
-            >
-              {title}
-            </Title>
-          </>
-        }
-      />
-    </>
+    <Divider
+      my="xs"
+      labelPosition="left"
+      label={
+        <>
+          {icon}
+          <Title
+            order={6}
+            classNames={{ root: classes.settings_section_title }}
+          >
+            {title}
+          </Title>
+        </>
+      }
+    />
   );
 }

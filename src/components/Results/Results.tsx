@@ -18,10 +18,12 @@ export default function Results({
   results,
   numberToShow,
   triggerUpdate,
+  doAnimations,
 }: {
   results: IResults;
   numberToShow: number;
   triggerUpdate: number;
+  doAnimations: boolean;
 }) {
   numberToShow = Math.min(numberToShow, results.words.length);
   const [numResultsMounted, setNumResultsMounted] = useState(numberToShow);
@@ -30,11 +32,10 @@ export default function Results({
   );
   const [resetKey, setResetKey] = useState(0);
 
-  const baseDelay = 20;
+  const baseDelay = doAnimations ? 20 : 0;
   const delayMult = 1.05 + 1 / Math.max(numberToShow, 1);
   let delay = baseDelay;
-  let totalDelay = baseDelay * delayMult ** numberToShow;
-  totalDelay = totalDelay > 500 ? 500 : totalDelay;
+  const totalDelay = Math.min(baseDelay * delayMult ** numberToShow, 500);
 
   // Reset the displayed results
   useEffect(() => {
@@ -93,14 +94,18 @@ export default function Results({
           }}
         >
           {results.words.map((result, idx) => {
-            delay = idx % numberToShow === 0 ? baseDelay : (delay *= delayMult);
-            if (delay > totalDelay) delay = totalDelay;
+            if (doAnimations) {
+              delay = Math.min(
+                idx % numberToShow === 0 ? baseDelay : (delay *= delayMult),
+                totalDelay
+              );
+            }
 
             if (!mountedResults[idx]) return null;
 
             return (
               <ListItem
-                key={`${result}-${idx}-${resetKey}`}
+                key={idx}
                 style={{
                   animationName: classes.resultReveal,
                   animationDuration: `${delay}ms`,
@@ -123,7 +128,7 @@ export default function Results({
             style={{
               animationName: classes.resultReveal,
               animationDuration: `${totalDelay}ms`,
-              animationDelay: `${totalDelay}ms`,
+              animationDelay: `${doAnimations ? totalDelay : 200}ms`,
               animationFillMode: "backwards",
             }}
             onClick={handleShowMoreWords}

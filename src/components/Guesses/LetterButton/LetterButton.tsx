@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext, useRef } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import { Property } from "csstype";
 import { Letter } from "@/classes/letter";
 import { Flex, UnstyledButton } from "@mantine/core";
@@ -12,13 +12,13 @@ export default function LetterButton({
 }: {
   letter: Letter;
   guess: Guess;
-}): React.ReactElement {
+}) {
   const [backgroundColor, setBackgroundColor] =
     useState<Property.BackgroundColor>(letter.correctness);
   const [flipped, setFlipped] = useState(false);
-  const { updateGuess } = useContext(GuessContext);
+  const { updateGuess, doAnimations } = useContext(GuessContext);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const animDuration = 150;
+  const animDuration = doAnimations ? 150 : 0;
 
   // Only change color once letter is hidden (flipped)
   useEffect(() => {
@@ -69,7 +69,7 @@ export default function LetterButton({
       <Flex
         classNames={{
           root: `${classes.letter_button_inner} ${
-            flipped ? classes.letter_flipped : ""
+            flipped && doAnimations ? classes.letter_flipped : ""
           }`.trim(),
         }}
         styles={{
