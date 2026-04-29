@@ -4,6 +4,8 @@ export interface ParsedWordSets {
   wordSets: Map<number, Set<string>>;
 }
 
+const ALL_LETTERS_REGEX: RegExp = /^[a-zA-Z]+$/;
+
 export function parseWordsToSets(
   words: string[],
   specialCharsAllowed: boolean
@@ -49,9 +51,7 @@ function isValidWord(word: string, specialCharsAllowed: boolean): boolean {
 }
 
 function containsOnlyLetters(word: string): boolean {
-  const allLettersRegex: RegExp = /^[a-zA-Z]+$/;
-
-  return allLettersRegex.test(word);
+  return ALL_LETTERS_REGEX.test(word);
 }
 
 export function getWordArray(text: string): string[] {
