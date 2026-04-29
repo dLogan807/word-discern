@@ -24,7 +24,7 @@ export default function LetterButton({
     if (!doAnimations || !flipped) {
       setBackgroundColor(letter.correctness);
     }
-  }, [flipped]);
+  }, [flipped, doAnimations, letter.correctness]);
 
   function resetFlipped() {
     setFlipped(false);
