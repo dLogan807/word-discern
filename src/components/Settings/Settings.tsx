@@ -91,10 +91,9 @@ export default function Settings(props: SettingsProps) {
             className={props.hideResults ? "" : classes.disabled_setting}
           />
           <Checkbox
-            label="Only hide unknown characters (WIP)"
+            label="Only hide unknown characters"
             checked={props.onlyHideUnknownChars}
-            //disabled={!props.hideResults}
-            disabled
+            disabled={!props.hideResults}
             onChange={(event) =>
               props.setOnlyHideUnknownChars(event.currentTarget.checked)
             }

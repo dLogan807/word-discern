@@ -116,7 +116,10 @@ function ResultsContent({
                 }}
               >
                 {results.defaultHidden ? (
-                  <ResultChars result={result} />
+                  <ResultChars
+                    result={result}
+                    permRevealedCharPositions={results.revealedCharPositions}
+                  />
                 ) : (
                   <Text>{capitalizeFirstLetter(result)}</Text>
                 )}
@@ -145,50 +148,64 @@ function ResultsContent({
 
 function ResultChars({
   result,
-  defaultHidden = true,
+  permRevealedCharPositions,
 }: {
   result: string;
-  defaultHidden?: boolean;
+  permRevealedCharPositions: boolean[];
 }) {
-  const [allHidden, setAllHidden] = useState(defaultHidden);
-  const [hiddenChars, setHiddenChars] = useState(
-    new Array<boolean>(result.length).fill(defaultHidden)
-  );
+  const defaultArray = new Array<boolean>(result.length).fill(true);
+  const numToggleable = permRevealedCharPositions.filter(
+    (charIsRevealed) => !charIsRevealed,
+  ).length;
+
+  const [allRevealed, setAllRevealed] = useState(false);
+  const [revealedChars, setRevealedChars] = useState(defaultArray);
 
   function updateHiddenChar(index: number, hidden: boolean) {
-    hiddenChars[index] = hidden;
-    setHiddenChars(
-      hiddenChars.map((charState, idx) => (idx === index ? hidden : charState))
+    revealedChars[index] = hidden;
+    setRevealedChars(
+      revealedChars.map((charState, i) => (i === index ? hidden : charState)),
     );
 
-    let hiddenCount = hiddenChars.filter((char) => char).length;
+    const numToggleableRevealed = revealedChars.filter(
+      (charIsRevealed) => !charIsRevealed,
+    ).length;
 
-    if (hiddenCount === 0 && allHidden) {
-      fillHiddenArray(false);
-    } else if (hiddenCount === result.length && !allHidden) {
-      fillHiddenArray(true);
+    if (numToggleableRevealed === 0 && allRevealed) {
+      fillRevealedArray(true);
+    } else if (numToggleableRevealed === numToggleable && !allRevealed) {
+      fillRevealedArray(false);
     }
   }
 
-  function fillHiddenArray(hidden: boolean) {
-    setHiddenChars(new Array<boolean>(result.length).fill(hidden));
-    setAllHidden(hidden);
+  function fillRevealedArray(revealed: boolean) {
+    setRevealedChars(
+      new Array<boolean>(result.length).map((_hidden, i) =>
+        permRevealedCharPositions[i] ? true : revealed,
+      ),
+    );
+    setAllRevealed(revealed);
   }
 
   return (
     <Group>
       {result.split("").map((char, idx) => (
         <Text key={idx}>
-          <RevealableChar
-            char={char.toLocaleUpperCase()}
-            index={idx}
-            hide={allHidden}
-            updateHidden={updateHiddenChar}
-          />
+          {permRevealedCharPositions[idx] ? (
+            char.toLocaleUpperCase()
+          ) : (
+            <RevealableChar
+              key={`${idx}-${allRevealed ? "1" : "0"}`}
+              char={char.toLocaleUpperCase()}
+              index={idx}
+              reveal={allRevealed}
+              updateRevealed={updateHiddenChar}
+            />
+          )}
         </Text>
       ))}
-      <ActionIcon onClick={() => setAllHidden(!allHidden)} variant="light">
-        {allHidden ? <IconEye /> : <IconEyeOff />}
+      <ActionIcon onClick={() => setAllRevealed(!allRevealed)} variant="light">
+        {allRevealed ? <IconEyeOff /> : <IconEye />}
       </ActionIcon>
     </Group>
   );

@@ -16,7 +16,7 @@ import {
   createContext,
   Dispatch,
   SetStateAction,
-  useEffect,
+  useMemo,
   useState,
 } from "react";
 import { Guess } from "@/classes/guess";
@@ -39,14 +39,23 @@ export default function App() {
   const [navbarOpened, { toggle }] = useDisclosure();
 
   // Word data
-  const blankResults: IResults = { words: [], revealedCharPositions: [] };
   const [guesses, setGuesses] = useState<Guess[]>([]);
-  const [results, setResults] = useState<IResults>(blankResults);
+  const [results, setResults] = useState<IResults>({
+    words: [],
+    revealedCharPositions: [],
+  });
   const [storedCustomWordsFormData, setStoredCustomWordsFormData] =
     useState<CustomWordsFormData>(DEFAULT_CUSTOM_WORDS_FORM);
-  const [parsedWordSets, setParsedWordSets] = useState<ParsedWordSets>(
-    parseWordsToSets(DEFAULT_WORDS, false)
-  );
+  const parsedWordSets: ParsedWordSets = useMemo(() => {
+    const mergedWords: string[] = storedCustomWordsFormData.replaceDefaultWords
+      ? storedCustomWordsFormData.words
+      : [...DEFAULT_WORDS, ...storedCustomWordsFormData.words];
+
+    return parseWordsToSets(
+      mergedWords,
+      storedCustomWordsFormData.allowSpecialChars,
+    );
+  }, [storedCustomWordsFormData]);
 
   // Result state
   const [showResults, setShowResults] = useState(false);
@@ -61,29 +70,19 @@ export default function App() {
   const [numResultsShown, setNumResultsShown] = useState(20);
   const [doAnimations, setDoAnimations] = useState(true);
 
-  useEffect(() => {
-    const mergedWords: string[] = storedCustomWordsFormData.replaceDefaultWords
-      ? storedCustomWordsFormData.words
-      : [...DEFAULT_WORDS, ...storedCustomWordsFormData.words];
-
-    setParsedWordSets(
-      parseWordsToSets(mergedWords, storedCustomWordsFormData.allowSpecialChars)
-    );
-  }, [storedCustomWordsFormData]);
-
   function handleGetPossibleWords() {
     if (guesses.length == 0 || !guesses[0]) return;
 
     const guessLength = guesses[0].wordString.length;
     const wordSet = parsedWordSets.wordSets.get(guessLength);
+    if (wordSet === undefined) return;
 
-    if (wordSet == null) return;
-
+    const newResults = getResults(wordSet, guesses, shuffleResults);
     setResults({
-      ...getResults(wordSet, guesses, shuffleResults),
+      ...newResults,
       revealedCharPositions: onlyHideUnknownChars
-        ? []
-        : results.revealedCharPositions,
+        ? newResults.revealedCharPositions
+        : [],
       defaultHidden: hideResults,
     });
 

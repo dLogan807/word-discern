@@ -18,8 +18,9 @@ export default function getResults(
 
   shuffled ? shuffleArray(results) : results.sort();
 
-  const revealedCharPositions = parseResult.correctPosChars.map(
-    (char) => char !== undefined
+  const revealedCharPositions = Array.from(
+    { length: parseResult.correctPosChars.length },
+    (_, i) => parseResult.correctPosChars[i] !== undefined
   );
 
   return {
