@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import { useState, useContext } from "react";
 import { Property } from "csstype";
 import { Letter } from "@/classes/letter";
 import { Box, UnstyledButton } from "@mantine/core";
@@ -19,21 +19,21 @@ export default function LetterButton({
   const { updateGuess, doAnimations } = useContext(GuessContext);
   const animDuration = doAnimations ? 150 : 0;
 
-  // Only change color once letter is hidden (flipped)
-  useEffect(() => {
-    if (!doAnimations || !flipped) {
-      setBackgroundColor(letter.correctness);
-    }
-  }, [flipped, doAnimations, letter.correctness]);
-
   function resetFlipped() {
     setFlipped(false);
+    setBackgroundColor(letter.correctness);
   }
 
   function handleClick() {
+    if (doAnimations) {
+      setBackgroundColor(letter.correctness);
+    }
     setFlipped(!flipped);
     updateGuess(guess);
     letter.cycleLetterCorrectness();
+    if (!doAnimations) {
+      setBackgroundColor(letter.correctness);
+    }
   }
 
   return (
