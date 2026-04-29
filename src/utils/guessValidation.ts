@@ -27,7 +27,7 @@ export function validateGuess(
   } else if (alreadyGuessed(guess, guesses)) {
     response.message = "Already guessed";
   } else if (!wordSet) {
-    response.message = "There are no words this long";
+    response.message = "No words in list of this length";
   } else if (
     onlyAllowWordListGuesses &&
     !wordSet.has(guess.toLocaleLowerCase())
