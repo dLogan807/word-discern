@@ -1,32 +1,30 @@
 import { Button, Text } from "@mantine/core";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import classes from "./RevealableChar.module.css";
 
 export default function RevealableChar({
   char,
   index,
-  hide = true,
-  updateHidden,
+  reveal = false,
+  updateRevealed,
 }: {
   char: string;
   index: number;
-  hide?: boolean;
-  updateHidden: (index: number, hidden: boolean) => void;
+  reveal?: boolean;
+  updateRevealed: (index: number, hidden: boolean) => void;
 }) {
-  const [hidden, setHidden] = useState(hide);
-  useEffect(() => {
-    setHidden(hide);
-  }, [hide]);
+  const [revealed, setRevealed] = useState(reveal);
+  function handleClick() {
+    const nextRevealed = !revealed;
+    setRevealed(nextRevealed);
+    updateRevealed(index, nextRevealed);
+  }
 
-  useEffect(() => {
-    updateHidden(index, hidden);
-  }, [hidden]);
-
-  const shownChar = hidden ? "?" : char;
+  const shownChar = revealed ? char : "?";
 
   return (
     <Button
-      onClick={() => setHidden(!hidden)}
+      onClick={handleClick}
       variant="default"
       classNames={{
         root: classes.result_char_button,

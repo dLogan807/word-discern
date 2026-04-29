@@ -8,7 +8,7 @@ import {
   Text,
 } from "@mantine/core";
 import { IconEye, IconEyeOff } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import RevealableChar from "@/components/Results/RevealableChar/RevealableChar";
 import classes from "./Results.module.css";
 import { IResults } from "@/utils/resultBuilder";
@@ -25,48 +25,50 @@ export default function Results({
   triggerUpdate: number;
   doAnimations: boolean;
 }) {
+  const resetKey = `${triggerUpdate}-${results.words.length}`;
+  return (
+    <ResultsContent
+      key={resetKey}
+      results={results}
+      numberToShow={numberToShow}
+      doAnimations={doAnimations}
+    />
+  );
+}
+
+function ResultsContent({
+  results,
+  numberToShow,
+  doAnimations,
+}: {
+  results: IResults;
+  numberToShow: number;
+  doAnimations: boolean;
+}) {
   numberToShow = Math.min(numberToShow, results.words.length);
   const [numResultsMounted, setNumResultsMounted] = useState(numberToShow);
   const [mountedResults, setMountedResults] = useState<boolean[]>(
-    new Array(results.words.length).fill(false)
+    new Array(results.words.length)
+      .fill(false)
+      .map((_mounted, idx) => idx < numberToShow),
   );
-  const [resetKey, setResetKey] = useState(0);
 
   const baseDelay = doAnimations ? 20 : 0;
   const delayMult = 1.05 + 1 / Math.max(numberToShow, 1);
   let delay = baseDelay;
   const totalDelay = Math.min(baseDelay * delayMult ** numberToShow, 500);
 
-  // Reset the displayed results
-  useEffect(() => {
-    delay = baseDelay;
-    const initialArray = new Array(results.words.length).fill(false);
-
-    // Force a complete reset by incrementing the reset key
-    setResetKey((prev) => prev + 1);
-    setMountedResults(initialArray);
-    setNumResultsMounted(0);
-  }, [triggerUpdate, results.words.length]);
-
-  // Animate first results after a reset
-  useEffect(() => {
-    // Prevent showing double results after a page reload
-    if (numResultsMounted === numberToShow) return;
-
-    handleShowMoreWords();
-  }, [resetKey]);
-
   function handleShowMoreWords() {
     const oldNumMounted = numResultsMounted;
     const newNumMounted = Math.min(
       numResultsMounted + numberToShow,
-      results.words.length
+      results.words.length,
     );
 
     const newMountedResults = [...mountedResults].fill(
       true,
       oldNumMounted,
-      newNumMounted
+      newNumMounted,
     );
 
     setNumResultsMounted(newNumMounted);
@@ -97,7 +99,7 @@ export default function Results({
             if (doAnimations) {
               delay = Math.min(
                 idx % numberToShow === 0 ? baseDelay : (delay *= delayMult),
-                totalDelay
+                totalDelay,
               );
             }
 
