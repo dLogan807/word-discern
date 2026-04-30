@@ -8,7 +8,7 @@ const ALL_LETTERS_REGEX: RegExp = /^[a-zA-Z]+$/;
 
 export function parseWordsToSets(
   words: string[],
-  specialCharsAllowed: boolean
+  specialCharsAllowed: boolean,
 ): ParsedWordSets {
   const wordSets = new Map<number, Set<string>>();
   const succeeded = new Set<string>();
@@ -44,8 +44,8 @@ export function parseWordsToSets(
 
 function isValidWord(word: string, specialCharsAllowed: boolean): boolean {
   return (
-    word !== null &&
-    word !== "" &&
+    typeof word === "string" &&
+    word.length > 0 &&
     (specialCharsAllowed || containsOnlyLetters(word))
   );
 }
