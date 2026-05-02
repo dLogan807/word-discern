@@ -9,7 +9,7 @@ export function validateGuess(
   guess: string,
   guesses: Guess[],
   wordSet: Set<string> | undefined,
-  onlyAllowWordListGuesses: boolean
+  onlyAllowWordListGuesses: boolean,
 ): ValidationResponse {
   guess = guess.trim();
   const minLength = 1;

@@ -1,14 +1,5 @@
-import {
-  Box,
-  Button,
-  ComboboxItem,
-  Flex,
-  InputLabel,
-  OptionsFilter,
-  Paper,
-  Select,
-} from "@mantine/core";
-import { createContext, useEffect, useState } from "react";
+import { Box, Button, Flex, InputLabel, Paper, Select } from "@mantine/core";
+import { createContext, useMemo, useState } from "react";
 import { Guess } from "@/classes/guess";
 import GuessItem from "@/components/Guesses/GuessItem/GuessItem";
 import { useField } from "@mantine/form";
@@ -43,45 +34,37 @@ export default function GuessInputList({
     mode: "controlled",
     initialValue: "",
   });
+  const [searchDropdownOpened, setSearchDropDownOpened] = useState(false);
   const [searchValue, setSearchValue] = useState("");
-  const [searchableWords, setSearchableWords] = useState<string[]>([]);
   const debouncedSearch = useDebounce(searchValue, 500);
 
-  // const optionsFilter: OptionsFilter = ({ options, search }) => {
-  //   const splittedSearch = search.toLowerCase().trim().split(" ");
-  //   return (options as ComboboxItem[]).filter((option) => {
-  //     const words = option.label.toLowerCase().trim().split(" ");
-  //     return splittedSearch.every((searchWord) =>
-  //       words.some((word) => word.includes(searchWord))
-  //     );
-  //   });
-  // };
+  const searchableWords = useMemo(() => {
+    if (debouncedSearch.length === 0) return [];
+    setSearchDropDownOpened(true);
 
-  useEffect(() => {
-    let words: string[] = [];
+    const words: string[] = [];
     for (const key of wordSets.keys()) {
-      if (debouncedSearch.length > 0 && key >= debouncedSearch.length) {
+      if (key >= debouncedSearch.length) {
         const set = wordSets.get(key);
         if (set) {
-          words = [...words, ...set];
+          words.push(...set);
         }
       }
     }
 
-    setSearchableWords(words);
-  }, [debouncedSearch]);
+    return words;
+  }, [debouncedSearch, wordSets]);
 
-  //Enter when adding a guess
-  function handleKeyDown(event: { key: string }) {
+  function handleEnterKeyDown(event: { key: string }) {
     if (event.key === "Enter") tryAddGuess();
   }
 
   function tryAddGuess() {
-    const guessValue = guessField.getValue();
-    const wordSet = wordSets.get(guessField.getValue().length);
+    guessField.setValue(searchValue);
+    const wordSet = wordSets.get(searchValue.length);
 
     const validationResponse = validateGuess(
-      guessValue,
+      searchValue,
       guesses,
       wordSet,
       onlyAllowWordListGuesses,
@@ -91,9 +74,10 @@ export default function GuessInputList({
       return guessField.setError(validationResponse.message);
     }
 
-    const guess: Guess = new Guess(guessValue);
+    const guess: Guess = new Guess(searchValue);
     setGuesses([...guesses, guess]);
     guessField.setValue("");
+    setSearchDropDownOpened(false);
   }
 
   function removeGuess(guessToRemove: Guess) {
@@ -119,11 +103,14 @@ export default function GuessInputList({
             {...guessField.getInputProps()}
             aria-label="Guess"
             placeholder="Enter your guess"
-            onKeyDown={handleKeyDown}
+            onKeyDown={handleEnterKeyDown}
             searchValue={searchValue}
             onSearchChange={setSearchValue}
             data={searchableWords}
-            //filter={optionsFilter}
+            dropdownOpened={searchDropdownOpened}
+            nothingFoundMessage={
+              debouncedSearch.length > 1 ? "No words found :<" : null
+            }
             limit={5}
             searchable
           />
