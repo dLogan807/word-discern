@@ -60,8 +60,8 @@ export default function GuessInputList({
   }
 
   function tryAddGuess() {
-    guessField.setValue(searchValue);
     const wordSet = wordSets.get(searchValue.length);
+    setSearchDropDownOpened(false);
 
     const validationResponse = validateGuess(
       searchValue,
@@ -74,9 +74,10 @@ export default function GuessInputList({
       return guessField.setError(validationResponse.message);
     }
 
-    const guess: Guess = new Guess(searchValue);
+    const guess = new Guess(searchValue);
     setGuesses([...guesses, guess]);
-    guessField.setValue("");
+
+    setSearchValue("");
     setSearchDropDownOpened(false);
   }
 
@@ -94,6 +95,12 @@ export default function GuessInputList({
     );
   }
 
+  function handleGuessChanged(guess: string) {
+    setSearchValue(guess);
+    setSearchDropDownOpened(false);
+    guessField.setError(null);
+  }
+
   return (
     <Paper>
       <Box>
@@ -105,11 +112,11 @@ export default function GuessInputList({
             placeholder="Enter your guess"
             onKeyDown={handleEnterKeyDown}
             searchValue={searchValue}
-            onSearchChange={setSearchValue}
+            onSearchChange={handleGuessChanged}
             data={searchableWords}
             dropdownOpened={searchDropdownOpened}
             nothingFoundMessage={
-              debouncedSearch.length > 1 ? "No words found :<" : null
+              searchValue.length > 1 ? "No words found :<" : null
             }
             limit={5}
             searchable
