@@ -87,7 +87,7 @@ function ResultsContent({
             ? `${results.words.length} possible word${
                 results.words.length == 1 ? "" : "s"
               }:`
-            : "No results :("}
+            : "No results >.<"}
         </Text>
         <List
           type="ordered"
