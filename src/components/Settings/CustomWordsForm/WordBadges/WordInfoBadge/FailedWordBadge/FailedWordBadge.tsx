@@ -33,8 +33,8 @@ export default function FailedWordsBadge({
       <Popover.Dropdown>
         <ScrollArea.Autosize mah={250} maw={300}>
           <List>
-            {failedWords.map((failedWord) => (
-              <ListItem>{failedWord}</ListItem>
+            {failedWords.map((failedWord, index) => (
+              <ListItem key={index}>{failedWord}</ListItem>
             ))}
           </List>
         </ScrollArea.Autosize>
