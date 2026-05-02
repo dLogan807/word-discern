@@ -14,7 +14,7 @@ export interface WordBadgeData {
   numDefaultWords: number;
   numWordsParsed: number;
   numCustomFormWords: number;
-  failedWords: string[];
+  failedWords: Set<string>;
 }
 
 export default function WordsBadges({
@@ -27,7 +27,7 @@ export default function WordsBadges({
     : badgeData.numWordsParsed - badgeData.numDefaultWords;
 
   const validCustomWords =
-    badgeData.numCustomFormWords - badgeData.failedWords.length;
+    badgeData.numCustomFormWords - badgeData.failedWords.size;
 
   const wordsAlreadyExisting = validCustomWords - customWordsInUse;
 
@@ -71,7 +71,7 @@ export default function WordsBadges({
           {addedWordsText}
         </WordInfoBadge>
       )}
-      {badgeData.failedWords.length && (
+      {badgeData.failedWords.size > 0 && (
         <FailedWordsBadge
           failedWords={badgeData.failedWords}
           iconSize={iconSize}

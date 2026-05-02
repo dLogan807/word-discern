@@ -1,5 +1,5 @@
 export interface ParsedWordSets {
-  failed: string[];
+  failed: Set<string>;
   wordNum: number;
   wordSets: Map<number, Set<string>>;
 }
@@ -12,7 +12,7 @@ export function parseWordsToSets(
 ): ParsedWordSets {
   const wordSets = new Map<number, Set<string>>();
   const succeeded = new Set<string>();
-  const failed: string[] = [];
+  const failed = new Set<string>();
 
   for (let word of words) {
     if (typeof word === "string") {
@@ -27,12 +27,12 @@ export function parseWordsToSets(
       wordSets.get(word.length)?.add(word);
       succeeded.add(word);
     } else {
-      failed.push(word);
+      failed.add(word);
     }
   }
 
-  if (failed.length > 0) {
-    console.warn(`Failed to load ${failed.length} words: ${failed}`);
+  if (failed.size > 0) {
+    console.warn(`Failed to load ${failed.size} words: ${Array.from(failed)}`);
   }
 
   return {

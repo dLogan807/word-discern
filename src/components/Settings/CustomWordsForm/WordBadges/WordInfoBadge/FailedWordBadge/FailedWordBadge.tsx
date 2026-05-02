@@ -8,11 +8,11 @@ export default function FailedWordsBadge({
   failedWords,
   iconSize,
 }: {
-  failedWords: string[];
+  failedWords: Set<string>;
   iconSize: number;
 }) {
-  const failedWordsText: string = `${failedWords.length} invalid ${pluralize(
-    failedWords.length,
+  const failedWordsText: string = `${failedWords.size} invalid ${pluralize(
+    failedWords.size,
     "word",
   )}`;
   const failedWordsIcon = <IconX size={iconSize} />;
@@ -33,8 +33,8 @@ export default function FailedWordsBadge({
       <Popover.Dropdown>
         <ScrollArea.Autosize mah={250} maw={300}>
           <List>
-            {failedWords.map((failedWord, index) => (
-              <ListItem key={index}>{failedWord}</ListItem>
+            {Array.from(failedWords, (failedWord) => (
+              <ListItem key={failedWord}>{failedWord}</ListItem>
             ))}
           </List>
         </ScrollArea.Autosize>
