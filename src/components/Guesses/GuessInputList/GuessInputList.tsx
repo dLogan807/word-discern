@@ -1,4 +1,11 @@
-import { Box, Button, Flex, InputLabel, Paper, Select } from "@mantine/core";
+import {
+  Autocomplete,
+  Box,
+  Button,
+  Flex,
+  InputLabel,
+  Paper,
+} from "@mantine/core";
 import { createContext, useMemo, useState } from "react";
 import { Guess } from "@/classes/guess";
 import GuessItem from "@/components/Guesses/GuessItem/GuessItem";
@@ -55,11 +62,13 @@ export default function GuessInputList({
     return words;
   }, [debouncedSearch, wordSets]);
 
-  function handleEnterKeyDown(event: { key: string }) {
+  function handleSelectKeyDown(event: { key: string }) {
     if (event.key === "Enter") tryAddGuess();
+    if (event.key === "Escape") setSearchDropDownOpened(false);
   }
 
   function tryAddGuess() {
+    setSearchValue(searchValue.trim());
     const wordSet = wordSets.get(searchValue.length);
     setSearchDropDownOpened(false);
 
@@ -106,20 +115,16 @@ export default function GuessInputList({
       <Box>
         <InputLabel>Guess</InputLabel>
         <Flex classNames={{ root: classes.guess_input_container }}>
-          <Select
+          <Autocomplete
             {...guessField.getInputProps()}
             aria-label="Guess"
             placeholder="Enter your guess"
-            onKeyDown={handleEnterKeyDown}
-            searchValue={searchValue}
-            onSearchChange={handleGuessChanged}
+            onKeyDown={handleSelectKeyDown}
+            value={searchValue}
+            onChange={handleGuessChanged}
             data={searchableWords}
             dropdownOpened={searchDropdownOpened}
-            nothingFoundMessage={
-              searchValue.length > 1 ? "No words found :<" : null
-            }
             limit={5}
-            searchable
           />
           <Button onClick={tryAddGuess}>Add</Button>
         </Flex>
