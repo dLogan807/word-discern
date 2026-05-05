@@ -6,10 +6,10 @@ import {
   InputLabel,
   Paper,
 } from "@mantine/core";
+import type { KeyboardEvent } from "react";
 import { createContext, useMemo, useState } from "react";
 import { Guess } from "@/classes/guess";
 import GuessItem from "@/components/Guesses/GuessItem/GuessItem";
-import { useField } from "@mantine/form";
 import { validateGuess } from "@/utils/guessValidation";
 import classes from "./GuessInputList.module.css";
 import useDebounce from "@/hooks/useDebounce";
@@ -37,13 +37,10 @@ export default function GuessInputList({
   onlyAllowWordListGuesses: boolean;
   doAnimations: boolean;
 }) {
-  const guessField = useField({
-    mode: "controlled",
-    initialValue: "",
-  });
   const [searchDropdownOpened, setSearchDropDownOpened] = useState(false);
-  const [searchValue, setSearchValue] = useState("");
-  const debouncedSearch = useDebounce(searchValue, 500);
+  const [guessValue, setGuessValue] = useState("");
+  const [guessError, setGuessError] = useState<null | string>(null);
+  const debouncedSearch = useDebounce(guessValue, 500);
 
   const searchableWords = useMemo(() => {
     if (debouncedSearch.length === 0) return [];
@@ -62,31 +59,31 @@ export default function GuessInputList({
     return words;
   }, [debouncedSearch, wordSets]);
 
-  function handleSelectKeyDown(event: { key: string }) {
+  function handleSelectKeyDown(event: KeyboardEvent<HTMLInputElement>) {
     if (event.key === "Enter") tryAddGuess();
     if (event.key === "Escape") setSearchDropDownOpened(false);
   }
 
   function tryAddGuess() {
-    setSearchValue(searchValue.trim());
-    const wordSet = wordSets.get(searchValue.length);
+    setGuessValue(guessValue.trim());
+    const wordSet = wordSets.get(guessValue.length);
     setSearchDropDownOpened(false);
 
     const validationResponse = validateGuess(
-      searchValue,
+      guessValue,
       guesses,
       wordSet,
       onlyAllowWordListGuesses,
     );
 
     if (!validationResponse.validated) {
-      return guessField.setError(validationResponse.message);
+      return setGuessError(validationResponse.message);
     }
 
-    const guess = new Guess(searchValue);
+    const guess = new Guess(guessValue);
     setGuesses([...guesses, guess]);
 
-    setSearchValue("");
+    setGuessValue("");
     setSearchDropDownOpened(false);
   }
 
@@ -105,9 +102,9 @@ export default function GuessInputList({
   }
 
   function handleGuessChanged(guess: string) {
-    setSearchValue(guess);
+    setGuessValue(guess);
     setSearchDropDownOpened(false);
-    guessField.setError(null);
+    setGuessError(null);
   }
 
   return (
@@ -116,11 +113,11 @@ export default function GuessInputList({
         <InputLabel>Guess</InputLabel>
         <Flex classNames={{ root: classes.guess_input_container }}>
           <Autocomplete
-            {...guessField.getInputProps()}
             aria-label="Guess"
             placeholder="Enter your guess"
             onKeyDown={handleSelectKeyDown}
-            value={searchValue}
+            value={guessValue}
+            error={guessError}
             onChange={handleGuessChanged}
             data={searchableWords}
             dropdownOpened={searchDropdownOpened}
