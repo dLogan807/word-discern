@@ -40,24 +40,33 @@ export default function GuessInputList({
   const [searchDropdownOpened, setSearchDropDownOpened] = useState(false);
   const [guessValue, setGuessValue] = useState("");
   const [guessError, setGuessError] = useState<null | string>(null);
-  const debouncedSearch = useDebounce(guessValue, 500);
+  const debouncedSearch = useDebounce(guessValue, 250);
+  const debouncedSearchLength = debouncedSearch.length;
 
   const searchableWords = useMemo(() => {
-    if (debouncedSearch.length === 0) return [];
-    setSearchDropDownOpened(true);
+    if (debouncedSearchLength === 0) return [];
 
     const words: string[] = [];
-    for (const key of wordSets.keys()) {
-      if (key >= debouncedSearch.length) {
-        const set = wordSets.get(key);
-        if (set) {
-          words.push(...set);
-        }
+    for (const [key, set] of wordSets) {
+      if (key < debouncedSearchLength) continue;
+
+      for (const word of set) {
+        if (!word.startsWith(debouncedSearch)) continue;
+        words.push(word);
       }
     }
 
     return words;
-  }, [debouncedSearch, wordSets]);
+  }, [debouncedSearch, debouncedSearchLength, wordSets]);
+
+  if (
+    guessValue.length > 0 &&
+    debouncedSearchLength > 0 &&
+    guessError == null &&
+    !searchDropdownOpened
+  ) {
+    setSearchDropDownOpened(true);
+  }
 
   function handleSelectKeyDown(event: KeyboardEvent<HTMLInputElement>) {
     if (event.key === "Enter") tryAddGuess();
@@ -65,26 +74,26 @@ export default function GuessInputList({
   }
 
   function tryAddGuess() {
-    setGuessValue(guessValue.trim());
-    const wordSet = wordSets.get(guessValue.length);
     setSearchDropDownOpened(false);
+    const trimmedGuess = guessValue.trim();
+    const wordSet = wordSets.get(trimmedGuess.length);
 
     const validationResponse = validateGuess(
-      guessValue,
+      trimmedGuess,
       guesses,
       wordSet,
       onlyAllowWordListGuesses,
     );
 
     if (!validationResponse.validated) {
-      return setGuessError(validationResponse.message);
+      setGuessError(validationResponse.message);
+      return;
     }
 
-    const guess = new Guess(guessValue);
+    const guess = new Guess(trimmedGuess);
     setGuesses([...guesses, guess]);
 
     setGuessValue("");
-    setSearchDropDownOpened(false);
   }
 
   function removeGuess(guessToRemove: Guess) {
