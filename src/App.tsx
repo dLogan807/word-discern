@@ -7,6 +7,7 @@ import {
   MantineProvider,
   ScrollArea,
   Title,
+  v8CssVariablesResolver,
 } from "@mantine/core";
 import { theme } from "@/theme";
 import { useDisclosure } from "@mantine/hooks";
@@ -92,7 +93,11 @@ export default function App() {
 
   return (
     <>
-      <MantineProvider theme={theme} defaultColorScheme="auto">
+      <MantineProvider
+        theme={theme}
+        defaultColorScheme="auto"
+        cssVariablesResolver={v8CssVariablesResolver}
+      >
         <AppShell
           classNames={{ header: classes.header, navbar: classes.settings }}
           padding="md"
