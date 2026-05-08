@@ -15,13 +15,8 @@ import { getWordArray } from "@/utils/wordLoading";
 import { useContext, useState } from "react";
 import { IconFileUpload } from "@tabler/icons-react";
 import { CustomWordsFormContext } from "@/App";
+import { WordInput } from "@/enums/enums";
 import classes from "./CustomWords.module.css";
-
-enum WordInput {
-  TEXT = "text",
-  JSON = "json",
-  FILE = "file",
-}
 
 const VALID_CODE_SEPARATORS: string[] = [",", "space", "newline", ";"];
 const VALID_FILE_TYPES: string[] = [".txt", ".json"];
