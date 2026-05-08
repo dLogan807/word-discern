@@ -11,12 +11,13 @@ import {
 } from "@mantine/core";
 import { theme } from "@/theme";
 import { useDisclosure } from "@mantine/hooks";
-import { DEFAULT_WORDS } from "@/assets/words";
+import wordsUrl from "/words.txt?url";
 import Results from "@/components/Results/Results";
 import {
   createContext,
   Dispatch,
   SetStateAction,
+  useEffect,
   useMemo,
   useState,
 } from "react";
@@ -36,8 +37,19 @@ export const CustomWordsFormContext = createContext<
   Dispatch<SetStateAction<CustomWordsFormData>>
 >(() => {});
 
+async function getWords(): Promise<string[]> {
+  const res = await fetch(wordsUrl);
+  const rawWords = await res.text();
+  return rawWords.split("\n").filter(Boolean);
+}
+
 export default function App() {
+  const [defaultWords, setDefaultWords] = useState<string[]>([]);
   const [navbarOpened, { toggle }] = useDisclosure();
+
+  useEffect(() => {
+    void getWords().then(setDefaultWords);
+  }, []);
 
   // Word data
   const [guesses, setGuesses] = useState<Guess[]>([]);
@@ -50,13 +62,13 @@ export default function App() {
   const parsedWordSets: ParsedWordSets = useMemo(() => {
     const mergedWords: string[] = storedCustomWordsFormData.replaceDefaultWords
       ? storedCustomWordsFormData.words
-      : [...DEFAULT_WORDS, ...storedCustomWordsFormData.words];
+      : [...defaultWords, ...storedCustomWordsFormData.words];
 
     return parseWordsToSets(
       mergedWords,
       storedCustomWordsFormData.allowSpecialChars,
     );
-  }, [storedCustomWordsFormData]);
+  }, [defaultWords, storedCustomWordsFormData]);
 
   // Result state
   const [showResults, setShowResults] = useState(false);
@@ -129,7 +141,7 @@ export default function App() {
                   wordBadgeData={{
                     replaceDefaultWords:
                       storedCustomWordsFormData.replaceDefaultWords,
-                    numDefaultWords: DEFAULT_WORDS.length,
+                    numDefaultWords: defaultWords.length,
                     numWordsParsed: parsedWordSets.wordNum,
                     numCustomFormWords: storedCustomWordsFormData.words.length,
                     failedWords: parsedWordSets.failed,
