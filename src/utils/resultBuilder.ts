@@ -1,5 +1,5 @@
 import { Guess } from "@/classes/guess";
-import { LetterCorrectness } from "@/classes/letter";
+import { LetterCorrectness } from "@/enums/enums";
 import { stringsAreEqual } from "@/utils/guessValidation";
 
 export interface IResults {
@@ -11,7 +11,7 @@ export interface IResults {
 export default function getResults(
   wordSet: Set<string>,
   guesses: Guess[],
-  shuffled?: boolean
+  shuffled?: boolean,
 ): IResults {
   const parseResult = parseGuesses(guesses);
   const results = matchGuessesWithWords(wordSet, parseResult);
@@ -20,7 +20,7 @@ export default function getResults(
 
   const revealedCharPositions = Array.from(
     { length: parseResult.correctPosChars.length },
-    (_, i) => parseResult.correctPosChars[i] !== undefined
+    (_, i) => parseResult.correctPosChars[i] !== undefined,
   );
 
   return {
@@ -44,7 +44,7 @@ function parseGuesses(guesses: Guess[]): ParsedGuesses {
     correctPosChars: new Array(guessLength),
     blackListedPosChars: Array.from(
       { length: guessLength },
-      () => new Set<string>()
+      () => new Set<string>(),
     ),
     requiredSomewhereChars: new Set<string>(),
   };
@@ -59,7 +59,7 @@ function parseGuesses(guesses: Guess[]): ParsedGuesses {
       if (char.correctness !== LetterCorrectness.NotPresent) {
         validCharOccurences.set(
           char.value,
-          (validCharOccurences.get(char.value) ?? 0) + 1
+          (validCharOccurences.get(char.value) ?? 0) + 1,
         );
       }
 
@@ -89,13 +89,13 @@ function parseGuesses(guesses: Guess[]): ParsedGuesses {
 
 function matchGuessesWithWords(
   wordSet: Set<string>,
-  guessData: ParsedGuesses
+  guessData: ParsedGuesses,
 ): string[] {
   const results: string[] = [];
 
   for (const word of wordSet) {
     const requiredSomewhereCharsCopy: Set<string> = new Set<string>(
-      guessData.requiredSomewhereChars
+      guessData.requiredSomewhereChars,
     );
     let invalidWord = false;
 
@@ -121,7 +121,7 @@ function matchGuessesWithWords(
 
 function requiredCharMissing(
   requiredChar: string | undefined,
-  charToCompare: string
+  charToCompare: string,
 ): boolean {
   return (
     requiredChar != undefined && !stringsAreEqual(requiredChar, charToCompare)
@@ -130,7 +130,7 @@ function requiredCharMissing(
 
 function charAtBadPos(
   blackListedCharArray: Set<string> | undefined,
-  charToCompare: string
+  charToCompare: string,
 ): boolean {
   return (
     blackListedCharArray != undefined && blackListedCharArray.has(charToCompare)
