@@ -32,7 +32,11 @@ export function parseWordsToSets(
   }
 
   if (failed.size > 0) {
-    console.warn(`Failed to load ${failed.size} words: ${Array.from(failed)}`);
+    const failedWordsArray = Array.from(failed);
+
+    console.warn(
+      `Failed to load ${failedWordsArray.length} words: ${failedWordsArray}`,
+    );
   }
 
   return {
