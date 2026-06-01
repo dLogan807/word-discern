@@ -20,9 +20,8 @@
     "noFallthroughCasesInSwitch": true,
 
     /* Absolute pathing */
-    "baseUrl": "src",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./src/*"]
     }
   },
   "include": ["src"],
