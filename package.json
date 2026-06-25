@@ -10,7 +10,9 @@
     "typecheck": "tsc --noEmit",
     "lint": "npm run oxlint && npm run stylelint",
     "oxlint": "oxlint .",
-    "stylelint": "stylelint '**/*.css' --cache"
+    "stylelint": "stylelint '**/*.css' --cache",
+    "format:test": "oxfmt --check \"**/*.{ts,tsx,css}\"",
+    "format:write": "oxfmt --write \"**/*.{ts,tsx,css}\""
   },
   "dependencies": {
     "@mantine/core": "^9.1.1",
