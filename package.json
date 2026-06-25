@@ -7,7 +7,10 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "lint": "npm run oxlint && npm run stylelint",
+    "oxlint": "oxlint .",
+    "stylelint": "stylelint '**/*.css' --cache"
   },
   "dependencies": {
     "@mantine/core": "^9.1.1",
@@ -16,9 +19,12 @@
     "@tabler/icons-react": "^3.35.0",
     "@types/node": "^24.9.2",
     "jsonc-parser": "^3.3.1",
+    "oxlint": "^1.71.0",
     "path": "^0.12.7",
     "react": "^19.2.6",
-    "react-dom": "^19.2.6"
+    "react-dom": "^19.2.6",
+    "stylelint": "^17.13.0",
+    "stylelint-config-standard-scss": "^17.0.0"
   },
   "devDependencies": {
     "@rolldown/plugin-babel": "^0.2.3",
