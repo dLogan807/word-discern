@@ -10,7 +10,9 @@
     "typecheck": "tsc --noEmit",
     "lint": "npm run oxlint && npm run stylelint",
     "oxlint": "oxlint .",
-    "stylelint": "stylelint '**/*.css' --cache"
+    "stylelint": "stylelint '**/*.css' --cache",
+    "format:test": "oxfmt --check \"**/*.{ts,tsx,css}\"",
+    "format:write": "oxfmt --write \"**/*.{ts,tsx,css}\""
   },
   "dependencies": {
     "@mantine/core": "^9.1.1",
@@ -33,6 +35,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.3",
     "baseline-browser-mapping": "^2.10.28",
+    "oxfmt": "^0.56.0",
     "postcss": "^8.5.14",
     "postcss-preset-mantine": "^1.18.0",
     "postcss-simple-vars": "^7.0.1",
