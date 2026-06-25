@@ -16,7 +16,11 @@ export default function getResults(
   const parseResult = parseGuesses(guesses);
   const results = matchGuessesWithWords(wordSet, parseResult);
 
-  shuffled ? shuffleArray(results) : results.sort();
+  if (shuffled) {
+    shuffleArray(results);
+  } else {
+    results.sort();
+  }
 
   const revealedCharPositions = Array.from(
     { length: parseResult.correctPosChars.length },
