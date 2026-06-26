@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "npm run oxlint && npm run stylelint",
     "oxlint": "oxlint .",
-    "stylelint": "stylelint '**/*.css' --cache",
+    "stylelint": "stylelint \"**/*.css\" --cache",
     "format:test": "oxfmt --check \"**/*.{ts,tsx,css}\"",
     "format:write": "oxfmt --write \"**/*.{ts,tsx,css}\""
   },
@@ -25,8 +25,7 @@
     "path": "^0.12.7",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
-    "stylelint": "^17.13.0",
-    "stylelint-config-standard-scss": "^17.0.0"
+    "stylelint": "^17.13.0"
   },
   "devDependencies": {
     "@rolldown/plugin-babel": "^0.2.3",

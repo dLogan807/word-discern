@@ -10,24 +10,18 @@ import {
   Textarea,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { parse, ParseError, printParseErrorCode } from "jsonc-parser";
-import { getWordArray } from "@/utils/wordLoading";
-import { useContext, useState } from "react";
 import { IconFileUpload } from "@tabler/icons-react";
+import { parse, ParseError, printParseErrorCode } from "jsonc-parser";
+import { useContext, useState } from "react";
 import { CustomWordsFormContext } from "@/App";
 import { WordInput } from "@/enums/enums";
+import { getWordArray } from "@/utils/wordLoading";
 import classes from "./CustomWords.module.css";
 
 const VALID_CODE_SEPARATORS: string[] = [",", "space", "newline", ";"];
 const VALID_FILE_TYPES: string[] = [".txt", ".json"];
 
-function SpacedCodeBlocks({
-  preface,
-  values,
-}: {
-  preface: string;
-  values: string[];
-}) {
+function SpacedCodeBlocks({ preface, values }: { preface: string; values: string[] }) {
   return (
     <>
       {preface}
@@ -69,8 +63,7 @@ export default function CustomWordsForm() {
   });
 
   function validateJSON(value: string): string | null {
-    if (inputMode == WordInput.TEXT || value == null || value.length == 0)
-      return null;
+    if (inputMode === WordInput.TEXT || value == null || value.length === 0) return null;
 
     const errors: ParseError[] = [];
     const parsed = parse(value, errors, {
@@ -80,9 +73,7 @@ export default function CustomWordsForm() {
 
     if (errors.length > 0) {
       const error = errors[0];
-      return `Invalid JSON: ${printParseErrorCode(error.error)} at offset ${
-        error.offset
-      }`;
+      return `Invalid JSON: ${printParseErrorCode(error.error)} at offset ${error.offset}`;
     }
     if (!Array.isArray(parsed)) return "Not a JSON array";
 
@@ -90,15 +81,15 @@ export default function CustomWordsForm() {
   }
 
   async function validateFile(file: File | null): Promise<string | null> {
-    if (inputMode != WordInput.FILE || file == null) return null;
+    if (inputMode !== WordInput.FILE || file == null) return null;
 
     if (file.type === "application/json") {
       return validateJSON(await file.text());
-    } else if (file.type == "text/plain") {
+    } else if (file.type === "text/plain") {
       return null;
-    } else {
-      return "Unsupported file type";
     }
+
+    return "Unsupported file type";
   }
 
   async function onSubmit() {
@@ -106,9 +97,9 @@ export default function CustomWordsForm() {
     let words: string[] = [];
     let error: string | null = null;
 
-    if (inputMode == WordInput.TEXT) {
+    if (inputMode === WordInput.TEXT) {
       words = getWordArray(formValues.text);
-    } else if (inputMode == WordInput.JSON) {
+    } else if (inputMode === WordInput.JSON) {
       error = validateJSON(formValues.json);
 
       if (formValues.json && !error) {
@@ -144,7 +135,7 @@ export default function CustomWordsForm() {
   }
 
   const hiddenInputClass = (inputType: WordInput) => {
-    return inputMode == inputType
+    return inputMode === inputType
       ? {}
       : {
           root: classes.hidden_input,
@@ -182,10 +173,7 @@ export default function CustomWordsForm() {
             {...form.getInputProps(WordInput.TEXT)}
             aria-label="Your plaintext list of words"
             description={
-              <SpacedCodeBlocks
-                preface="Separators accepted: "
-                values={VALID_CODE_SEPARATORS}
-              />
+              <SpacedCodeBlocks preface="Separators accepted: " values={VALID_CODE_SEPARATORS} />
             }
             placeholder="a,list,of,words"
             autosize
@@ -199,7 +187,7 @@ export default function CustomWordsForm() {
             aria-label="Your JSON array of words"
             placeholder='["a","list","of","words"]'
             validationError={validateJSON(form.getValues().json)}
-            formatOnBlur={true}
+            formatOnBlur
             autosize
             minRows={4}
             maxRows={10}
@@ -209,9 +197,7 @@ export default function CustomWordsForm() {
             key={form.key(WordInput.FILE)}
             {...form.getInputProps(WordInput.FILE)}
             aria-label="Upload word list file"
-            description={
-              <SpacedCodeBlocks preface="Accepts: " values={VALID_FILE_TYPES} />
-            }
+            description={<SpacedCodeBlocks preface="Accepts: " values={VALID_FILE_TYPES} />}
             placeholder="Upload"
             leftSection={fileIcon}
             accept={VALID_FILE_TYPES.join(",")}

@@ -1,18 +1,10 @@
-import {
-  Autocomplete,
-  Box,
-  Button,
-  Flex,
-  InputLabel,
-  Paper,
-} from "@mantine/core";
-import type { KeyboardEvent } from "react";
-import { createContext, useMemo, useState } from "react";
+import { Autocomplete, Box, Button, Flex, InputLabel, Paper } from "@mantine/core";
+import { createContext, useMemo, useState, KeyboardEvent } from "react";
 import { Guess } from "@/classes/guess";
 import GuessItem from "@/components/Guesses/GuessItem/GuessItem";
+import useDebounce from "@/hooks/useDebounce";
 import { validateGuess } from "@/utils/guessValidation";
 import classes from "./GuessInputList.module.css";
-import useDebounce from "@/hooks/useDebounce";
 
 export const GuessContext = createContext<{
   removeGuess: (guess: Guess) => void;
@@ -82,7 +74,7 @@ export default function GuessInputList({
       trimmedGuess,
       guesses,
       wordSet,
-      onlyAllowWordListGuesses,
+      onlyAllowWordListGuesses
     );
 
     if (!validationResponse.validated) {
@@ -97,17 +89,11 @@ export default function GuessInputList({
   }
 
   function removeGuess(guessToRemove: Guess) {
-    setGuesses(
-      guesses.filter((g) => g.wordString !== guessToRemove.wordString),
-    );
+    setGuesses(guesses.filter((g) => g.wordString !== guessToRemove.wordString));
   }
 
   function updateGuess(updatedGuess: Guess) {
-    setGuesses(
-      guesses.map((g) =>
-        g.wordString === updatedGuess.wordString ? updatedGuess : g,
-      ),
-    );
+    setGuesses(guesses.map((g) => (g.wordString === updatedGuess.wordString ? updatedGuess : g)));
   }
 
   function handleGuessChanged(guess: string) {

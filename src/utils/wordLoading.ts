@@ -6,10 +6,7 @@ export interface ParsedWordSets {
 
 const IS_ONLY_LETTERS_REGEX: RegExp = /^[a-zA-Z]+$/;
 
-export function parseWordsToSets(
-  words: string[],
-  specialCharsAllowed: boolean,
-): ParsedWordSets {
+export function parseWordsToSets(words: string[], specialCharsAllowed: boolean): ParsedWordSets {
   const wordSets = new Map<number, Set<string>>();
   const succeeded = new Set<string>();
   const failed = new Set<string>();
@@ -31,14 +28,6 @@ export function parseWordsToSets(
     }
   }
 
-  if (failed.size > 0) {
-    const failedWordsArray = Array.from(failed);
-
-    console.warn(
-      `Failed to load ${failedWordsArray.length} words: ${failedWordsArray}`,
-    );
-  }
-
   return {
     wordSets: wordSets,
     wordNum: succeeded.size,
@@ -57,7 +46,7 @@ function isValidWord(word: string, specialCharsAllowed: boolean): boolean {
 export function getWordArray(text: string): string[] {
   let words: string[] = [];
 
-  if (!text || text.length == 0) return words;
+  if (!text) return words;
 
   const splitRegex: RegExp = /;|,| |\n/;
   words = text

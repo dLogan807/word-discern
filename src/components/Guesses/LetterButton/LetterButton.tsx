@@ -1,20 +1,15 @@
-import { useState, useContext } from "react";
-import { Property } from "csstype";
-import { Letter } from "@/classes/letter";
 import { Box, UnstyledButton } from "@mantine/core";
+import { Property } from "csstype";
+import { useState, useContext } from "react";
 import { Guess } from "@/classes/guess";
+import { Letter } from "@/classes/letter";
 import { GuessContext } from "@/components/Guesses/GuessInputList/GuessInputList";
 import classes from "./LetterButton.module.css";
 
-export default function LetterButton({
-  letter,
-  guess,
-}: {
-  letter: Letter;
-  guess: Guess;
-}) {
-  const [backgroundColor, setBackgroundColor] =
-    useState<Property.BackgroundColor>(letter.correctness);
+export default function LetterButton({ letter, guess }: { letter: Letter; guess: Guess }) {
+  const [backgroundColor, setBackgroundColor] = useState<Property.BackgroundColor>(
+    letter.correctness
+  );
   const [flipped, setFlipped] = useState(false);
   const { updateGuess, doAnimations } = useContext(GuessContext);
   const animDuration = doAnimations ? 150 : 0;

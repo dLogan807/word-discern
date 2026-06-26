@@ -1,9 +1,4 @@
-import {
-  ActionIcon,
-  Tooltip,
-  useComputedColorScheme,
-  useMantineColorScheme,
-} from "@mantine/core";
+import { ActionIcon, Tooltip, useComputedColorScheme, useMantineColorScheme } from "@mantine/core";
 import { IconSun, IconMoonStars } from "@tabler/icons-react";
 import classes from "./ThemeSelector.module.css";
 
@@ -14,8 +9,7 @@ export function ThemeSelector() {
     setColorScheme(computedColorScheme === "dark" ? "light" : "dark");
   };
 
-  const tooltipText =
-    computedColorScheme === "light" ? "Light theme" : "Dark theme";
+  const tooltipText = computedColorScheme === "light" ? "Light theme" : "Dark theme";
 
   return (
     <Tooltip label={tooltipText}>

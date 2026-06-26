@@ -4,7 +4,7 @@ import classes from "./WordInfoBadge.module.css";
 export default function WordInfoBadge({
   children,
   icon,
-  color,
+  color = "blue",
   clickable,
 }: {
   children: string;
@@ -12,9 +12,6 @@ export default function WordInfoBadge({
   color?: string;
   clickable?: boolean;
 }) {
-  icon = icon ?? null;
-  color = color ?? "blue";
-
   return (
     <Badge
       leftSection={icon}

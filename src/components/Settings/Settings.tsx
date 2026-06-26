@@ -9,10 +9,6 @@ import {
   Switch,
   Title,
 } from "@mantine/core";
-import LoadedWordsBadges, {
-  WordBadgeData,
-} from "@/components/Settings/CustomWordsForm/WordBadges/WordBadges";
-import CustomWordsForm from "@/components/Settings/CustomWordsForm/CustomWordsForm";
 import {
   IconAccessible,
   IconBook2,
@@ -21,6 +17,10 @@ import {
   IconZoomQuestion,
 } from "@tabler/icons-react";
 import { Dispatch, ReactElement, SetStateAction } from "react";
+import CustomWordsForm from "@/components/Settings/CustomWordsForm/CustomWordsForm";
+import LoadedWordsBadges, {
+  WordBadgeData,
+} from "@/components/Settings/CustomWordsForm/WordBadges/WordBadges";
 import classes from "./Settings.module.css";
 
 interface SettingsProps {
@@ -44,42 +44,26 @@ export default function Settings(props: SettingsProps) {
   return (
     <Stack classNames={{ root: classes.settings }}>
       <Title order={3}>Settings</Title>
-      <SettingsDivider
-        title="Guess input"
-        icon={<IconZoomQuestion size={iconSize} />}
-      />
-      <Switch
-        label="Keyboard Mode"
-        classNames={{ root: classes.setting_switch }}
-        disabled
-      />
+      <SettingsDivider title="Guess input" icon={<IconZoomQuestion size={iconSize} />} />
+      <Switch label="Keyboard Mode" classNames={{ root: classes.setting_switch }} disabled />
       <Checkbox
         label="Only allow words from the word list"
         classNames={{ root: classes.setting_switch }}
-        onChange={(event) =>
-          props.setOnlyAllowWordListGuesses(event.currentTarget.checked)
-        }
+        onChange={(event) => props.setOnlyAllowWordListGuesses(event.currentTarget.checked)}
         defaultChecked
       />
-      <SettingsDivider
-        title="Results"
-        icon={<IconClipboardData size={iconSize} />}
-      />
+      <SettingsDivider title="Results" icon={<IconClipboardData size={iconSize} />} />
       <Checkbox
         label="Shuffled"
         checked={props.shuffleResults}
-        onChange={(event) =>
-          props.setShuffleResults(event.currentTarget.checked)
-        }
+        onChange={(event) => props.setShuffleResults(event.currentTarget.checked)}
         classNames={{ root: classes.setting_switch }}
       />
       <Box>
         <Checkbox
           label="Hidden"
           checked={props.hideResults}
-          onChange={(event) =>
-            props.setHideResults(event.currentTarget.checked)
-          }
+          onChange={(event) => props.setHideResults(event.currentTarget.checked)}
           classNames={{ root: classes.setting_switch }}
         />
         <Group
@@ -87,16 +71,12 @@ export default function Settings(props: SettingsProps) {
             root: `${classes.indented_setting}`,
           }}
         >
-          <IconRadiusBottomLeft
-            className={props.hideResults ? "" : classes.disabled_setting}
-          />
+          <IconRadiusBottomLeft className={props.hideResults ? "" : classes.disabled_setting} />
           <Checkbox
             label="Only hide unknown characters"
             checked={props.onlyHideUnknownChars}
             disabled={!props.hideResults}
-            onChange={(event) =>
-              props.setOnlyHideUnknownChars(event.currentTarget.checked)
-            }
+            onChange={(event) => props.setOnlyHideUnknownChars(event.currentTarget.checked)}
           />
         </Group>
       </Box>
@@ -117,10 +97,7 @@ export default function Settings(props: SettingsProps) {
         <LoadedWordsBadges badgeData={props.wordBadgeData} />
         <CustomWordsForm />
       </Stack>
-      <SettingsDivider
-        title="Accessibility"
-        icon={<IconAccessible size={iconSize} />}
-      />
+      <SettingsDivider title="Accessibility" icon={<IconAccessible size={iconSize} />} />
       <Checkbox
         label="Animations"
         classNames={{ root: classes.setting_switch }}
@@ -131,13 +108,7 @@ export default function Settings(props: SettingsProps) {
   );
 }
 
-function SettingsDivider({
-  title,
-  icon,
-}: {
-  title: string;
-  icon: ReactElement;
-}) {
+function SettingsDivider({ title, icon }: { title: string; icon: ReactElement }) {
   return (
     <Divider
       my="xs"
@@ -145,10 +116,7 @@ function SettingsDivider({
       label={
         <>
           {icon}
-          <Title
-            order={6}
-            classNames={{ root: classes.settings_section_title }}
-          >
+          <Title order={6} classNames={{ root: classes.settings_section_title }}>
             {title}
           </Title>
         </>
