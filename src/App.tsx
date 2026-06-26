@@ -1,4 +1,5 @@
 import "@mantine/core/styles.css";
+import wordsUrl from "/words.txt?url";
 import {
   AppShell,
   Burger,
@@ -9,33 +10,25 @@ import {
   Title,
   v8CssVariablesResolver,
 } from "@mantine/core";
-import { theme } from "@/theme";
 import { useDisclosure } from "@mantine/hooks";
-import wordsUrl from "/words.txt?url";
-import Results from "@/components/Results/Results";
-import {
-  createContext,
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { createContext, Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { Guess } from "@/classes/guess";
-import getResults, { IResults } from "@/utils/resultBuilder";
+import GuessInputList from "@/components/Guesses/GuessInputList/GuessInputList";
+import Results from "@/components/Results/Results";
 import {
   CustomWordsFormData,
   DEFAULT_CUSTOM_WORDS_FORM,
 } from "@/components/Settings/CustomWordsForm/CustomWordsForm";
-import { ParsedWordSets, parseWordsToSets } from "@/utils/wordLoading";
-import GuessInputList from "@/components/Guesses/GuessInputList/GuessInputList";
-import { ThemeSelector } from "@/components/ThemeSelector/ThemeSelector";
 import Settings from "@/components/Settings/Settings";
+import { ThemeSelector } from "@/components/ThemeSelector/ThemeSelector";
+import { theme } from "@/theme";
+import getResults, { IResults } from "@/utils/resultBuilder";
+import { ParsedWordSets, parseWordsToSets } from "@/utils/wordLoading";
 import classes from "./App.module.css";
 
-export const CustomWordsFormContext = createContext<
-  Dispatch<SetStateAction<CustomWordsFormData>>
->(() => {});
+export const CustomWordsFormContext = createContext<Dispatch<SetStateAction<CustomWordsFormData>>>(
+  () => {}
+);
 
 async function getWords(): Promise<string[]> {
   const res = await fetch(wordsUrl);
@@ -64,10 +57,7 @@ export default function App() {
       ? storedCustomWordsFormData.words
       : [...defaultWords, ...storedCustomWordsFormData.words];
 
-    return parseWordsToSets(
-      mergedWords,
-      storedCustomWordsFormData.allowSpecialChars,
-    );
+    return parseWordsToSets(mergedWords, storedCustomWordsFormData.allowSpecialChars);
   }, [defaultWords, storedCustomWordsFormData]);
 
   // Result state
@@ -75,8 +65,7 @@ export default function App() {
   const [resultUpdateKey, setResultUpdateKey] = useState(0);
 
   // Settings
-  const [onlyAllowWordListGuesses, setOnlyAllowWordListGuesses] =
-    useState(true);
+  const [onlyAllowWordListGuesses, setOnlyAllowWordListGuesses] = useState(true);
   const [shuffleResults, setShuffleResults] = useState(true);
   const [hideResults, setHideResults] = useState(true);
   const [onlyHideUnknownChars, setOnlyHideUnknownChars] = useState(true);
@@ -93,9 +82,7 @@ export default function App() {
     const newResults = getResults(wordSet, guesses, shuffleResults);
     setResults({
       ...newResults,
-      revealedCharPositions: onlyHideUnknownChars
-        ? newResults.revealedCharPositions
-        : [],
+      revealedCharPositions: onlyHideUnknownChars ? newResults.revealedCharPositions : [],
       defaultHidden: hideResults,
     });
 
@@ -122,12 +109,7 @@ export default function App() {
         >
           <AppShell.Header>
             <Group>
-              <Burger
-                opened={navbarOpened}
-                onClick={toggle}
-                hiddenFrom="sm"
-                size="sm"
-              />
+              <Burger opened={navbarOpened} onClick={toggle} hiddenFrom="sm" size="sm" />
               <Title order={1}>Word Discern</Title>
             </Group>
 
@@ -139,8 +121,7 @@ export default function App() {
               <ScrollArea type="auto">
                 <Settings
                   wordBadgeData={{
-                    replaceDefaultWords:
-                      storedCustomWordsFormData.replaceDefaultWords,
+                    replaceDefaultWords: storedCustomWordsFormData.replaceDefaultWords,
                     numDefaultWords: defaultWords.length,
                     numWordsParsed: parsedWordSets.wordNum,
                     numCustomFormWords: storedCustomWordsFormData.words.length,

@@ -1,12 +1,7 @@
 import { Group } from "@mantine/core";
-import {
-  IconAdjustments,
-  IconCheck,
-  IconCopyOff,
-  IconList,
-} from "@tabler/icons-react";
-import WordInfoBadge from "@/components/Settings/CustomWordsForm/WordBadges/WordInfoBadge/WordInfoBadge";
+import { IconAdjustments, IconCheck, IconCopyOff, IconList } from "@tabler/icons-react";
 import FailedWordsBadge from "@/components/Settings/CustomWordsForm/WordBadges/WordInfoBadge/FailedWordBadge/FailedWordBadge";
+import WordInfoBadge from "@/components/Settings/CustomWordsForm/WordBadges/WordInfoBadge/WordInfoBadge";
 import pluralize from "@/utils/pluralize";
 
 export interface WordBadgeData {
@@ -17,17 +12,12 @@ export interface WordBadgeData {
   failedWords: Set<string>;
 }
 
-export default function WordsBadges({
-  badgeData,
-}: {
-  badgeData: WordBadgeData;
-}) {
+export default function WordsBadges({ badgeData }: { badgeData: WordBadgeData }) {
   const customWordsInUse = badgeData.replaceDefaultWords
     ? badgeData.numWordsParsed
     : badgeData.numWordsParsed - badgeData.numDefaultWords;
 
-  const validCustomWords =
-    badgeData.numCustomFormWords - badgeData.failedWords.size;
+  const validCustomWords = badgeData.numCustomFormWords - badgeData.failedWords.size;
 
   const wordsAlreadyExisting = validCustomWords - customWordsInUse;
 
@@ -43,10 +33,7 @@ export default function WordsBadges({
   const customWordsText =
     !badgeData.numCustomFormWords || !validCustomWords
       ? "No custom words loaded"
-      : `${validCustomWords} valid custom ${pluralize(
-          validCustomWords,
-          "word"
-        )} parsed`;
+      : `${validCustomWords} valid custom ${pluralize(validCustomWords, "word")} parsed`;
   const customWordsIcon = <IconAdjustments size={iconSize} />;
 
   const alreadyExistingText = `${wordsAlreadyExisting} already existed in word list`;
@@ -72,10 +59,7 @@ export default function WordsBadges({
         </WordInfoBadge>
       )}
       {badgeData.failedWords.size > 0 && (
-        <FailedWordsBadge
-          failedWords={badgeData.failedWords}
-          iconSize={iconSize}
-        />
+        <FailedWordsBadge failedWords={badgeData.failedWords} iconSize={iconSize} />
       )}
     </Group>
   );

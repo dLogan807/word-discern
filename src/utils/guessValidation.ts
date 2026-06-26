@@ -9,7 +9,7 @@ export function validateGuess(
   guess: string,
   guesses: Guess[],
   wordSet: Set<string> | undefined,
-  onlyAllowWordListGuesses: boolean,
+  onlyAllowWordListGuesses: boolean
 ): ValidationResponse {
   const trimmedGuess = guess.trim();
   const minLength = 1;
@@ -28,10 +28,7 @@ export function validateGuess(
     response.message = "Already guessed";
   } else if (!wordSet) {
     response.message = "No words in list of this length";
-  } else if (
-    onlyAllowWordListGuesses &&
-    !wordSet.has(trimmedGuess.toLocaleLowerCase())
-  ) {
+  } else if (onlyAllowWordListGuesses && !wordSet.has(trimmedGuess.toLocaleLowerCase())) {
     response.message = "Not in word list";
   } else {
     response.validated = true;

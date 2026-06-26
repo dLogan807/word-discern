@@ -6,10 +6,7 @@ export interface ParsedWordSets {
 
 const IS_ONLY_LETTERS_REGEX: RegExp = /^[a-zA-Z]+$/;
 
-export function parseWordsToSets(
-  words: string[],
-  specialCharsAllowed: boolean,
-): ParsedWordSets {
+export function parseWordsToSets(words: string[], specialCharsAllowed: boolean): ParsedWordSets {
   const wordSets = new Map<number, Set<string>>();
   const succeeded = new Set<string>();
   const failed = new Set<string>();

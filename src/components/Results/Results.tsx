@@ -1,18 +1,10 @@
-import {
-  ActionIcon,
-  Button,
-  Group,
-  List,
-  ListItem,
-  Stack,
-  Text,
-} from "@mantine/core";
+import { ActionIcon, Button, Group, List, ListItem, Stack, Text } from "@mantine/core";
 import { IconEye, IconEyeOff } from "@tabler/icons-react";
 import { useState } from "react";
 import RevealableChar from "@/components/Results/RevealableChar/RevealableChar";
-import classes from "./Results.module.css";
-import { IResults } from "@/utils/resultBuilder";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
+import { IResults } from "@/utils/resultBuilder";
+import classes from "./Results.module.css";
 
 export default function Results({
   results,
@@ -26,9 +18,7 @@ export default function Results({
   const clampedNumberToShow = Math.min(numberToShow, results.words.length);
   const [numResultsMounted, setNumResultsMounted] = useState(clampedNumberToShow);
   const [mountedResults, setMountedResults] = useState<boolean[]>(
-    new Array(results.words.length)
-      .fill(false)
-      .map((_mounted, idx) => idx < clampedNumberToShow),
+    new Array(results.words.length).fill(false).map((_mounted, idx) => idx < clampedNumberToShow)
   );
 
   const baseDelay = doAnimations ? 20 : 0;
@@ -38,16 +28,9 @@ export default function Results({
 
   function handleShowMoreWords() {
     const oldNumMounted = numResultsMounted;
-    const newNumMounted = Math.min(
-      numResultsMounted + clampedNumberToShow,
-      results.words.length,
-    );
+    const newNumMounted = Math.min(numResultsMounted + clampedNumberToShow, results.words.length);
 
-    const newMountedResults = [...mountedResults].fill(
-      true,
-      oldNumMounted,
-      newNumMounted,
-    );
+    const newMountedResults = [...mountedResults].fill(true, oldNumMounted, newNumMounted);
 
     setNumResultsMounted(newNumMounted);
     setMountedResults(newMountedResults);
@@ -62,9 +45,7 @@ export default function Results({
       >
         <Text>
           {clampedNumberToShow > 0
-            ? `${results.words.length} possible word${
-                results.words.length === 1 ? "" : "s"
-              }:`
+            ? `${results.words.length} possible word${results.words.length === 1 ? "" : "s"}:`
             : "No results >.<"}
         </Text>
         <List
@@ -77,7 +58,7 @@ export default function Results({
             if (doAnimations) {
               delay = Math.min(
                 idx % clampedNumberToShow === 0 ? baseDelay : (delay *= delayMult),
-                totalDelay,
+                totalDelay
               );
             }
 
@@ -133,7 +114,7 @@ function ResultChars({
 }) {
   const defaultArray = new Array<boolean>(result.length).fill(true);
   const numToggleable = permRevealedCharPositions.filter(
-    (charIsRevealed) => !charIsRevealed,
+    (charIsRevealed) => !charIsRevealed
   ).length;
 
   const [allRevealed, setAllRevealed] = useState(false);
@@ -141,13 +122,9 @@ function ResultChars({
 
   function updateHiddenChar(index: number, hidden: boolean) {
     revealedChars[index] = hidden;
-    setRevealedChars(
-      revealedChars.map((charState, i) => (i === index ? hidden : charState)),
-    );
+    setRevealedChars(revealedChars.map((charState, i) => (i === index ? hidden : charState)));
 
-    const numToggleableRevealed = revealedChars.filter(
-      (charIsRevealed) => !charIsRevealed,
-    ).length;
+    const numToggleableRevealed = revealedChars.filter((charIsRevealed) => !charIsRevealed).length;
 
     if (numToggleableRevealed === 0 && allRevealed) {
       fillRevealedArray(true);
@@ -159,8 +136,8 @@ function ResultChars({
   function fillRevealedArray(revealed: boolean) {
     setRevealedChars(
       new Array<boolean>(result.length).map((_hidden, i) =>
-        permRevealedCharPositions[i] ? true : revealed,
-      ),
+        permRevealedCharPositions[i] ? true : revealed
+      )
     );
     setAllRevealed(revealed);
   }

@@ -1,8 +1,8 @@
 import { Button, List, ListItem, Popover, ScrollArea } from "@mantine/core";
 import { IconX } from "@tabler/icons-react";
 import WordInfoBadge from "@/components/Settings/CustomWordsForm/WordBadges/WordInfoBadge/WordInfoBadge";
-import classes from "./FailedWordBadge.module.css";
 import pluralize from "@/utils/pluralize";
+import classes from "./FailedWordBadge.module.css";
 
 export default function FailedWordsBadge({
   failedWords,
@@ -13,10 +13,10 @@ export default function FailedWordsBadge({
 }) {
   const failedWordsText: string = `${failedWords.size} invalid ${pluralize(
     failedWords.size,
-    "word",
+    "word"
   )}`;
   const failedWordsIcon = <IconX size={iconSize} />;
-  
+
   return (
     <Popover position="bottom" withArrow shadow="md">
       <Popover.Target>
