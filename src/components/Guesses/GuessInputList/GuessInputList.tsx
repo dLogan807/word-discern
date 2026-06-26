@@ -6,8 +6,7 @@ import {
   InputLabel,
   Paper,
 } from "@mantine/core";
-import type { KeyboardEvent } from "react";
-import { createContext, useMemo, useState } from "react";
+import { createContext, useMemo, useState, KeyboardEvent } from "react";
 import { Guess } from "@/classes/guess";
 import GuessItem from "@/components/Guesses/GuessItem/GuessItem";
 import { validateGuess } from "@/utils/guessValidation";

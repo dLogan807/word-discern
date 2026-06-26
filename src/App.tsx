@@ -84,7 +84,7 @@ export default function App() {
   const [doAnimations, setDoAnimations] = useState(true);
 
   function handleGetPossibleWords() {
-    if (guesses.length == 0 || !guesses[0]) return;
+    if (guesses.length === 0 || !guesses[0]) return;
 
     const guessLength = guesses[0].wordString.length;
     const wordSet = parsedWordSets.wordSets.get(guessLength);

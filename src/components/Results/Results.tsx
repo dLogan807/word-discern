@@ -45,23 +45,23 @@ function ResultsContent({
   numberToShow: number;
   doAnimations: boolean;
 }) {
-  numberToShow = Math.min(numberToShow, results.words.length);
-  const [numResultsMounted, setNumResultsMounted] = useState(numberToShow);
+  const clampedNumberToShow = Math.min(numberToShow, results.words.length);
+  const [numResultsMounted, setNumResultsMounted] = useState(clampedNumberToShow);
   const [mountedResults, setMountedResults] = useState<boolean[]>(
     new Array(results.words.length)
       .fill(false)
-      .map((_mounted, idx) => idx < numberToShow),
+      .map((_mounted, idx) => idx < clampedNumberToShow),
   );
 
   const baseDelay = doAnimations ? 20 : 0;
-  const delayMult = 1.05 + 1 / Math.max(numberToShow, 1);
+  const delayMult = 1.05 + 1 / Math.max(clampedNumberToShow, 1);
   let delay = baseDelay;
-  const totalDelay = Math.min(baseDelay * delayMult ** numberToShow, 500);
+  const totalDelay = Math.min(baseDelay * delayMult ** clampedNumberToShow, 500);
 
   function handleShowMoreWords() {
     const oldNumMounted = numResultsMounted;
     const newNumMounted = Math.min(
-      numResultsMounted + numberToShow,
+      numResultsMounted + clampedNumberToShow,
       results.words.length,
     );
 
@@ -83,9 +83,9 @@ function ResultsContent({
         }}
       >
         <Text>
-          {numberToShow > 0
+          {clampedNumberToShow > 0
             ? `${results.words.length} possible word${
-                results.words.length == 1 ? "" : "s"
+                results.words.length === 1 ? "" : "s"
               }:`
             : "No results >.<"}
         </Text>
@@ -98,7 +98,7 @@ function ResultsContent({
           {results.words.map((result, idx) => {
             if (doAnimations) {
               delay = Math.min(
-                idx % numberToShow === 0 ? baseDelay : (delay *= delayMult),
+                idx % clampedNumberToShow === 0 ? baseDelay : (delay *= delayMult),
                 totalDelay,
               );
             }

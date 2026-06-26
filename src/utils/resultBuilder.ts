@@ -115,7 +115,7 @@ function matchGuessesWithWords(
       requiredSomewhereCharsCopy.delete(word[i]);
     }
 
-    if (!invalidWord && requiredSomewhereCharsCopy.size == 0) {
+    if (!invalidWord && requiredSomewhereCharsCopy.size === 0) {
       results.push(word);
     }
   }
@@ -128,7 +128,7 @@ function requiredCharMissing(
   charToCompare: string,
 ): boolean {
   return (
-    requiredChar != undefined && !stringsAreEqual(requiredChar, charToCompare)
+    requiredChar !== undefined && !stringsAreEqual(requiredChar, charToCompare)
   );
 }
 
@@ -137,7 +137,7 @@ function charAtBadPos(
   charToCompare: string,
 ): boolean {
   return (
-    blackListedCharArray != undefined && blackListedCharArray.has(charToCompare)
+    blackListedCharArray !== undefined && blackListedCharArray.has(charToCompare)
   );
 }
 

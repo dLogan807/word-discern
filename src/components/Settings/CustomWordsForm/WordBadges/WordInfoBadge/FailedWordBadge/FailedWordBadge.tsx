@@ -16,6 +16,7 @@ export default function FailedWordsBadge({
     "word",
   )}`;
   const failedWordsIcon = <IconX size={iconSize} />;
+  
   return (
     <Popover position="bottom" withArrow shadow="md">
       <Popover.Target>
@@ -25,7 +26,7 @@ export default function FailedWordsBadge({
             root: classes.failed_words_button,
           }}
         >
-          <WordInfoBadge color="red" icon={failedWordsIcon} clickable={true}>
+          <WordInfoBadge color="red" icon={failedWordsIcon} clickable>
             {failedWordsText}
           </WordInfoBadge>
         </Button>

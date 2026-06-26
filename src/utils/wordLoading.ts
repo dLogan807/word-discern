@@ -31,14 +31,6 @@ export function parseWordsToSets(
     }
   }
 
-  if (failed.size > 0) {
-    const failedWordsArray = Array.from(failed);
-
-    console.warn(
-      `Failed to load ${failedWordsArray.length} words: ${failedWordsArray}`,
-    );
-  }
-
   return {
     wordSets: wordSets,
     wordNum: succeeded.size,
@@ -57,7 +49,7 @@ function isValidWord(word: string, specialCharsAllowed: boolean): boolean {
 export function getWordArray(text: string): string[] {
   let words: string[] = [];
 
-  if (!text || text.length == 0) return words;
+  if (!text) return words;
 
   const splitRegex: RegExp = /;|,| |\n/;
   words = text

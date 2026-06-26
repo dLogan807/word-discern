@@ -69,7 +69,7 @@ export default function CustomWordsForm() {
   });
 
   function validateJSON(value: string): string | null {
-    if (inputMode == WordInput.TEXT || value == null || value.length == 0)
+    if (inputMode === WordInput.TEXT || value == null || value.length === 0)
       return null;
 
     const errors: ParseError[] = [];
@@ -90,15 +90,15 @@ export default function CustomWordsForm() {
   }
 
   async function validateFile(file: File | null): Promise<string | null> {
-    if (inputMode != WordInput.FILE || file == null) return null;
+    if (inputMode !== WordInput.FILE || file == null) return null;
 
     if (file.type === "application/json") {
       return validateJSON(await file.text());
-    } else if (file.type == "text/plain") {
+    } else if (file.type === "text/plain") {
       return null;
-    } else {
-      return "Unsupported file type";
-    }
+    } 
+      
+    return "Unsupported file type";
   }
 
   async function onSubmit() {
@@ -106,9 +106,9 @@ export default function CustomWordsForm() {
     let words: string[] = [];
     let error: string | null = null;
 
-    if (inputMode == WordInput.TEXT) {
+    if (inputMode === WordInput.TEXT) {
       words = getWordArray(formValues.text);
-    } else if (inputMode == WordInput.JSON) {
+    } else if (inputMode === WordInput.JSON) {
       error = validateJSON(formValues.json);
 
       if (formValues.json && !error) {
@@ -144,7 +144,7 @@ export default function CustomWordsForm() {
   }
 
   const hiddenInputClass = (inputType: WordInput) => {
-    return inputMode == inputType
+    return inputMode === inputType
       ? {}
       : {
           root: classes.hidden_input,
@@ -199,7 +199,7 @@ export default function CustomWordsForm() {
             aria-label="Your JSON array of words"
             placeholder='["a","list","of","words"]'
             validationError={validateJSON(form.getValues().json)}
-            formatOnBlur={true}
+            formatOnBlur
             autosize
             minRows={4}
             maxRows={10}
