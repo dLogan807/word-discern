@@ -176,9 +176,9 @@ export default function App() {
 
             {showResults && (
               <Results
+                key={`${resultUpdateKey}-${results.words.length}`}
                 results={results}
                 numberToShow={numResultsShown}
-                triggerUpdate={resultUpdateKey}
                 doAnimations={doAnimations}
               />
             )}

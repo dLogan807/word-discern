@@ -17,28 +17,6 @@ import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 export default function Results({
   results,
   numberToShow,
-  triggerUpdate,
-  doAnimations,
-}: {
-  results: IResults;
-  numberToShow: number;
-  triggerUpdate: number;
-  doAnimations: boolean;
-}) {
-  const resetKey = `${triggerUpdate}-${results.words.length}`;
-  return (
-    <ResultsContent
-      key={resetKey}
-      results={results}
-      numberToShow={numberToShow}
-      doAnimations={doAnimations}
-    />
-  );
-}
-
-function ResultsContent({
-  results,
-  numberToShow,
   doAnimations,
 }: {
   results: IResults;
