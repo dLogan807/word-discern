@@ -43,7 +43,9 @@ export default function Settings(props: SettingsProps) {
 
   return (
     <Stack classNames={{ root: classes.settings }}>
-      <Title order={3}>Settings</Title>
+      <Title order={3} classNames={{ root: classes.settings_title }}>
+        Settings
+      </Title>
       <SettingsDivider title="Guess input" icon={<IconZoomQuestion size={iconSize} />} />
       <Switch label="Keyboard Mode" classNames={{ root: classes.setting_switch }} disabled />
       <Checkbox

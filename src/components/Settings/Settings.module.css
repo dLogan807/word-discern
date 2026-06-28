@@ -2,6 +2,10 @@
   padding: 1rem;
 }
 
+.settings_title {
+  text-align: center;
+}
+
 .setting_switch {
   padding-left: 1rem;
 }
