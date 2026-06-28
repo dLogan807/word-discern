@@ -1,4 +1,5 @@
-import { createTheme } from "@mantine/core";
+import { ActionIcon, createTheme } from "@mantine/core";
+import classes from "./theme.module.css";
 
 export const theme = createTheme({
   primaryColor: "discerning-purple",
@@ -18,4 +19,12 @@ export const theme = createTheme({
   },
   fontFamily: "Arial, sans-serif",
   headings: { fontFamily: "Times New Roman, sans-serif" },
+  components: {
+    ActionIcon: ActionIcon.extend({
+      classNames: {
+        root: classes.action_icon,
+        icon: classes.action_icon_icon,
+      },
+    }),
+  },
 });

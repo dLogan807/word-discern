@@ -21,9 +21,9 @@ export function ThemeSelector() {
         aria-label="Toggle color theme"
       >
         {computedColorScheme === "dark" ? (
-          <IconSun aria-label="Sun" className={classes.icon} />
+          <IconSun aria-label="Sun" />
         ) : (
-          <IconMoonStars aria-label="Moon and stars" className={classes.icon} />
+          <IconMoonStars aria-label="Moon and stars" />
         )}
       </ActionIcon>
     </Tooltip>

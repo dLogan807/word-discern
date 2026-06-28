@@ -1,0 +1,13 @@
+.action_icon {
+  --ai-size: var(--ai-size-lg);
+  --ai-bg: var(--mantine-color-default);
+  --ai-hover: var(--mantine-color-default-hover);
+  --ai-color: var(--mantine-color-default-color) !important;
+  --ai-bd: calc(0.0625rem * var(--mantine-scale)) solid var(--mantine-color-default-border);
+}
+
+.action_icon_icon {
+  svg {
+    stroke-width: 1.5;
+  }
+}
