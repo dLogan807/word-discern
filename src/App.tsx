@@ -1,16 +1,16 @@
 import "@mantine/core/styles.css";
 import wordsUrl from "/words.txt?url";
 import {
-  AppShell,
-  Burger,
+  ActionIcon,
+  Box,
   Button,
   Group,
   MantineProvider,
-  ScrollArea,
   Title,
   v8CssVariablesResolver,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import { IconSettings } from "@tabler/icons-react";
 import { createContext, Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { Guess } from "@/classes/guess";
 import GuessInputList from "@/components/Guesses/GuessInputList/GuessInputList";
@@ -38,7 +38,6 @@ async function getWords(): Promise<string[]> {
 
 export default function App() {
   const [defaultWords, setDefaultWords] = useState<string[]>([]);
-  const [navbarOpened, { toggle }] = useDisclosure();
 
   useEffect(() => {
     void getWords().then(setDefaultWords);
@@ -65,6 +64,7 @@ export default function App() {
   const [resultUpdateKey, setResultUpdateKey] = useState(0);
 
   // Settings
+  const [settingsOpened, { toggle }] = useDisclosure(false);
   const [onlyAllowWordListGuesses, setOnlyAllowWordListGuesses] = useState(true);
   const [shuffleResults, setShuffleResults] = useState(true);
   const [hideResults, setHideResults] = useState(true);
@@ -97,53 +97,64 @@ export default function App() {
         defaultColorScheme="auto"
         cssVariablesResolver={v8CssVariablesResolver}
       >
-        <AppShell
-          classNames={{ header: classes.header, navbar: classes.settings }}
-          padding="md"
-          header={{ height: 60 }}
-          navbar={{
-            width: 400,
-            breakpoint: "sm",
-            collapsed: { mobile: !navbarOpened },
-          }}
+        <Box
+          className={`${classes.layout}
+            ${!settingsOpened ? classes.layout_settings_pane_closed : undefined}
+          `}
+          // navbar={{
+          //   width: 400,
+          //   breakpoint: "sm",
+          //   collapsed: { mobile: !settingsOpened },
+          // }}
         >
-          <AppShell.Header>
+          <Box className={classes.header}>
+            <Title order={1}>Word Discern</Title>
             <Group>
-              <Burger opened={navbarOpened} onClick={toggle} hiddenFrom="sm" size="sm" />
-              <Title order={1}>Word Discern</Title>
+              <ThemeSelector />
+              <ActionIcon
+                variant="transparent"
+                aria-label="Settings"
+                onClick={toggle}
+                classNames={{
+                  root: classes.settings_button,
+                  icon: `${classes.settings_button_icon}
+                  ${settingsOpened ? classes.settings_button_icon_opened : undefined}`,
+                }}
+              >
+                <IconSettings />
+              </ActionIcon>
             </Group>
+          </Box>
 
-            <ThemeSelector />
-          </AppShell.Header>
-
-          <AppShell.Navbar>
+          <Box
+            className={`${classes.settings_pane}
+            ${!settingsOpened ? classes.settings_pane_closed : undefined}`}
+          >
             <CustomWordsFormContext value={setStoredCustomWordsFormData}>
-              <ScrollArea type="auto">
-                <Settings
-                  wordBadgeData={{
-                    replaceDefaultWords: storedCustomWordsFormData.replaceDefaultWords,
-                    numDefaultWords: defaultWords.length,
-                    numWordsParsed: parsedWordSets.wordNum,
-                    numCustomFormWords: storedCustomWordsFormData.words.length,
-                    failedWords: parsedWordSets.failed,
-                  }}
-                  shuffleResults={shuffleResults}
-                  setShuffleResults={setShuffleResults}
-                  hideResults={hideResults}
-                  setHideResults={setHideResults}
-                  onlyHideUnknownChars={onlyHideUnknownChars}
-                  setOnlyHideUnknownChars={setOnlyHideUnknownChars}
-                  setOnlyAllowWordListGuesses={setOnlyAllowWordListGuesses}
-                  numResultsShown={numResultsShown}
-                  setNumResultsShown={setNumResultsShown}
-                  doAnimations={doAnimations}
-                  setDoAnimations={setDoAnimations}
-                />
-              </ScrollArea>
+              <Settings
+                wordBadgeData={{
+                  replaceDefaultWords: storedCustomWordsFormData.replaceDefaultWords,
+                  numDefaultWords: defaultWords.length,
+                  numWordsParsed: parsedWordSets.wordNum,
+                  numCustomFormWords: storedCustomWordsFormData.words.length,
+                  failedWords: parsedWordSets.failed,
+                }}
+                shuffleResults={shuffleResults}
+                setShuffleResults={setShuffleResults}
+                hideResults={hideResults}
+                setHideResults={setHideResults}
+                onlyHideUnknownChars={onlyHideUnknownChars}
+                setOnlyHideUnknownChars={setOnlyHideUnknownChars}
+                setOnlyAllowWordListGuesses={setOnlyAllowWordListGuesses}
+                numResultsShown={numResultsShown}
+                setNumResultsShown={setNumResultsShown}
+                doAnimations={doAnimations}
+                setDoAnimations={setDoAnimations}
+              />
             </CustomWordsFormContext>
-          </AppShell.Navbar>
+          </Box>
 
-          <AppShell.Main>
+          <Box className={classes.content_body}>
             <GuessInputList
               guesses={guesses}
               setGuesses={setGuesses}
@@ -163,8 +174,8 @@ export default function App() {
                 doAnimations={doAnimations}
               />
             )}
-          </AppShell.Main>
-        </AppShell>
+          </Box>
+        </Box>
       </MantineProvider>
     </>
   );
