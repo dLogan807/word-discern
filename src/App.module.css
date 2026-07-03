@@ -10,6 +10,11 @@
   grid-template-columns: 1fr auto;
   grid-template-areas: "header header" "content-body settings-pane";
   z-index: 10;
+
+  @media (max-width: $mantine-breakpoint-sm) {
+    grid-template-columns: 1fr;
+    grid-template-areas: "header" "content-body";
+  }
 }
 
 .layout_settings_pane_closed {
@@ -36,6 +41,15 @@
   padding: var(--mantine-spacing-md);
   overflow: scroll;
   border-left: 1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
+  background-color: light-dark(#ffffff, var(--mantine-color-dark-7));
+
+  @media (max-width: $mantine-breakpoint-sm) {
+    position: absolute;
+    top: 4.1rem;
+    width: 100%;
+    height: calc(100% - 4.1rem);
+    z-index: 11;
+  }
 }
 
 .settings_pane_closed {
