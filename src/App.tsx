@@ -89,87 +89,85 @@ export default function App() {
   }
 
   return (
-    <>
-      <MantineProvider
-        theme={theme}
-        defaultColorScheme="auto"
-        cssVariablesResolver={v8CssVariablesResolver}
-      >
-        <Box
-          className={`${classes.layout}
+    <MantineProvider
+      theme={theme}
+      defaultColorScheme="auto"
+      cssVariablesResolver={v8CssVariablesResolver}
+    >
+      <Box
+        className={`${classes.layout}
             ${!settingsOpened ? classes.layout_settings_pane_closed : undefined}
           `}
-        >
-          <Box className={classes.header}>
-            <Title order={1} classNames={{ root: classes.header_logo }}>
-              Word Discern
-            </Title>
+      >
+        <Box className={classes.header}>
+          <Title order={1} classNames={{ root: classes.header_logo }}>
+            Word Discern
+          </Title>
 
-            <ActionIcon
-              variant="transparent"
-              aria-label="Settings"
-              onClick={toggle}
-              classNames={{
-                root: classes.settings_button,
-                icon: `${classes.settings_button_icon}
+          <ActionIcon
+            variant="transparent"
+            aria-label="Settings"
+            onClick={toggle}
+            classNames={{
+              root: classes.settings_button,
+              icon: `${classes.settings_button_icon}
                   ${settingsOpened ? classes.settings_button_icon_opened : undefined}`,
-              }}
-            >
-              {settingsOpened ? <IconXFilled /> : <IconSettings />}
-            </ActionIcon>
-          </Box>
-
-          <Box
-            className={`${classes.settings_pane}
-            ${!settingsOpened ? classes.settings_pane_closed : undefined}`}
+            }}
           >
-            <CustomWordsFormContext value={setStoredCustomWordsFormData}>
-              <Settings
-                wordBadgeData={{
-                  replaceDefaultWords: storedCustomWordsFormData.replaceDefaultWords,
-                  numDefaultWords: defaultWords.length,
-                  numWordsParsed: parsedWordSets.wordNum,
-                  numCustomFormWords: storedCustomWordsFormData.words.length,
-                  failedWords: parsedWordSets.failed,
-                }}
-                shuffleResults={shuffleResults}
-                setShuffleResults={setShuffleResults}
-                hideResults={hideResults}
-                setHideResults={setHideResults}
-                onlyHideUnknownChars={onlyHideUnknownChars}
-                setOnlyHideUnknownChars={setOnlyHideUnknownChars}
-                setOnlyAllowWordListGuesses={setOnlyAllowWordListGuesses}
-                numResultsShown={numResultsShown}
-                setNumResultsShown={setNumResultsShown}
-                doAnimations={doAnimations}
-                setDoAnimations={setDoAnimations}
-              />
-            </CustomWordsFormContext>
-          </Box>
+            {settingsOpened ? <IconXFilled /> : <IconSettings />}
+          </ActionIcon>
+        </Box>
 
-          <Box className={classes.content_body}>
-            <GuessInputList
-              guesses={guesses}
-              setGuesses={setGuesses}
-              wordSets={parsedWordSets.wordSets}
-              onlyAllowWordListGuesses={onlyAllowWordListGuesses}
+        <Box
+          className={`${classes.settings_pane}
+            ${!settingsOpened ? classes.settings_pane_closed : undefined}`}
+        >
+          <CustomWordsFormContext value={setStoredCustomWordsFormData}>
+            <Settings
+              wordBadgeData={{
+                replaceDefaultWords: storedCustomWordsFormData.replaceDefaultWords,
+                numDefaultWords: defaultWords.length,
+                numWordsParsed: parsedWordSets.wordNum,
+                numCustomFormWords: storedCustomWordsFormData.words.length,
+                failedWords: parsedWordSets.failed,
+              }}
+              shuffleResults={shuffleResults}
+              setShuffleResults={setShuffleResults}
+              hideResults={hideResults}
+              setHideResults={setHideResults}
+              onlyHideUnknownChars={onlyHideUnknownChars}
+              setOnlyHideUnknownChars={setOnlyHideUnknownChars}
+              setOnlyAllowWordListGuesses={setOnlyAllowWordListGuesses}
+              numResultsShown={numResultsShown}
+              setNumResultsShown={setNumResultsShown}
+              doAnimations={doAnimations}
+              setDoAnimations={setDoAnimations}
+            />
+          </CustomWordsFormContext>
+        </Box>
+
+        <Box className={classes.content_body}>
+          <GuessInputList
+            guesses={guesses}
+            setGuesses={setGuesses}
+            wordSets={parsedWordSets.wordSets}
+            onlyAllowWordListGuesses={onlyAllowWordListGuesses}
+            doAnimations={doAnimations}
+          />
+          <Button disabled={!guesses.length} onClick={handleGetPossibleWords}>
+            Get Possible Words!
+          </Button>
+
+          {showResults && (
+            <Results
+              key={`${resultUpdateKey}-${results.words.length}`}
+              results={results}
+              numberToShow={numResultsShown}
               doAnimations={doAnimations}
             />
-            <Button disabled={!guesses.length} onClick={handleGetPossibleWords}>
-              Get Possible Words!
-            </Button>
-
-            {showResults && (
-              <Results
-                key={`${resultUpdateKey}-${results.words.length}`}
-                results={results}
-                numberToShow={numResultsShown}
-                doAnimations={doAnimations}
-              />
-            )}
-          </Box>
+          )}
         </Box>
-      </MantineProvider>
-    </>
+      </Box>
+    </MantineProvider>
   );
 }
