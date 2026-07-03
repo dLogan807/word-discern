@@ -1,4 +1,5 @@
-import { Autocomplete, Box, Button, Flex, InputLabel, Paper } from "@mantine/core";
+import { ActionIcon, Autocomplete, Box, Flex, Paper } from "@mantine/core";
+import { IconPlus } from "@tabler/icons-react";
 import { createContext, useMemo, useState, KeyboardEvent } from "react";
 import { Guess } from "@/classes/guess";
 import GuessItem from "@/components/Guesses/GuessItem/GuessItem";
@@ -105,7 +106,6 @@ export default function GuessInputList({
   return (
     <Paper>
       <Box>
-        <InputLabel>Guess</InputLabel>
         <Flex classNames={{ root: classes.guess_input_container }}>
           <Autocomplete
             aria-label="Guess"
@@ -117,8 +117,27 @@ export default function GuessInputList({
             data={searchableWords}
             dropdownOpened={searchDropdownOpened}
             limit={5}
+            rightSection={
+              <ActionIcon
+                onClick={tryAddGuess}
+                aria-label="Add Guess"
+                classNames={{
+                  root: classes.add_guess_button,
+                  icon: classes.add_guess_button_icon,
+                }}
+              >
+                <IconPlus />
+              </ActionIcon>
+            }
+            classNames={{
+              root: classes.guess_autocomplete_root,
+              wrapper: classes.guess_autocomplete_wrapper,
+              input: classes.guess_autocomplete_input,
+              section: classes.guess_autocomplete_section,
+              dropdown: classes.guess_autocomplete_dropdown,
+              option: classes.guess_autocomplete_option,
+            }}
           />
-          <Button onClick={tryAddGuess}>Add</Button>
         </Flex>
       </Box>
 
