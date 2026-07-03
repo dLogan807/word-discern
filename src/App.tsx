@@ -4,7 +4,6 @@ import {
   ActionIcon,
   Box,
   Button,
-  Group,
   MantineProvider,
   Title,
   v8CssVariablesResolver,
@@ -20,7 +19,6 @@ import {
   DEFAULT_CUSTOM_WORDS_FORM,
 } from "@/components/Settings/CustomWordsForm/CustomWordsForm";
 import Settings from "@/components/Settings/Settings";
-import { ThemeSelector } from "@/components/ThemeSelector/ThemeSelector";
 import { theme } from "@/theme";
 import getResults, { IResults } from "@/utils/resultBuilder";
 import { ParsedWordSets, parseWordsToSets } from "@/utils/wordLoading";
@@ -101,29 +99,24 @@ export default function App() {
           className={`${classes.layout}
             ${!settingsOpened ? classes.layout_settings_pane_closed : undefined}
           `}
-          // navbar={{
-          //   width: 400,
-          //   breakpoint: "sm",
-          //   collapsed: { mobile: !settingsOpened },
-          // }}
         >
           <Box className={classes.header}>
-            <Title order={1}>Word Discern</Title>
-            <Group>
-              <ThemeSelector />
-              <ActionIcon
-                variant="transparent"
-                aria-label="Settings"
-                onClick={toggle}
-                classNames={{
-                  root: classes.settings_button,
-                  icon: `${classes.settings_button_icon}
+            <Title order={1} classNames={{ root: classes.header_logo }}>
+              Word Discern
+            </Title>
+
+            <ActionIcon
+              variant="transparent"
+              aria-label="Settings"
+              onClick={toggle}
+              classNames={{
+                root: classes.settings_button,
+                icon: `${classes.settings_button_icon}
                   ${settingsOpened ? classes.settings_button_icon_opened : undefined}`,
-                }}
-              >
-                {settingsOpened ? <IconXFilled /> : <IconSettings />}
-              </ActionIcon>
-            </Group>
+              }}
+            >
+              {settingsOpened ? <IconXFilled /> : <IconSettings />}
+            </ActionIcon>
           </Box>
 
           <Box

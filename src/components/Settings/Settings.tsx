@@ -42,8 +42,8 @@ export default function Settings(props: SettingsProps) {
   const iconSize = 20;
 
   return (
-    <Stack classNames={{ root: classes.settings }}>
-      <Title order={3} classNames={{ root: classes.settings_title }}>
+    <Stack>
+      <Title order={2} classNames={{ root: classes.settings_title }}>
         Settings
       </Title>
       <SettingsDivider title="Guess input" icon={<IconZoomQuestion size={iconSize} />} />
