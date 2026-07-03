@@ -10,7 +10,7 @@ import {
   v8CssVariablesResolver,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconSettings } from "@tabler/icons-react";
+import { IconSettings, IconXFilled } from "@tabler/icons-react";
 import { createContext, Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { Guess } from "@/classes/guess";
 import GuessInputList from "@/components/Guesses/GuessInputList/GuessInputList";
@@ -121,7 +121,7 @@ export default function App() {
                   ${settingsOpened ? classes.settings_button_icon_opened : undefined}`,
                 }}
               >
-                <IconSettings />
+                {settingsOpened ? <IconXFilled /> : <IconSettings />}
               </ActionIcon>
             </Group>
           </Box>
