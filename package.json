@@ -15,9 +15,9 @@
     "format:write": "oxfmt --write \"**/*.{ts,tsx,css}\""
   },
   "dependencies": {
-    "@mantine/core": "^9.1.1",
-    "@mantine/form": "^9.1.1",
-    "@mantine/hooks": "^9.1.1",
+    "@mantine/core": "^9.4.1",
+    "@mantine/form": "^9.4.1",
+    "@mantine/hooks": "^9.4.1",
     "@tabler/icons-react": "^3.35.0",
     "@types/node": "^24.9.2",
     "jsonc-parser": "^3.3.1",
