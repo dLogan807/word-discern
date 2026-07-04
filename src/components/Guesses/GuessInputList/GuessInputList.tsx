@@ -33,7 +33,7 @@ export default function GuessInputList({
   const [searchDropdownOpened, setSearchDropDownOpened] = useState(false);
   const [guessValue, setGuessValue] = useState("");
   const [guessError, setGuessError] = useState<null | string>(null);
-  const debouncedSearch = useDebounce(guessValue, 250).toLocaleLowerCase();
+  const debouncedSearch = useDebounce(guessValue, 250).trim().toLocaleLowerCase();
   const debouncedSearchLength = debouncedSearch.length;
 
   const searchableWords = useMemo(() => {
