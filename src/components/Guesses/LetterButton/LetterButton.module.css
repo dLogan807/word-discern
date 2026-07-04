@@ -1,9 +1,14 @@
 .letter_button {
-  width: 3rem;
-  height: 3rem;
+  width: 4rem;
+  height: 4rem;
 
   :hover {
     opacity: 0.9;
+  }
+
+  @media (max-width: $mantine-breakpoint-sm) {
+    width: 3rem;
+    height: 3rem;
   }
 }
 
@@ -16,7 +21,11 @@
   border-radius: var(--mantine-radius-sm);
   color: white;
   font-weight: 600;
-  font-size: var(--mantine-font-size-lg);
+  font-size: 1.5rem;
+
+  @media (max-width: $mantine-breakpoint-sm) {
+    font-size: var(--mantine-font-size-lg);
+  }
 }
 
 @keyframes letterFlip {

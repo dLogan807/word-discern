@@ -110,7 +110,7 @@ export default function GuessInputList({
       <Flex classNames={{ root: classes.guess_input_container }}>
         <Autocomplete
           aria-label="Guess"
-          placeholder="Enter your guess"
+          placeholder="Enter a guess"
           onKeyDown={handleSelectKeyDown}
           value={guessValue}
           error={guessError}
