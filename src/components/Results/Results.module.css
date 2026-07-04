@@ -58,5 +58,6 @@
 
 .results_text_number {
   color: var(--mantine-primary-color-filled);
+  font-size: 2rem;
   font-weight: 600;
 }

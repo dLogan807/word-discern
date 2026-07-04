@@ -45,7 +45,7 @@ export default function Results({
             <>
               <RollingNumber
                 value={results.words.length}
-                fz="36px"
+                animationDuration={doAnimations ? 600 : 0}
                 classNames={{ root: classes.results_text_number }}
               />
 
