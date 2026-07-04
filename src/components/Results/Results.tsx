@@ -24,19 +24,12 @@ export default function Results({
     <Box className={classes.results_container}>
       <Box className={classes.results_text_container}>
         <Text classNames={{ root: classes.results_text }}>
-          {clampedNumberToShow > 0 ? (
-            <>
-              <RollingNumber
-                value={results.words.length}
-                animationDuration={doAnimations ? 600 : 0}
-                classNames={{ root: classes.results_text_number }}
-              />
-
-              {` possible ${pluralize(results.words.length, "word")}`}
-            </>
-          ) : (
-            "No results >.<"
-          )}
+          <RollingNumber
+            value={results.words.length}
+            animationDuration={doAnimations ? 600 : 0}
+            classNames={{ root: classes.results_text_number }}
+          />
+          {` possible ${pluralize(results.words.length, "word")}`}
         </Text>
       </Box>
       <ResultWords
@@ -113,6 +106,7 @@ function ResultWords({
             </Box>
           );
         })}
+        {results.words.length === 0 && "No results >.<"}
       </Box>
       {numResultsMounted < results.words.length && (
         <Button
