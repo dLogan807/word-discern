@@ -83,7 +83,9 @@ export default function Settings(props: SettingsProps) {
         </Group>
       </Box>
       <Stack classNames={{ root: classes.setting_slider }}>
-        <InputLabel>Number displayed: {props.numResultsShown}</InputLabel>
+        <InputLabel>
+          Number displayed: <b>{props.numResultsShown}</b>
+        </InputLabel>
         <Slider
           onChangeEnd={props.setNumResultsShown}
           domain={[0, 100]}
