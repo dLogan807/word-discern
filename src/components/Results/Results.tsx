@@ -18,8 +18,6 @@ export default function Results({
   numberToShow: number;
   doAnimations: boolean;
 }) {
-  const clampedNumberToShow = Math.min(numberToShow, results.words.length);
-
   return (
     <Box className={classes.results_container}>
       <Box className={classes.results_text_container}>
@@ -36,7 +34,7 @@ export default function Results({
         key={`${resultsUpdateKey}-${results.words.length}`}
         results={results}
         doAnimations={doAnimations}
-        clampedNumberToShow={clampedNumberToShow}
+        numberToShow={numberToShow}
       />
     </Box>
   );
@@ -45,12 +43,14 @@ export default function Results({
 function ResultWords({
   results,
   doAnimations,
-  clampedNumberToShow,
+  numberToShow,
 }: {
   results: IResults;
   doAnimations: boolean;
-  clampedNumberToShow: number;
+  numberToShow: number;
 }) {
+  const clampedNumberToShow = Math.min(numberToShow, results.words.length);
+
   const [numResultsMounted, setNumResultsMounted] = useState(clampedNumberToShow);
   const [mountedResults, setMountedResults] = useState<boolean[]>(
     new Array(results.words.length).fill(false).map((_mounted, idx) => idx < clampedNumberToShow)
