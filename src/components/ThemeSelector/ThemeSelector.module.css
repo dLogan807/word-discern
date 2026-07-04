@@ -1,3 +1,12 @@
-.theme_icon_container {
-  --ai-size: var(--ai-size-lg);
+.colour_theme_switch_track_label {
+  color: light-dark(var(--mantine-color-dark-4), var(--mantine-color-gray-3));
+  background-color: light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
+}
+
+.colour_theme_switch_track {
+  background-color: light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
+}
+
+.colour_theme_switch_thumb {
+  --switch-bg: light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
 }

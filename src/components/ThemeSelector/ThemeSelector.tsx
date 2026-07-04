@@ -1,4 +1,4 @@
-import { ActionIcon, Tooltip, useComputedColorScheme, useMantineColorScheme } from "@mantine/core";
+import { Switch, Tooltip, useComputedColorScheme, useMantineColorScheme } from "@mantine/core";
 import { IconSun, IconMoonStars } from "@tabler/icons-react";
 import classes from "./ThemeSelector.module.css";
 
@@ -9,23 +9,24 @@ export function ThemeSelector() {
     setColorScheme(computedColorScheme === "dark" ? "light" : "dark");
   };
 
-  const tooltipText = computedColorScheme === "light" ? "Light theme" : "Dark theme";
+  const isDarkTheme = computedColorScheme === "dark";
+  const tooltipText = `Switch to ${isDarkTheme ? "light theme" : "dark theme"}`;
 
   return (
-    <Tooltip label={tooltipText}>
-      <ActionIcon
+    <Tooltip refProp="rootRef" label={tooltipText}>
+      <Switch
         classNames={{
-          root: classes.theme_icon_container,
+          trackLabel: classes.colour_theme_switch_track_label,
+          track: classes.colour_theme_switch_track,
+          thumb: classes.colour_theme_switch_thumb,
         }}
+        size="lg"
+        aria-label="Toggle colour theme"
+        onLabel={<IconMoonStars aria-label="Moon and stars" />}
+        offLabel={<IconSun aria-label="Sun" />}
+        checked={isDarkTheme}
         onClick={toggleColorScheme}
-        aria-label="Toggle color theme"
-      >
-        {computedColorScheme === "dark" ? (
-          <IconSun aria-label="Sun" />
-        ) : (
-          <IconMoonStars aria-label="Moon and stars" />
-        )}
-      </ActionIcon>
+      />
     </Tooltip>
   );
 }

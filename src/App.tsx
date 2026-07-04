@@ -1,6 +1,13 @@
 import "@mantine/core/styles.css";
 import wordsUrl from "/words.txt?url";
-import { ActionIcon, Box, MantineProvider, Title, v8CssVariablesResolver } from "@mantine/core";
+import {
+  ActionIcon,
+  Box,
+  Group,
+  MantineProvider,
+  Title,
+  v8CssVariablesResolver,
+} from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconSettings, IconXFilled } from "@tabler/icons-react";
 import { createContext, Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
@@ -15,6 +22,7 @@ import Settings from "@/components/Settings/Settings";
 import { theme } from "@/theme";
 import getResults, { IResults } from "@/utils/resultBuilder";
 import { ParsedWordSets, parseWordsToSets } from "@/utils/wordLoading";
+import { ThemeSelector } from "./components/ThemeSelector/ThemeSelector";
 import classes from "./App.module.css";
 
 export const CustomWordsFormContext = createContext<Dispatch<SetStateAction<CustomWordsFormData>>>(
@@ -97,18 +105,21 @@ export default function App() {
             Word Discern
           </Title>
 
-          <ActionIcon
-            variant="transparent"
-            aria-label="Settings"
-            onClick={toggle}
-            classNames={{
-              root: classes.settings_button,
-              icon: `${classes.settings_button_icon}
+          <Group>
+            <ThemeSelector />
+            <ActionIcon
+              variant="transparent"
+              aria-label="Settings"
+              onClick={toggle}
+              classNames={{
+                root: classes.settings_button,
+                icon: `${classes.settings_button_icon}
                   ${settingsOpened ? classes.settings_button_icon_opened : undefined}`,
-            }}
-          >
-            {settingsOpened ? <IconXFilled /> : <IconSettings />}
-          </ActionIcon>
+              }}
+            >
+              {settingsOpened ? <IconXFilled /> : <IconSettings />}
+            </ActionIcon>
+          </Group>
         </Box>
 
         <Box

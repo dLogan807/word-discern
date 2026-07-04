@@ -30,6 +30,8 @@
 }
 
 .header_logo {
+  color: light-dark(var(--mantine-color-dark-4), var(--mantine-color-gray-3));
+
   @media (max-width: $mantine-breakpoint-xs) {
     font-size: 1.5rem;
   }
@@ -74,6 +76,7 @@
 }
 
 .settings_button_icon {
+  color: light-dark(var(--mantine-color-dark-4), var(--mantine-color-gray-3));
   transition: transform 0.25s;
 
   svg {

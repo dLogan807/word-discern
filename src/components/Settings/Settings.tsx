@@ -47,7 +47,7 @@ export default function Settings(props: SettingsProps) {
         Settings
       </Title>
       <SettingsDivider title="Guess input" icon={<IconZoomQuestion size={iconSize} />} />
-      <Switch label="Letter Mode" classNames={{ root: classes.setting_switch }} disabled />
+      <Switch label="Character Mode" classNames={{ root: classes.setting_switch }} disabled />
       <Checkbox
         label="Only allow words from the word list"
         classNames={{ root: classes.setting_switch }}
