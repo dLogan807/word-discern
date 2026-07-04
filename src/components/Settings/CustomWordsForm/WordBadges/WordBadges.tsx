@@ -49,12 +49,12 @@ export default function WordsBadges({ badgeData }: { badgeData: WordBadgeData })
       <WordInfoBadge color="yellow" icon={customWordsIcon}>
         {customWordsText}
       </WordInfoBadge>
-      {wordsAlreadyExisting && (
+      {wordsAlreadyExisting > 0 && (
         <WordInfoBadge color="yellow" icon={alreadyExistingIcon}>
           {alreadyExistingText}
         </WordInfoBadge>
       )}
-      {customWordsInUse && (
+      {customWordsInUse > 0 && (
         <WordInfoBadge color="green" icon={addedWordsIcon}>
           {addedWordsText}
         </WordInfoBadge>
