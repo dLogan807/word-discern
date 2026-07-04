@@ -42,7 +42,7 @@ export default function Settings(props: SettingsProps) {
   const iconSize = 20;
 
   return (
-    <Stack>
+    <Stack classNames={{ root: classes.settings }}>
       <Title order={2} classNames={{ root: classes.settings_title }}>
         Settings
       </Title>
@@ -96,7 +96,9 @@ export default function Settings(props: SettingsProps) {
       </Stack>
       <SettingsDivider title="Word list" icon={<IconBook2 size={iconSize} />} />
       <Stack classNames={{ root: classes.custom_words_container }}>
-        <LoadedWordsBadges badgeData={props.wordBadgeData} />
+        <Box className={classes.word_badge_container}>
+          <LoadedWordsBadges badgeData={props.wordBadgeData} />
+        </Box>
         <CustomWordsForm />
       </Stack>
       <SettingsDivider title="Accessibility" icon={<IconAccessible size={iconSize} />} />

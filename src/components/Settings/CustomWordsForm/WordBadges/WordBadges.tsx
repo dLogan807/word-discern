@@ -1,8 +1,9 @@
-import { Group } from "@mantine/core";
+import { Box } from "@mantine/core";
 import { IconAdjustments, IconCheck, IconCopyOff, IconList } from "@tabler/icons-react";
 import FailedWordsBadge from "@/components/Settings/CustomWordsForm/WordBadges/WordInfoBadge/FailedWordBadge/FailedWordBadge";
 import WordInfoBadge from "@/components/Settings/CustomWordsForm/WordBadges/WordInfoBadge/WordInfoBadge";
 import pluralize from "@/utils/pluralize";
+import classes from "./WordBadge.module.css";
 
 export interface WordBadgeData {
   replaceDefaultWords: boolean;
@@ -43,7 +44,7 @@ export default function WordsBadges({ badgeData }: { badgeData: WordBadgeData })
   const addedWordsIcon = <IconCheck size={iconSize} />;
 
   return (
-    <Group>
+    <Box className={classes.badge_wrapper}>
       <WordInfoBadge icon={totalWordsIcon}>{totalWordsText}</WordInfoBadge>
       <WordInfoBadge color="yellow" icon={customWordsIcon}>
         {customWordsText}
@@ -61,6 +62,6 @@ export default function WordsBadges({ badgeData }: { badgeData: WordBadgeData })
       {badgeData.failedWords.size > 0 && (
         <FailedWordsBadge failedWords={badgeData.failedWords} iconSize={iconSize} />
       )}
-    </Group>
+    </Box>
   );
 }

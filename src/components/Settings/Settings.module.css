@@ -1,3 +1,19 @@
+.settings {
+  width: 45rem;
+
+  @media (max-width: $mantine-breakpoint-lg) {
+    width: 30rem;
+  }
+
+  @media (max-width: $mantine-breakpoint-md) {
+    width: 20rem;
+  }
+
+  @media (max-width: $mantine-breakpoint-sm) {
+    width: auto;
+  }
+}
+
 .settings_title {
   text-align: center;
 }
