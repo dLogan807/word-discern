@@ -1,4 +1,4 @@
-import { ActionIcon, Box, Button, Group, Text } from "@mantine/core";
+import { ActionIcon, Box, Button, Group, RollingNumber, Text } from "@mantine/core";
 import { IconArrowDown, IconEye, IconEyeOff } from "@tabler/icons-react";
 import { useState } from "react";
 import RevealableChar from "@/components/Results/RevealableChar/RevealableChar";
@@ -39,14 +39,23 @@ export default function Results({
 
   return (
     <Box className={classes.results_container}>
-      {clampedNumberToShow > 0 ? (
-        <Box className={classes.results_text_group}>
-          <Text classNames={{ root: classes.results_text_number }}>{results.words.length}</Text>
-          <Text>{` possible ${pluralize(results.words.length, "word")}`}</Text>
-        </Box>
-      ) : (
-        <Text>{"No results >.<"}</Text>
-      )}
+      <Box className={classes.results_text_container}>
+        <Text classNames={{ root: classes.results_text }}>
+          {clampedNumberToShow > 0 ? (
+            <>
+              <RollingNumber
+                value={results.words.length}
+                fz="36px"
+                classNames={{ root: classes.results_text_number }}
+              />
+
+              {` possible ${pluralize(results.words.length, "word")}`}
+            </>
+          ) : (
+            "No results >.<"
+          )}
+        </Text>
+      </Box>
 
       <Box className={classes.results_words_list_columns}>
         {results.words.map((result, idx) => {
