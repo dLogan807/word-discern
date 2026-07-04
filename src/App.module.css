@@ -38,6 +38,7 @@
 .content_body {
   grid-area: content-body;
   padding: var(--mantine-spacing-md);
+  overflow-y: scroll;
 }
 
 .settings_pane {
