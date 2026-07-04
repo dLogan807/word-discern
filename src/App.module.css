@@ -96,3 +96,7 @@
   width: 100%;
   margin-bottom: var(--mantine-spacing-sm);
 }
+
+.no_animation {
+  transition: none;
+}

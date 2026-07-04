@@ -99,6 +99,7 @@ export default function App() {
       <Box
         className={`${classes.layout}
             ${!settingsOpened ? classes.layout_settings_pane_closed : undefined}
+            ${!doAnimations ? classes.no_animation : undefined}
           `}
       >
         <Box className={classes.header}>
@@ -115,7 +116,8 @@ export default function App() {
               classNames={{
                 root: classes.settings_button,
                 icon: `${classes.settings_button_icon}
-                  ${settingsOpened ? classes.settings_button_icon_opened : undefined}`,
+                  ${settingsOpened ? classes.settings_button_icon_opened : undefined}
+                  ${!doAnimations ? classes.no_animation : undefined}`,
               }}
             >
               {settingsOpened ? <IconXFilled /> : <IconSettings />}
@@ -125,7 +127,8 @@ export default function App() {
 
         <Box
           className={`${classes.settings_pane}
-            ${!settingsOpened ? classes.settings_pane_closed : undefined}`}
+            ${!settingsOpened ? classes.settings_pane_closed : undefined}
+            ${!doAnimations ? classes.no_animation : undefined}`}
         >
           <CustomWordsFormContext value={setStoredCustomWordsFormData}>
             <Settings
