@@ -11,11 +11,11 @@
 }
 
 .guess_autocomplete_root {
-  width: 50%;
+  width: 40%;
   height: 4rem;
 
   @media (max-width: $mantine-breakpoint-md) {
-    width: 70%;
+    width: 60%;
   }
 
   @media (max-width: $mantine-breakpoint-sm) {
