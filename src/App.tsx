@@ -3,13 +3,14 @@ import wordsUrl from "/words.txt?url";
 import {
   ActionIcon,
   Box,
+  Button,
   Group,
   MantineProvider,
   Title,
   v8CssVariablesResolver,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconSettings, IconXFilled } from "@tabler/icons-react";
+import { IconSearch, IconSettings, IconXFilled } from "@tabler/icons-react";
 import { createContext, Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { Guess } from "@/classes/guess";
 import GuessInputList from "@/components/Guesses/GuessInputList/GuessInputList";
@@ -154,11 +155,20 @@ export default function App() {
           <GuessInputList
             guesses={guesses}
             setGuesses={setGuesses}
-            findWords={handleGetPossibleWords}
             wordSets={parsedWordSets.wordSets}
             onlyAllowWordListGuesses={onlyAllowWordListGuesses}
             doAnimations={doAnimations}
           />
+          <Box className={classes.find_words_button_container}>
+            <Button
+              variant="filled"
+              onClick={handleGetPossibleWords}
+              disabled={!guesses.length}
+              rightSection={<IconSearch />}
+            >
+              Find possible words
+            </Button>
+          </Box>
 
           {showResults && (
             <Results

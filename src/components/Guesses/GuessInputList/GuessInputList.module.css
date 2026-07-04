@@ -78,21 +78,6 @@
   }
 }
 
-.find_words_button {
-  display: flex;
-  height: 100%;
-  width: 5rem;
-  padding: var(--mantine-spacing-xs);
-  background-color: transparent;
-}
-
-.find_words_button_icon {
-  svg {
-    width: 100%;
-    height: 100%;
-  }
-}
-
 .guess_list {
   display: flex;
   justify-content: center;

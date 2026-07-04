@@ -1,5 +1,5 @@
 import { ActionIcon, Autocomplete, Box, Flex, Paper } from "@mantine/core";
-import { IconPlus, IconSearch } from "@tabler/icons-react";
+import { IconPlus } from "@tabler/icons-react";
 import { createContext, useMemo, useState, KeyboardEvent, Dispatch, SetStateAction } from "react";
 import { Guess } from "@/classes/guess";
 import GuessItem from "@/components/Guesses/GuessItem/GuessItem";
@@ -20,14 +20,12 @@ export const GuessContext = createContext<{
 export default function GuessInputList({
   guesses,
   setGuesses,
-  findWords,
   wordSets,
   onlyAllowWordListGuesses,
   doAnimations,
 }: {
   guesses: Guess[];
   setGuesses: Dispatch<SetStateAction<Guess[]>>;
-  findWords: () => void;
   wordSets: Map<number, Set<string>>;
   onlyAllowWordListGuesses: boolean;
   doAnimations: boolean;
@@ -139,18 +137,6 @@ export default function GuessInputList({
             option: classes.guess_autocomplete_option,
           }}
         />
-        <ActionIcon
-          aria-label="Find possible words"
-          variant="transparent"
-          classNames={{
-            root: classes.find_words_button,
-            icon: classes.find_words_button_icon,
-          }}
-          onClick={findWords}
-          disabled={!guesses.length}
-        >
-          <IconSearch />
-        </ActionIcon>
       </Flex>
 
       <Box className={classes.guess_list}>
