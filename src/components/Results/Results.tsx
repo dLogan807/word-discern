@@ -9,33 +9,16 @@ import classes from "./Results.module.css";
 
 export default function Results({
   results,
+  resultsUpdateKey,
   numberToShow,
   doAnimations,
 }: {
   results: IResults;
+  resultsUpdateKey: number;
   numberToShow: number;
   doAnimations: boolean;
 }) {
   const clampedNumberToShow = Math.min(numberToShow, results.words.length);
-  const [numResultsMounted, setNumResultsMounted] = useState(clampedNumberToShow);
-  const [mountedResults, setMountedResults] = useState<boolean[]>(
-    new Array(results.words.length).fill(false).map((_mounted, idx) => idx < clampedNumberToShow)
-  );
-
-  const baseDelay = doAnimations ? 20 : 0;
-  const delayMult = 1.05 + 1 / Math.max(clampedNumberToShow, 1);
-  let delay = baseDelay;
-  const totalDelay = Math.min(baseDelay * delayMult ** clampedNumberToShow, 500);
-
-  function handleShowMoreWords() {
-    const oldNumMounted = numResultsMounted;
-    const newNumMounted = Math.min(numResultsMounted + clampedNumberToShow, results.words.length);
-
-    const newMountedResults = [...mountedResults].fill(true, oldNumMounted, newNumMounted);
-
-    setNumResultsMounted(newNumMounted);
-    setMountedResults(newMountedResults);
-  }
 
   return (
     <Box className={classes.results_container}>
@@ -56,7 +39,47 @@ export default function Results({
           )}
         </Text>
       </Box>
+      <ResultWords
+        key={`${resultsUpdateKey}-${results.words.length}`}
+        results={results}
+        doAnimations={doAnimations}
+        clampedNumberToShow={clampedNumberToShow}
+      />
+    </Box>
+  );
+}
 
+function ResultWords({
+  results,
+  doAnimations,
+  clampedNumberToShow,
+}: {
+  results: IResults;
+  doAnimations: boolean;
+  clampedNumberToShow: number;
+}) {
+  const [numResultsMounted, setNumResultsMounted] = useState(clampedNumberToShow);
+  const [mountedResults, setMountedResults] = useState<boolean[]>(
+    new Array(results.words.length).fill(false).map((_mounted, idx) => idx < clampedNumberToShow)
+  );
+
+  const baseDelay = doAnimations ? 20 : 0;
+  let delay = baseDelay;
+  const delayMult = 1.05 + 1 / Math.max(clampedNumberToShow, 1);
+  const totalDelay = Math.min(baseDelay * delayMult ** clampedNumberToShow, 500);
+
+  function handleShowMoreWords() {
+    const oldNumMounted = numResultsMounted;
+    const newNumMounted = Math.min(numResultsMounted + clampedNumberToShow, results.words.length);
+
+    const newMountedResults = [...mountedResults].fill(true, oldNumMounted, newNumMounted);
+
+    setNumResultsMounted(newNumMounted);
+    setMountedResults(newMountedResults);
+  }
+
+  return (
+    <>
       <Box className={classes.results_words_list_columns}>
         {results.words.map((result, idx) => {
           if (doAnimations) {
@@ -106,7 +129,7 @@ export default function Results({
           Show more words
         </Button>
       )}
-    </Box>
+    </>
   );
 }
 

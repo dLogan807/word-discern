@@ -61,6 +61,7 @@ export default function App() {
 
   // Result state
   const [showResults, setShowResults] = useState(false);
+  const [resultsUpdateKey, setResultsUpdateKey] = useState(0);
 
   // Settings
   const [settingsOpened, { toggle }] = useDisclosure(false);
@@ -85,6 +86,7 @@ export default function App() {
       defaultHidden: hideResults,
     });
 
+    setResultsUpdateKey((prev) => prev + 1);
     setShowResults(true);
   }
 
@@ -169,7 +171,12 @@ export default function App() {
           </Box>
 
           {showResults && (
-            <Results results={results} numberToShow={numResultsShown} doAnimations={doAnimations} />
+            <Results
+              results={results}
+              resultsUpdateKey={resultsUpdateKey}
+              numberToShow={numResultsShown}
+              doAnimations={doAnimations}
+            />
           )}
         </Box>
       </Box>
