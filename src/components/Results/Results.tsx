@@ -39,11 +39,15 @@ export default function Results({
 
   return (
     <Box className={classes.results_container}>
-      <Text>
-        {clampedNumberToShow > 0
-          ? `${results.words.length} possible ${pluralize(results.words.length, "word")}`
-          : "No results >.<"}
-      </Text>
+      {clampedNumberToShow > 0 ? (
+        <Box className={classes.results_text_group}>
+          <Text classNames={{ root: classes.results_text_number }}>{results.words.length}</Text>
+          <Text>{` possible ${pluralize(results.words.length, "word")}`}</Text>
+        </Box>
+      ) : (
+        <Text>{"No results >.<"}</Text>
+      )}
+
       <Box className={classes.results_words_list_columns}>
         {results.words.map((result, idx) => {
           if (doAnimations) {
