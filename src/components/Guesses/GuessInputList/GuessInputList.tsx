@@ -1,6 +1,6 @@
 import { ActionIcon, Autocomplete, Box, Flex, Paper } from "@mantine/core";
-import { IconPlus } from "@tabler/icons-react";
-import { createContext, useMemo, useState, KeyboardEvent } from "react";
+import { IconPlus, IconSearch } from "@tabler/icons-react";
+import { createContext, useMemo, useState, KeyboardEvent, Dispatch, SetStateAction } from "react";
 import { Guess } from "@/classes/guess";
 import GuessItem from "@/components/Guesses/GuessItem/GuessItem";
 import useDebounce from "@/hooks/useDebounce";
@@ -20,12 +20,14 @@ export const GuessContext = createContext<{
 export default function GuessInputList({
   guesses,
   setGuesses,
+  findWords,
   wordSets,
   onlyAllowWordListGuesses,
   doAnimations,
 }: {
   guesses: Guess[];
-  setGuesses: (value: Guess[]) => void;
+  setGuesses: Dispatch<SetStateAction<Guess[]>>;
+  findWords: () => void;
   wordSets: Map<number, Set<string>>;
   onlyAllowWordListGuesses: boolean;
   doAnimations: boolean;
@@ -105,47 +107,59 @@ export default function GuessInputList({
 
   return (
     <Paper>
-      <Box>
-        <Flex classNames={{ root: classes.guess_input_container }}>
-          <Autocomplete
-            aria-label="Guess"
-            placeholder="Enter your guess"
-            onKeyDown={handleSelectKeyDown}
-            value={guessValue}
-            error={guessError}
-            onChange={handleGuessChanged}
-            data={searchableWords}
-            dropdownOpened={searchDropdownOpened}
-            limit={5}
-            rightSection={
-              <ActionIcon
-                onClick={tryAddGuess}
-                aria-label="Add Guess"
-                classNames={{
-                  root: classes.add_guess_button,
-                  icon: classes.add_guess_button_icon,
-                }}
-              >
-                <IconPlus />
-              </ActionIcon>
-            }
-            classNames={{
-              root: classes.guess_autocomplete_root,
-              wrapper: classes.guess_autocomplete_wrapper,
-              input: classes.guess_autocomplete_input,
-              section: classes.guess_autocomplete_section,
-              dropdown: classes.guess_autocomplete_dropdown,
-              option: classes.guess_autocomplete_option,
-            }}
-          />
-        </Flex>
-      </Box>
+      <Flex classNames={{ root: classes.guess_input_container }}>
+        <Autocomplete
+          aria-label="Guess"
+          placeholder="Enter your guess"
+          onKeyDown={handleSelectKeyDown}
+          value={guessValue}
+          error={guessError}
+          onChange={handleGuessChanged}
+          data={searchableWords}
+          dropdownOpened={searchDropdownOpened}
+          limit={5}
+          rightSection={
+            <ActionIcon
+              onClick={tryAddGuess}
+              aria-label="Add Guess"
+              classNames={{
+                root: classes.add_guess_button,
+                icon: classes.add_guess_button_icon,
+              }}
+            >
+              <IconPlus />
+            </ActionIcon>
+          }
+          classNames={{
+            root: classes.guess_autocomplete_root,
+            wrapper: classes.guess_autocomplete_wrapper,
+            input: classes.guess_autocomplete_input,
+            section: classes.guess_autocomplete_section,
+            dropdown: classes.guess_autocomplete_dropdown,
+            option: classes.guess_autocomplete_option,
+          }}
+        />
+        <ActionIcon
+          aria-label="Find possible words"
+          variant="transparent"
+          classNames={{
+            root: classes.find_words_button,
+            icon: classes.find_words_button_icon,
+          }}
+          onClick={findWords}
+          disabled={!guesses.length}
+        >
+          <IconSearch />
+        </ActionIcon>
+      </Flex>
 
-      <GuessContext value={{ removeGuess, updateGuess, doAnimations }}>
-        {guesses.map((guess, i) => (
-          <GuessItem key={i} guess={guess} />
-        ))}
-      </GuessContext>
+      <Box className={classes.guess_list}>
+        <GuessContext value={{ removeGuess, updateGuess, doAnimations }}>
+          {guesses.map((guess, i) => (
+            <GuessItem key={i} guess={guess} />
+          ))}
+        </GuessContext>
+      </Box>
     </Paper>
   );
 }
