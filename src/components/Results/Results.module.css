@@ -1,11 +1,19 @@
 .results_container {
-  margin-top: 1rem;
-  width: fit-content;
+  width: 100%;
+  text-align: center;
+  list-style: none;
+}
+
+.results_words_list_columns {
+  display: flex;
+  justify-content: center;
+  gap: 1rem 1rem;
+  flex-wrap: wrap;
+  margin: var(--mantine-spacing-xs) 0 var(--mantine-spacing-lg) 0;
 }
 
 .result_list_item {
-  padding-left: 0.5rem;
-  margin-bottom: 0.5rem;
+  margin-left: 0.5rem;
 }
 
 @keyframes resultReveal {
@@ -18,4 +26,10 @@
     opacity: 1;
     transform: none;
   }
+}
+
+.result_chars_group {
+  padding: var(--mantine-spacing-md);
+  background-color: light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-6));
+  border-radius: var(--mantine-radius-xl);
 }

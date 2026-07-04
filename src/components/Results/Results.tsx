@@ -1,8 +1,9 @@
-import { ActionIcon, Button, Group, List, ListItem, Stack, Text } from "@mantine/core";
-import { IconEye, IconEyeOff } from "@tabler/icons-react";
+import { ActionIcon, Box, Button, Group, Text } from "@mantine/core";
+import { IconArrowDown, IconEye, IconEyeOff } from "@tabler/icons-react";
 import { useState } from "react";
 import RevealableChar from "@/components/Results/RevealableChar/RevealableChar";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
+import pluralize from "@/utils/pluralize";
 import { IResults } from "@/utils/resultBuilder";
 import classes from "./Results.module.css";
 
@@ -37,71 +38,62 @@ export default function Results({
   }
 
   return (
-    <>
-      <Stack
-        classNames={{
-          root: classes.results_container,
-        }}
-      >
-        <Text>
-          {clampedNumberToShow > 0
-            ? `${results.words.length} possible word${results.words.length === 1 ? "" : "s"}:`
-            : "No results >.<"}
-        </Text>
-        <List
-          type="ordered"
-          classNames={{
-            item: classes.result_list_item,
-          }}
-        >
-          {results.words.map((result, idx) => {
-            if (doAnimations) {
-              delay = Math.min(
-                idx % clampedNumberToShow === 0 ? baseDelay : (delay *= delayMult),
-                totalDelay
-              );
-            }
-
-            if (!mountedResults[idx]) return null;
-
-            return (
-              <ListItem
-                key={idx}
-                style={{
-                  animationName: classes.resultReveal,
-                  animationDuration: `${delay}ms`,
-                  animationDelay: `${delay}ms`,
-                  animationFillMode: "both",
-                }}
-              >
-                {results.defaultHidden ? (
-                  <ResultChars
-                    result={result}
-                    permRevealedCharPositions={results.revealedCharPositions}
-                  />
-                ) : (
-                  <Text>{capitalizeFirstLetter(result)}</Text>
-                )}
-              </ListItem>
+    <Box className={classes.results_container}>
+      <Text>
+        {clampedNumberToShow > 0
+          ? `${results.words.length} possible ${pluralize(results.words.length, "word")}`
+          : "No results >.<"}
+      </Text>
+      <Box className={classes.results_words_list_columns}>
+        {results.words.map((result, idx) => {
+          if (doAnimations) {
+            delay = Math.min(
+              idx % clampedNumberToShow === 0 ? baseDelay : (delay *= delayMult),
+              totalDelay
             );
-          })}
-        </List>
-        {numResultsMounted < results.words.length && (
-          <Button
-            key={numResultsMounted}
-            style={{
-              animationName: classes.resultReveal,
-              animationDuration: `${totalDelay}ms`,
-              animationDelay: `${doAnimations ? totalDelay : 200}ms`,
-              animationFillMode: "backwards",
-            }}
-            onClick={handleShowMoreWords}
-          >
-            Show more words
-          </Button>
-        )}
-      </Stack>
-    </>
+          }
+
+          if (!mountedResults[idx]) return null;
+
+          return (
+            <Box
+              key={idx}
+              style={{
+                animationName: classes.resultReveal,
+                animationDuration: `${delay}ms`,
+                animationDelay: `${delay}ms`,
+                animationFillMode: "both",
+              }}
+              className={classes.result_list_item}
+            >
+              {results.defaultHidden ? (
+                <ResultChars
+                  result={result}
+                  permRevealedCharPositions={results.revealedCharPositions}
+                />
+              ) : (
+                <Text>{capitalizeFirstLetter(result)}</Text>
+              )}
+            </Box>
+          );
+        })}
+      </Box>
+      {numResultsMounted < results.words.length && (
+        <Button
+          key={numResultsMounted}
+          style={{
+            animationName: classes.resultReveal,
+            animationDuration: `${totalDelay}ms`,
+            animationDelay: `${doAnimations ? totalDelay : 200}ms`,
+            animationFillMode: "backwards",
+          }}
+          onClick={handleShowMoreWords}
+          rightSection={<IconArrowDown />}
+        >
+          Show more words
+        </Button>
+      )}
+    </Box>
   );
 }
 
@@ -143,7 +135,7 @@ function ResultChars({
   }
 
   return (
-    <Group>
+    <Group classNames={{ root: classes.result_chars_group }}>
       {result.split("").map((char, idx) => (
         <Text key={idx}>
           {permRevealedCharPositions[idx] ? (
