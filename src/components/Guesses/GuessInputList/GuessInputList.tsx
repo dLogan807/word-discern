@@ -141,8 +141,8 @@ export default function GuessInputList({
 
       <Box className={classes.guess_list}>
         <GuessContext value={{ removeGuess, updateGuess, doAnimations }}>
-          {guesses.map((guess, i) => (
-            <GuessItem key={i} guess={guess} />
+          {guesses.map((guess) => (
+            <GuessItem key={guess.wordString} guess={guess} />
           ))}
         </GuessContext>
       </Box>
