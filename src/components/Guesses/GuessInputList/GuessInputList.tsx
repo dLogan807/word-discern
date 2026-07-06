@@ -39,18 +39,23 @@ export default function GuessInputList({
   const searchableWords = useMemo(() => {
     if (debouncedSearchLength === 0) return [];
 
-    const words: string[] = [];
+    const suggestions: string[] = [];
+    const guessedWordSet = new Set(guesses.map((g) => g.wordString));
+
     for (const [key, set] of wordSets) {
       if (key < debouncedSearchLength) continue;
+      if (guesses.length > 0 && key !== guesses[0].wordString.length) continue;
 
       for (const word of set) {
+        if (guessedWordSet.has(word)) continue;
         if (!word.startsWith(debouncedSearch)) continue;
-        words.push(word);
+
+        suggestions.push(word);
       }
     }
 
-    return words;
-  }, [debouncedSearch, debouncedSearchLength, wordSets]);
+    return suggestions;
+  }, [debouncedSearch, debouncedSearchLength, wordSets, guesses]);
 
   if (
     guessValue.length > 0 &&
