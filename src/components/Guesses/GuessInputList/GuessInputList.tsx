@@ -1,4 +1,5 @@
 import { ActionIcon, Autocomplete, Box, Flex, Paper } from "@mantine/core";
+import { useClickOutside } from "@mantine/hooks";
 import { IconPlus } from "@tabler/icons-react";
 import { createContext, useMemo, useState, KeyboardEvent, Dispatch, SetStateAction } from "react";
 import { Guess } from "@/classes/guess";
@@ -33,38 +34,15 @@ export default function GuessInputList({
   const [searchDropdownOpened, setSearchDropDownOpened] = useState(false);
   const [guessValue, setGuessValue] = useState("");
   const [guessError, setGuessError] = useState<null | string>(null);
-  const debouncedSearch = useDebounce(guessValue, 250).trim().toLocaleLowerCase();
-  const debouncedSearchLength = debouncedSearch.length;
+  const debouncedSearch = useDebounce(guessValue, 100).trim().toLocaleLowerCase();
+  const autocompleteRef = useClickOutside(() => {
+    setSearchDropDownOpened(false);
+  });
 
-  const searchableWords = useMemo(() => {
-    if (debouncedSearchLength === 0) return [];
-
-    const suggestions: string[] = [];
-    const guessedWordSet = new Set(guesses.map((g) => g.wordString));
-
-    for (const [key, set] of wordSets) {
-      if (key < debouncedSearchLength) continue;
-      if (guesses.length > 0 && key !== guesses[0].wordString.length) continue;
-
-      for (const word of set) {
-        if (guessedWordSet.has(word)) continue;
-        if (!word.startsWith(debouncedSearch)) continue;
-
-        suggestions.push(word);
-      }
-    }
-
-    return suggestions;
-  }, [debouncedSearch, debouncedSearchLength, wordSets, guesses]);
-
-  if (
-    guessValue.length > 0 &&
-    debouncedSearchLength > 0 &&
-    guessError == null &&
-    !searchDropdownOpened
-  ) {
-    setSearchDropDownOpened(true);
-  }
+  const searchableWords = useMemo(
+    () => getSuggestions(debouncedSearch, wordSets, guesses),
+    [debouncedSearch, wordSets, guesses]
+  );
 
   function handleSelectKeyDown(event: KeyboardEvent<HTMLInputElement>) {
     if (event.key === "Enter") tryAddGuess();
@@ -104,8 +82,11 @@ export default function GuessInputList({
 
   function handleGuessChanged(guess: string) {
     setGuessValue(guess);
-    setSearchDropDownOpened(false);
     setGuessError(null);
+
+    const setAutocompleteOpened =
+      guessValue.length > 0 && debouncedSearch.length > 0 && guessError == null;
+    setSearchDropDownOpened(setAutocompleteOpened);
   }
 
   return (
@@ -141,6 +122,7 @@ export default function GuessInputList({
             dropdown: classes.guess_autocomplete_dropdown,
             option: classes.guess_autocomplete_option,
           }}
+          ref={autocompleteRef}
         />
       </Flex>
 
@@ -153,4 +135,29 @@ export default function GuessInputList({
       </Box>
     </Paper>
   );
+}
+
+function getSuggestions(
+  debouncedSearch: string,
+  wordSets: Map<number, Set<string>>,
+  guesses: Guess[]
+): string[] {
+  if (debouncedSearch.length === 0) return [];
+
+  const suggestions: string[] = [];
+  const guessedWordSet = new Set(guesses.map((guess) => guess.wordString));
+
+  for (const [key, set] of wordSets) {
+    if (key < debouncedSearch.length) continue;
+    if (guesses.length > 0 && key !== guesses[0].wordString.length) continue;
+
+    for (const word of set) {
+      if (guessedWordSet.has(word)) continue;
+      if (!word.startsWith(debouncedSearch)) continue;
+
+      suggestions.push(word);
+    }
+  }
+
+  return suggestions;
 }
