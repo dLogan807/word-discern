@@ -21,14 +21,14 @@ export default function Results({
   return (
     <Box className={classes.results_container}>
       <Box className={classes.results_text_container}>
-        <Text classNames={{ root: classes.results_text }}>
+        <Box className={classes.results_text}>
           <RollingNumber
             value={results.words.length}
             animationDuration={doAnimations ? 600 : 0}
             classNames={{ root: classes.results_text_number }}
           />
           {` possible ${pluralize(results.words.length, "word")}`}
-        </Text>
+        </Box>
       </Box>
       <ResultWords
         key={`${resultsUpdateKey}-${results.words.length}`}
