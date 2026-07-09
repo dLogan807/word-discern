@@ -1,4 +1,7 @@
 .guess_input_container {
+  transition:
+    width 0.25s,
+    padding 0.25s;
   display: flex;
   column-gap: var(--mantine-spacing-xl);
   padding: var(--mantine-spacing-xl) var(--mantine-spacing-sm);
@@ -11,11 +14,14 @@
 }
 
 .guess_autocomplete_root {
+  transition:
+    width 0.25s,
+    height 0.25s;
   width: 40%;
   height: 4rem;
 
   @media (max-width: $mantine-breakpoint-md) {
-    width: 60%;
+    width: 70%;
   }
 
   @media (max-width: $mantine-breakpoint-sm) {
@@ -32,6 +38,7 @@
 }
 
 .guess_autocomplete_input {
+  transition: font-size 0.25s;
   padding-left: var(--mantine-spacing-lg);
   border-radius: var(--mantine-radius-xl);
   font-size: var(--mantine-font-size-xl);
@@ -47,6 +54,7 @@
 }
 
 .guess_autocomplete_option {
+  transition: font-size 0.25s;
   font-size: var(--mantine-font-size-xl);
 
   @media (max-width: $mantine-breakpoint-xs) {
@@ -55,6 +63,7 @@
 }
 
 .guess_autocomplete_section {
+  transition: width 0.25s;
   padding: var(--mantine-spacing-xs);
   border-radius: var(--mantine-radius-xl);
   width: 4rem;

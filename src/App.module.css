@@ -7,17 +7,25 @@
   top: 0;
   left: 0;
   grid-template-rows: auto 1fr;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: 3fr 1fr;
   grid-template-areas: "header header" "content-body settings-pane";
   z-index: 10;
 
+  @media (max-width: $mantine-breakpoint-lg) {
+    grid-template-columns: 3fr 1.5fr;
+  }
+
+  @media (max-width: $mantine-breakpoint-md) {
+    grid-template-columns: 3fr 2.5fr;
+  }
+
   @media (max-width: $mantine-breakpoint-sm) {
-    grid-template-columns: 1fr 0;
+    grid-template-columns: 1fr 0fr;
   }
 }
 
 .layout_settings_pane_closed {
-  grid-template-columns: 1fr 0;
+  grid-template-columns: 1fr 0fr;
 }
 
 .header {
