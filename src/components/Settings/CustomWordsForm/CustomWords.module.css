@@ -1,3 +1,8 @@
 .hidden_input {
   display: none;
 }
+
+.submit_button {
+  justify-content: flex-end;
+  margin-top: var(--mantine-spacing-md);
+}
