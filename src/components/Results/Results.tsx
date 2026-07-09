@@ -106,7 +106,9 @@ function ResultWords({
             </Box>
           );
         })}
-        {results.words.length === 0 && "No results >.<"}
+        {results.words.length === 0 && (
+          <Text classNames={{ root: classes.no_results_text }}>{"No results >.<"}</Text>
+        )}
       </Box>
       {numResultsMounted < results.words.length && (
         <Button
