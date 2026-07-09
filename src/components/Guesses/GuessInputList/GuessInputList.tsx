@@ -1,5 +1,4 @@
 import { ActionIcon, Autocomplete, Box, Flex, Paper } from "@mantine/core";
-import { useClickOutside } from "@mantine/hooks";
 import { IconPlus } from "@tabler/icons-react";
 import { createContext, useMemo, useState, KeyboardEvent, Dispatch, SetStateAction } from "react";
 import { Guess } from "@/classes/guess";
@@ -35,9 +34,6 @@ export default function GuessInputList({
   const [guessValue, setGuessValue] = useState("");
   const [guessError, setGuessError] = useState<null | string>(null);
   const debouncedSearch = useDebounce(guessValue, 100).trim().toLocaleLowerCase();
-  const autocompleteRef = useClickOutside(() => {
-    setSearchDropDownOpened(false);
-  });
 
   const searchableWords = useMemo(
     () => getSuggestions(debouncedSearch, wordSets, guesses),
@@ -99,6 +95,7 @@ export default function GuessInputList({
           value={guessValue}
           error={guessError}
           onChange={handleGuessChanged}
+          onDropdownClose={() => setSearchDropDownOpened(false)}
           data={searchableWords}
           dropdownOpened={searchDropdownOpened}
           limit={5}
@@ -122,7 +119,6 @@ export default function GuessInputList({
             dropdown: classes.guess_autocomplete_dropdown,
             option: classes.guess_autocomplete_option,
           }}
-          ref={autocompleteRef}
         />
       </Flex>
 
