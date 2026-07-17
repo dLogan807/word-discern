@@ -14,7 +14,7 @@ export default function RevealableWord({
   const upperCaseResult = result.toLocaleUpperCase();
   const [charRevealStates, setCharRevealStates] = useState(initialCharRevealStates);
   const [allCharsRevealed, setAllCharsRevealed] = useState(
-    getAllCharsAreRevealed(charRevealStates)
+    getAllCharsAreRevealed(initialCharRevealStates)
   );
 
   function toggleCharRevealed(index: number) {
