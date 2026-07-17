@@ -11,6 +11,7 @@ export default function RevealableWord({
   result: string;
   initialCharRevealStates: CharRevealState[];
 }) {
+  const upperCaseResult = result.toLocaleUpperCase();
   const [charRevealStates, setCharRevealStates] = useState(initialCharRevealStates);
   const [allCharsRevealed, setAllCharsRevealed] = useState(
     getAllCharsAreRevealed(charRevealStates)
@@ -39,10 +40,10 @@ export default function RevealableWord({
 
   return (
     <Group classNames={{ root: classes.result_chars_group }}>
-      {result.split("").map((char, idx) => (
+      {upperCaseResult.split("").map((char, idx) => (
         <RevealableChar
           key={idx}
-          char={char.toLocaleUpperCase()}
+          char={char}
           index={idx}
           revealState={charRevealStates[idx]}
           toggleCharRevealed={toggleCharRevealed}
