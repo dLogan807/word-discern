@@ -1,7 +1,9 @@
 import { ActionIcon, Box, Button, Group, RollingNumber, Text } from "@mantine/core";
 import { IconArrowDown, IconEye, IconEyeOff } from "@tabler/icons-react";
 import { useState } from "react";
-import RevealableChar from "@/components/Results/RevealableChar/RevealableChar";
+import RevealableChar, {
+  CharRevealState,
+} from "@/components/Results/RevealableChar/RevealableChar";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import pluralize from "@/utils/pluralize";
 import { IResults } from "@/utils/resultBuilder";
@@ -136,55 +138,67 @@ function ResultChars({
   result: string;
   permRevealedCharPositions: boolean[];
 }) {
-  const defaultArray = new Array<boolean>(result.length).fill(true);
-  const numToggleable = permRevealedCharPositions.filter(
-    (charIsRevealed) => !charIsRevealed
-  ).length;
+  const initialArray = new Array<CharRevealState>(result.length);
+  for (let i = 0; i < permRevealedCharPositions.length; i++) {
+    initialArray[i] = permRevealedCharPositions[i]
+      ? CharRevealState.PERM_REVEALED
+      : CharRevealState.HIDDEN;
+  }
+  const [charRevealStates, setCharRevealStates] = useState(initialArray);
+  const [allCharsRevealed, setAllCharsRevealed] = useState(
+    getAllCharsAreRevealed(charRevealStates)
+  );
 
-  const [allRevealed, setAllRevealed] = useState(false);
-  const [revealedChars, setRevealedChars] = useState(defaultArray);
-
-  function updateHiddenChar(index: number, hidden: boolean) {
-    revealedChars[index] = hidden;
-    setRevealedChars(revealedChars.map((charState, i) => (i === index ? hidden : charState)));
-
-    const numToggleableRevealed = revealedChars.filter((charIsRevealed) => !charIsRevealed).length;
-
-    if (numToggleableRevealed === 0 && allRevealed) {
-      fillRevealedArray(true);
-    } else if (numToggleableRevealed === numToggleable && !allRevealed) {
-      fillRevealedArray(false);
+  function getAllCharsAreRevealed(charRevealStates: CharRevealState[]): boolean {
+    for (const charState of charRevealStates) {
+      if (charState === CharRevealState.HIDDEN) return false;
     }
+
+    return true;
   }
 
-  function fillRevealedArray(revealed: boolean) {
-    setRevealedChars(
-      new Array<boolean>(result.length).map((_hidden, i) =>
-        permRevealedCharPositions[i] ? true : revealed
+  function toggleCharRevealed(index: number) {
+    const newRevealStates = charRevealStates.map((currentState, i) =>
+      i === index ? getNextRevealState(currentState) : currentState
+    );
+    const allCharsAreRevealed = getAllCharsAreRevealed(newRevealStates);
+    setCharRevealStates(newRevealStates);
+    setAllCharsRevealed(allCharsAreRevealed);
+  }
+
+  function toggleAllCharRevealStates() {
+    const nextRevealState = allCharsRevealed ? CharRevealState.HIDDEN : CharRevealState.REVEALED;
+    setCharRevealStates(
+      charRevealStates.map((currentState) =>
+        currentState === CharRevealState.PERM_REVEALED
+          ? CharRevealState.PERM_REVEALED
+          : nextRevealState
       )
     );
-    setAllRevealed(revealed);
+    setAllCharsRevealed(!allCharsRevealed);
+  }
+
+  function getNextRevealState(revealState: CharRevealState): CharRevealState {
+    if (revealState === CharRevealState.PERM_REVEALED) return revealState;
+
+    return revealState === CharRevealState.REVEALED
+      ? CharRevealState.HIDDEN
+      : CharRevealState.REVEALED;
   }
 
   return (
     <Group classNames={{ root: classes.result_chars_group }}>
       {result.split("").map((char, idx) => (
-        <Text key={idx}>
-          {permRevealedCharPositions[idx] ? (
-            char.toLocaleUpperCase()
-          ) : (
-            <RevealableChar
-              key={`${idx}-${allRevealed ? "1" : "0"}`}
-              char={char.toLocaleUpperCase()}
-              index={idx}
-              reveal={allRevealed}
-              updateRevealed={updateHiddenChar}
-            />
-          )}
-        </Text>
+        <RevealableChar
+          key={idx}
+          char={char.toLocaleUpperCase()}
+          index={idx}
+          revealState={charRevealStates[idx]}
+          toggleCharRevealed={toggleCharRevealed}
+        />
       ))}
-      <ActionIcon onClick={() => setAllRevealed(!allRevealed)} variant="light">
-        {allRevealed ? <IconEyeOff /> : <IconEye />}
+      <ActionIcon variant="light" onClick={() => toggleAllCharRevealStates()}>
+        {allCharsRevealed ? <IconEyeOff /> : <IconEye />}
       </ActionIcon>
     </Group>
   );
