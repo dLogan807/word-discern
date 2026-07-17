@@ -144,12 +144,15 @@ function getSuggestions(
   const guessedWordSet = new Set(guesses.map((guess) => guess.wordString));
 
   for (const [key, set] of wordSets) {
-    if (key < debouncedSearch.length) continue;
-    if (guesses.length > 0 && key !== guesses[0].wordString.length) continue;
+    if (
+      key < debouncedSearch.length ||
+      (guesses.length > 0 && key !== guesses[0].wordString.length)
+    ) {
+      continue;
+    }
 
     for (const word of set) {
-      if (guessedWordSet.has(word)) continue;
-      if (!word.startsWith(debouncedSearch)) continue;
+      if (guessedWordSet.has(word) || !word.startsWith(debouncedSearch)) continue;
 
       suggestions.push(word);
     }
