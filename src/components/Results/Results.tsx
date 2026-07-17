@@ -4,6 +4,7 @@ import { useState } from "react";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import pluralize from "@/utils/pluralize";
 import { IResults } from "@/utils/resultBuilder";
+import { CharRevealState } from "./RevealableChar/RevealableChar";
 import RevealableWord from "./RevealableWord/RevealableWord";
 import classes from "./Results.module.css";
 
@@ -95,7 +96,7 @@ function ResultWords({
               }}
               className={classes.result_list_item}
             >
-              {results.defaultHidden ? (
+              {results.defaultHidden && !soleFullyRevealedResult(results) ? (
                 <RevealableWord
                   result={result}
                   initialCharRevealStates={results.initialCharRevealStates}
@@ -127,4 +128,14 @@ function ResultWords({
       )}
     </>
   );
+}
+
+function soleFullyRevealedResult(results: IResults): boolean {
+  if (results.words.length > 1) return false;
+
+  for (const charState of results.initialCharRevealStates) {
+    if (charState !== CharRevealState.PERM_REVEALED) return false;
+  }
+
+  return true;
 }
