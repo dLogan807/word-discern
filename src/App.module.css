@@ -47,8 +47,17 @@
 
 .content_body {
   grid-area: content-body;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: var(--mantine-spacing-xl);
   padding: var(--mantine-spacing-md);
   overflow-y: scroll;
+  width: 100%;
+
+  > * {
+    flex-shrink: 0;
+  }
 }
 
 .settings_pane {
@@ -95,14 +104,6 @@
 
 .settings_button_icon_opened {
   transform: rotate(90deg);
-}
-
-.find_words_button_container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  margin-bottom: var(--mantine-spacing-sm);
 }
 
 .no_animation {

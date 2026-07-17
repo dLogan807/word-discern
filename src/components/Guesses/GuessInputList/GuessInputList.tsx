@@ -1,4 +1,4 @@
-import { ActionIcon, Autocomplete, Box, Flex, Paper } from "@mantine/core";
+import { ActionIcon, Autocomplete, Box } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
 import { createContext, useMemo, useState, KeyboardEvent, Dispatch, SetStateAction } from "react";
 import { Guess } from "@/classes/guess";
@@ -86,50 +86,50 @@ export default function GuessInputList({
   }
 
   return (
-    <Paper>
-      <Flex classNames={{ root: classes.guess_input_container }}>
-        <Autocomplete
-          aria-label="Guess"
-          placeholder="Enter a guess"
-          onKeyDown={handleSelectKeyDown}
-          value={guessValue}
-          error={guessError}
-          onChange={handleGuessChanged}
-          onDropdownClose={() => setSearchDropDownOpened(false)}
-          data={searchableWords}
-          dropdownOpened={searchDropdownOpened}
-          limit={5}
-          rightSection={
-            <ActionIcon
-              onClick={tryAddGuess}
-              aria-label="Add Guess"
-              classNames={{
-                root: classes.add_guess_button,
-                icon: classes.add_guess_button_icon,
-              }}
-            >
-              <IconPlus />
-            </ActionIcon>
-          }
-          classNames={{
-            root: classes.guess_autocomplete_root,
-            wrapper: classes.guess_autocomplete_wrapper,
-            input: classes.guess_autocomplete_input,
-            section: classes.guess_autocomplete_section,
-            dropdown: classes.guess_autocomplete_dropdown,
-            option: classes.guess_autocomplete_option,
-          }}
-        />
-      </Flex>
+    <>
+      <Autocomplete
+        aria-label="Guess"
+        placeholder="Enter a guess"
+        onKeyDown={handleSelectKeyDown}
+        value={guessValue}
+        error={guessError}
+        onChange={handleGuessChanged}
+        onDropdownClose={() => setSearchDropDownOpened(false)}
+        data={searchableWords}
+        dropdownOpened={searchDropdownOpened}
+        limit={5}
+        rightSection={
+          <ActionIcon
+            onClick={tryAddGuess}
+            aria-label="Add Guess"
+            classNames={{
+              root: classes.add_guess_button,
+              icon: classes.add_guess_button_icon,
+            }}
+          >
+            <IconPlus />
+          </ActionIcon>
+        }
+        classNames={{
+          root: classes.guess_autocomplete_root,
+          wrapper: classes.guess_autocomplete_wrapper,
+          input: classes.guess_autocomplete_input,
+          section: classes.guess_autocomplete_section,
+          dropdown: classes.guess_autocomplete_dropdown,
+          option: classes.guess_autocomplete_option,
+        }}
+      />
 
-      <Box className={classes.guess_list}>
-        <GuessContext value={{ removeGuess, updateGuess, doAnimations }}>
-          {guesses.map((guess) => (
-            <GuessItem key={guess.wordString} guess={guess} />
-          ))}
-        </GuessContext>
-      </Box>
-    </Paper>
+      {guesses.length > 0 && (
+        <Box className={classes.guess_list}>
+          <GuessContext value={{ removeGuess, updateGuess, doAnimations }}>
+            {guesses.map((guess) => (
+              <GuessItem key={guess.wordString} guess={guess} />
+            ))}
+          </GuessContext>
+        </Box>
+      )}
+    </>
   );
 }
 

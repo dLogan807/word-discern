@@ -161,17 +161,14 @@ export default function App() {
             onlyAllowWordListGuesses={onlyAllowWordListGuesses}
             doAnimations={doAnimations}
           />
-          <Box className={classes.find_words_button_container}>
-            <Button
-              variant="filled"
-              onClick={handleGetPossibleWords}
-              disabled={!guesses.length}
-              rightSection={<IconSearch />}
-            >
-              Find possible words
-            </Button>
-          </Box>
-
+          <Button
+            variant="filled"
+            onClick={handleGetPossibleWords}
+            disabled={!guesses.length}
+            rightSection={<IconSearch />}
+          >
+            Find possible words
+          </Button>
           {showResults && (
             <Results
               results={results}
