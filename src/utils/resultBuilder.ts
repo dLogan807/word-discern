@@ -12,7 +12,8 @@ export interface IResults {
 export default function getResults(
   wordSet: Set<string>,
   guesses: Guess[],
-  shuffled?: boolean
+  shuffled?: boolean,
+  onlyHideUnknownChars?: boolean
 ): IResults {
   const parseResult = parseGuesses(guesses);
   const results = matchGuessesWithWords(wordSet, parseResult);
@@ -26,7 +27,7 @@ export default function getResults(
   const initialCharRevealStates = Array.from(
     { length: parseResult.correctPosChars.length },
     (_, i) =>
-      parseResult.correctPosChars[i] !== undefined
+      parseResult.correctPosChars[i] !== undefined && onlyHideUnknownChars
         ? CharRevealState.PERM_REVEALED
         : CharRevealState.HIDDEN
   );

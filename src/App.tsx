@@ -47,7 +47,7 @@ export default function App() {
   const [guesses, setGuesses] = useState<Guess[]>([]);
   const [results, setResults] = useState<IResults>({
     words: [],
-    revealedCharPositions: [],
+    initialCharRevealStates: [],
   });
   const [storedCustomWordsFormData, setStoredCustomWordsFormData] =
     useState<CustomWordsFormData>(DEFAULT_CUSTOM_WORDS_FORM);
@@ -79,10 +79,9 @@ export default function App() {
     const wordSet = parsedWordSets.wordSets.get(guessLength);
     if (wordSet === undefined) return;
 
-    const newResults = getResults(wordSet, guesses, shuffleResults);
+    const newResults = getResults(wordSet, guesses, shuffleResults, onlyHideUnknownChars);
     setResults({
       ...newResults,
-      revealedCharPositions: onlyHideUnknownChars ? newResults.revealedCharPositions : [],
       defaultHidden: hideResults,
     });
 
