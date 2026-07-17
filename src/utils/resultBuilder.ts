@@ -1,10 +1,11 @@
 import { Guess } from "@/classes/guess";
+import { CharRevealState } from "@/components/Results/RevealableChar/RevealableChar";
 import { LetterCorrectness } from "@/enums/enums";
 import { stringsAreEqual } from "@/utils/guessValidation";
 
 export interface IResults {
   words: string[];
-  revealedCharPositions: boolean[];
+  initialCharRevealStates: CharRevealState[];
   defaultHidden?: boolean;
 }
 
@@ -22,14 +23,17 @@ export default function getResults(
     results.sort();
   }
 
-  const revealedCharPositions = Array.from(
+  const initialCharRevealStates = Array.from(
     { length: parseResult.correctPosChars.length },
-    (_, i) => parseResult.correctPosChars[i] !== undefined
+    (_, i) =>
+      parseResult.correctPosChars[i] !== undefined
+        ? CharRevealState.PERM_REVEALED
+        : CharRevealState.HIDDEN
   );
 
   return {
     words: results,
-    revealedCharPositions: revealedCharPositions,
+    initialCharRevealStates: initialCharRevealStates,
   };
 }
 

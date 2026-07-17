@@ -100,7 +100,7 @@ function ResultWords({
               {results.defaultHidden ? (
                 <ResultChars
                   result={result}
-                  permRevealedCharPositions={results.revealedCharPositions}
+                  initialCharRevealStates={results.initialCharRevealStates}
                 />
               ) : (
                 <Text>{capitalizeFirstLetter(result)}</Text>
@@ -133,18 +133,12 @@ function ResultWords({
 
 function ResultChars({
   result,
-  permRevealedCharPositions,
+  initialCharRevealStates,
 }: {
   result: string;
-  permRevealedCharPositions: boolean[];
+  initialCharRevealStates: CharRevealState[];
 }) {
-  const initialArray = new Array<CharRevealState>(result.length);
-  for (let i = 0; i < permRevealedCharPositions.length; i++) {
-    initialArray[i] = permRevealedCharPositions[i]
-      ? CharRevealState.PERM_REVEALED
-      : CharRevealState.HIDDEN;
-  }
-  const [charRevealStates, setCharRevealStates] = useState(initialArray);
+  const [charRevealStates, setCharRevealStates] = useState(initialCharRevealStates);
   const [allCharsRevealed, setAllCharsRevealed] = useState(
     getAllCharsAreRevealed(charRevealStates)
   );
