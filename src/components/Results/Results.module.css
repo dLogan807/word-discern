@@ -43,12 +43,6 @@
   border-bottom: 1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
 }
 
-.result_chars_group {
-  padding: var(--mantine-spacing-md);
-  background-color: light-dark(var(--mantine-color-gray-4), var(--mantine-color-dark-7));
-  border-radius: var(--mantine-radius-xl);
-}
-
 .results_text_group {
   display: flex;
   justify-content: center;

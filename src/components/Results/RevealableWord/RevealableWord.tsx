@@ -1,0 +1,72 @@
+import { Group, ActionIcon } from "@mantine/core";
+import { IconEyeOff, IconEye } from "@tabler/icons-react";
+import { useState } from "react";
+import RevealableChar, { CharRevealState } from "../RevealableChar/RevealableChar";
+import classes from "./RevealableWord.module.css";
+
+export default function RevealableWord({
+  result,
+  initialCharRevealStates,
+}: {
+  result: string;
+  initialCharRevealStates: CharRevealState[];
+}) {
+  const [charRevealStates, setCharRevealStates] = useState(initialCharRevealStates);
+  const [allCharsRevealed, setAllCharsRevealed] = useState(
+    getAllCharsAreRevealed(charRevealStates)
+  );
+
+  function toggleCharRevealed(index: number) {
+    const newRevealStates = charRevealStates.map((currentState, i) =>
+      i === index ? getNextRevealState(currentState) : currentState
+    );
+    const allCharsAreRevealed = getAllCharsAreRevealed(newRevealStates);
+    setCharRevealStates(newRevealStates);
+    setAllCharsRevealed(allCharsAreRevealed);
+  }
+
+  function toggleAllCharRevealStates() {
+    const nextRevealState = allCharsRevealed ? CharRevealState.HIDDEN : CharRevealState.REVEALED;
+    setCharRevealStates(
+      charRevealStates.map((currentState) =>
+        currentState === CharRevealState.PERM_REVEALED
+          ? CharRevealState.PERM_REVEALED
+          : nextRevealState
+      )
+    );
+    setAllCharsRevealed(!allCharsRevealed);
+  }
+
+  return (
+    <Group classNames={{ root: classes.result_chars_group }}>
+      {result.split("").map((char, idx) => (
+        <RevealableChar
+          key={idx}
+          char={char.toLocaleUpperCase()}
+          index={idx}
+          revealState={charRevealStates[idx]}
+          toggleCharRevealed={toggleCharRevealed}
+        />
+      ))}
+      <ActionIcon variant="light" onClick={() => toggleAllCharRevealStates()}>
+        {allCharsRevealed ? <IconEyeOff /> : <IconEye />}
+      </ActionIcon>
+    </Group>
+  );
+}
+
+function getAllCharsAreRevealed(charRevealStates: CharRevealState[]): boolean {
+  for (const charState of charRevealStates) {
+    if (charState === CharRevealState.HIDDEN) return false;
+  }
+
+  return true;
+}
+
+function getNextRevealState(revealState: CharRevealState): CharRevealState {
+  if (revealState === CharRevealState.PERM_REVEALED) return revealState;
+
+  return revealState === CharRevealState.REVEALED
+    ? CharRevealState.HIDDEN
+    : CharRevealState.REVEALED;
+}
