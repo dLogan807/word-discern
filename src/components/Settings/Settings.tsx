@@ -21,6 +21,7 @@ import CustomWordsForm from "@/components/Settings/CustomWordsForm/CustomWordsFo
 import LoadedWordsBadges, {
   WordBadgeData,
 } from "@/components/Settings/CustomWordsForm/WordBadges/WordBadges";
+import Footer from "./Footer/Footer";
 import classes from "./Settings.module.css";
 
 interface SettingsProps {
@@ -42,67 +43,70 @@ export default function Settings(props: SettingsProps) {
   const iconSize = 20;
 
   return (
-    <Stack classNames={{ root: classes.settings }}>
-      <Title order={2} classNames={{ root: classes.settings_title }}>
-        Settings
-      </Title>
-      <SettingsSection title="Guess input" icon={<IconZoomQuestion size={iconSize} />}>
-        <Switch label="Character Mode" disabled />
-        <Checkbox
-          label="Only allow words from the word list"
-          onChange={(event) => props.setOnlyAllowWordListGuesses(event.currentTarget.checked)}
-          defaultChecked
-        />
-      </SettingsSection>
-      <SettingsSection title="Results" icon={<IconClipboardData size={iconSize} />}>
-        <Checkbox
-          label="Shuffled"
-          checked={props.shuffleResults}
-          onChange={(event) => props.setShuffleResults(event.currentTarget.checked)}
-        />
-        <Box>
+    <Box className={classes.settings_layout}>
+      <Stack classNames={{ root: classes.settings }}>
+        <Title order={2} classNames={{ root: classes.settings_title }}>
+          Settings
+        </Title>
+        <SettingsSection title="Guess input" icon={<IconZoomQuestion size={iconSize} />}>
+          <Switch label="Character Mode" disabled />
           <Checkbox
-            label="Hidden"
-            checked={props.hideResults}
-            onChange={(event) => props.setHideResults(event.currentTarget.checked)}
+            label="Only allow words from the word list"
+            onChange={(event) => props.setOnlyAllowWordListGuesses(event.currentTarget.checked)}
+            defaultChecked
           />
-          <Group classNames={{ root: `${classes.indented_setting}` }}>
-            <IconRadiusBottomLeft className={props.hideResults ? "" : classes.disabled_setting} />
+        </SettingsSection>
+        <SettingsSection title="Results" icon={<IconClipboardData size={iconSize} />}>
+          <Checkbox
+            label="Shuffled"
+            checked={props.shuffleResults}
+            onChange={(event) => props.setShuffleResults(event.currentTarget.checked)}
+          />
+          <Box>
             <Checkbox
-              label="Only hide unknown characters"
-              checked={props.onlyHideUnknownChars}
-              disabled={!props.hideResults}
-              onChange={(event) => props.setOnlyHideUnknownChars(event.currentTarget.checked)}
+              label="Hidden"
+              checked={props.hideResults}
+              onChange={(event) => props.setHideResults(event.currentTarget.checked)}
             />
-          </Group>
-        </Box>
-        <Stack classNames={{ root: classes.setting_slider }}>
-          <InputLabel>
-            Number to display: <b>{props.numResultsShown}</b>
-          </InputLabel>
-          <Slider
-            onChangeEnd={props.setNumResultsShown}
-            domain={[0, 100]}
-            defaultValue={20}
-            min={5}
-            max={100}
-            step={5}
-            size="lg"
+            <Group classNames={{ root: `${classes.indented_setting}` }}>
+              <IconRadiusBottomLeft className={props.hideResults ? "" : classes.disabled_setting} />
+              <Checkbox
+                label="Only hide unknown characters"
+                checked={props.onlyHideUnknownChars}
+                disabled={!props.hideResults}
+                onChange={(event) => props.setOnlyHideUnknownChars(event.currentTarget.checked)}
+              />
+            </Group>
+          </Box>
+          <Stack classNames={{ root: classes.setting_slider }}>
+            <InputLabel>
+              Number to display: <b>{props.numResultsShown}</b>
+            </InputLabel>
+            <Slider
+              onChangeEnd={props.setNumResultsShown}
+              domain={[0, 100]}
+              defaultValue={20}
+              min={5}
+              max={100}
+              step={5}
+              size="lg"
+            />
+          </Stack>
+        </SettingsSection>
+        <SettingsSection title="Word list" icon={<IconBook2 size={iconSize} />}>
+          <LoadedWordsBadges badgeData={props.wordBadgeData} />
+          <CustomWordsForm />
+        </SettingsSection>
+        <SettingsSection title="Accessibility" icon={<IconAccessible size={iconSize} />}>
+          <Checkbox
+            label="Animations"
+            checked={props.doAnimations}
+            onChange={(event) => props.setDoAnimations(event.currentTarget.checked)}
           />
-        </Stack>
-      </SettingsSection>
-      <SettingsSection title="Word list" icon={<IconBook2 size={iconSize} />}>
-        <LoadedWordsBadges badgeData={props.wordBadgeData} />
-        <CustomWordsForm />
-      </SettingsSection>
-      <SettingsSection title="Accessibility" icon={<IconAccessible size={iconSize} />}>
-        <Checkbox
-          label="Animations"
-          checked={props.doAnimations}
-          onChange={(event) => props.setDoAnimations(event.currentTarget.checked)}
-        />
-      </SettingsSection>
-    </Stack>
+        </SettingsSection>
+      </Stack>
+      <Footer />
+    </Box>
   );
 }
 

@@ -1,3 +1,11 @@
+.settings_layout {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  row-gap: var(--mantine-spacing-xl);
+  min-height: 100%;
+}
+
 .settings {
   min-width: 20rem;
   gap: var(--mantine-spacing-sm);
