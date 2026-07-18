@@ -58,6 +58,14 @@
   > * {
     flex-shrink: 0;
   }
+
+  @media (max-width: $mantine-breakpoint-sm) {
+    row-gap: var(--mantine-spacing-lg);
+  }
+
+  @media (max-width: $mantine-breakpoint-xs) {
+    padding: var(--mantine-spacing-xs);
+  }
 }
 
 .settings_pane {

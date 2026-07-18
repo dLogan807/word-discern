@@ -113,6 +113,7 @@ function ResultWords({
       </Box>
       {numResultsMounted < results.words.length && (
         <Button
+          classNames={{ root: classes.show_more_results_button }}
           key={numResultsMounted}
           style={{
             animationName: classes.resultReveal,

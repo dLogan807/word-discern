@@ -1,4 +1,11 @@
 .remove_button {
-  margin-left: 1rem;
+  margin-left: 0.5rem;
   --ai-size: var(--ai-size-lg);
+  width: 2.5rem;
+  height: 2.5rem;
+
+  @media (max-width: $mantine-breakpoint-sm) {
+    width: auto;
+    height: auto;
+  }
 }
