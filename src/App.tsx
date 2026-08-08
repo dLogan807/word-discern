@@ -1,16 +1,16 @@
 import "@mantine/core/styles.css";
 import wordsUrl from "/words.txt?url";
 import {
-  AppShell,
-  Burger,
+  ActionIcon,
+  Box,
   Button,
   Group,
   MantineProvider,
-  ScrollArea,
   Title,
   v8CssVariablesResolver,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import { IconSearch, IconSettings, IconXFilled } from "@tabler/icons-react";
 import { createContext, Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { Guess } from "@/classes/guess";
 import GuessInputList from "@/components/Guesses/GuessInputList/GuessInputList";
@@ -20,10 +20,10 @@ import {
   DEFAULT_CUSTOM_WORDS_FORM,
 } from "@/components/Settings/CustomWordsForm/CustomWordsForm";
 import Settings from "@/components/Settings/Settings";
-import { ThemeSelector } from "@/components/ThemeSelector/ThemeSelector";
 import { theme } from "@/theme";
 import getResults, { IResults } from "@/utils/resultBuilder";
 import { ParsedWordSets, parseWordsToSets } from "@/utils/wordLoading";
+import { ThemeSelector } from "./components/ThemeSelector/ThemeSelector";
 import classes from "./App.module.css";
 
 export const CustomWordsFormContext = createContext<Dispatch<SetStateAction<CustomWordsFormData>>>(
@@ -38,7 +38,6 @@ async function getWords(): Promise<string[]> {
 
 export default function App() {
   const [defaultWords, setDefaultWords] = useState<string[]>([]);
-  const [navbarOpened, { toggle }] = useDisclosure();
 
   useEffect(() => {
     void getWords().then(setDefaultWords);
@@ -48,7 +47,7 @@ export default function App() {
   const [guesses, setGuesses] = useState<Guess[]>([]);
   const [results, setResults] = useState<IResults>({
     words: [],
-    revealedCharPositions: [],
+    initialCharRevealStates: [],
   });
   const [storedCustomWordsFormData, setStoredCustomWordsFormData] =
     useState<CustomWordsFormData>(DEFAULT_CUSTOM_WORDS_FORM);
@@ -62,9 +61,10 @@ export default function App() {
 
   // Result state
   const [showResults, setShowResults] = useState(false);
-  const [resultUpdateKey, setResultUpdateKey] = useState(0);
+  const [resultsUpdateKey, setResultsUpdateKey] = useState(0);
 
   // Settings
+  const [settingsOpened, { toggle }] = useDisclosure(false);
   const [onlyAllowWordListGuesses, setOnlyAllowWordListGuesses] = useState(true);
   const [shuffleResults, setShuffleResults] = useState(true);
   const [hideResults, setHideResults] = useState(true);
@@ -79,93 +79,106 @@ export default function App() {
     const wordSet = parsedWordSets.wordSets.get(guessLength);
     if (wordSet === undefined) return;
 
-    const newResults = getResults(wordSet, guesses, shuffleResults);
+    const newResults = getResults(wordSet, guesses, shuffleResults, onlyHideUnknownChars);
     setResults({
       ...newResults,
-      revealedCharPositions: onlyHideUnknownChars ? newResults.revealedCharPositions : [],
       defaultHidden: hideResults,
     });
 
-    setResultUpdateKey((prev) => prev + 1);
+    setResultsUpdateKey((prev) => prev + 1);
     setShowResults(true);
   }
 
   return (
-    <>
-      <MantineProvider
-        theme={theme}
-        defaultColorScheme="auto"
-        cssVariablesResolver={v8CssVariablesResolver}
+    <MantineProvider
+      theme={theme}
+      defaultColorScheme="auto"
+      cssVariablesResolver={v8CssVariablesResolver}
+    >
+      <Box
+        className={`${classes.layout}
+            ${!settingsOpened ? classes.layout_settings_pane_closed : undefined}
+            ${!doAnimations ? classes.no_animation : undefined}
+          `}
       >
-        <AppShell
-          classNames={{ header: classes.header, navbar: classes.settings }}
-          padding="md"
-          header={{ height: 60 }}
-          navbar={{
-            width: 400,
-            breakpoint: "sm",
-            collapsed: { mobile: !navbarOpened },
-          }}
-        >
-          <AppShell.Header>
-            <Group>
-              <Burger opened={navbarOpened} onClick={toggle} hiddenFrom="sm" size="sm" />
-              <Title order={1}>Word Discern</Title>
-            </Group>
+        <Box className={classes.header}>
+          <Title order={1} classNames={{ root: classes.header_logo }}>
+            Word Discern
+          </Title>
 
+          <Group>
             <ThemeSelector />
-          </AppShell.Header>
+            <ActionIcon
+              variant="transparent"
+              aria-label="Settings"
+              onClick={toggle}
+              classNames={{
+                root: classes.settings_button,
+                icon: `${classes.settings_button_icon}
+                  ${settingsOpened ? classes.settings_button_icon_opened : undefined}
+                  ${!doAnimations ? classes.no_animation : undefined}`,
+              }}
+            >
+              {settingsOpened ? <IconXFilled /> : <IconSettings />}
+            </ActionIcon>
+          </Group>
+        </Box>
 
-          <AppShell.Navbar>
-            <CustomWordsFormContext value={setStoredCustomWordsFormData}>
-              <ScrollArea type="auto">
-                <Settings
-                  wordBadgeData={{
-                    replaceDefaultWords: storedCustomWordsFormData.replaceDefaultWords,
-                    numDefaultWords: defaultWords.length,
-                    numWordsParsed: parsedWordSets.wordNum,
-                    numCustomFormWords: storedCustomWordsFormData.words.length,
-                    failedWords: parsedWordSets.failed,
-                  }}
-                  shuffleResults={shuffleResults}
-                  setShuffleResults={setShuffleResults}
-                  hideResults={hideResults}
-                  setHideResults={setHideResults}
-                  onlyHideUnknownChars={onlyHideUnknownChars}
-                  setOnlyHideUnknownChars={setOnlyHideUnknownChars}
-                  setOnlyAllowWordListGuesses={setOnlyAllowWordListGuesses}
-                  numResultsShown={numResultsShown}
-                  setNumResultsShown={setNumResultsShown}
-                  doAnimations={doAnimations}
-                  setDoAnimations={setDoAnimations}
-                />
-              </ScrollArea>
-            </CustomWordsFormContext>
-          </AppShell.Navbar>
+        <Box
+          className={`${classes.settings_pane}
+            ${!settingsOpened ? classes.settings_pane_closed : undefined}
+            ${!doAnimations ? classes.no_animation : undefined}`}
+        >
+          <CustomWordsFormContext value={setStoredCustomWordsFormData}>
+            <Settings
+              wordBadgeData={{
+                replaceDefaultWords: storedCustomWordsFormData.replaceDefaultWords,
+                numDefaultWords: defaultWords.length,
+                numWordsParsed: parsedWordSets.wordNum,
+                numCustomFormWords: storedCustomWordsFormData.words.length,
+                failedWords: parsedWordSets.failed,
+              }}
+              shuffleResults={shuffleResults}
+              setShuffleResults={setShuffleResults}
+              hideResults={hideResults}
+              setHideResults={setHideResults}
+              onlyHideUnknownChars={onlyHideUnknownChars}
+              setOnlyHideUnknownChars={setOnlyHideUnknownChars}
+              setOnlyAllowWordListGuesses={setOnlyAllowWordListGuesses}
+              numResultsShown={numResultsShown}
+              setNumResultsShown={setNumResultsShown}
+              doAnimations={doAnimations}
+              setDoAnimations={setDoAnimations}
+            />
+          </CustomWordsFormContext>
+        </Box>
 
-          <AppShell.Main>
-            <GuessInputList
-              guesses={guesses}
-              setGuesses={setGuesses}
-              wordSets={parsedWordSets.wordSets}
-              onlyAllowWordListGuesses={onlyAllowWordListGuesses}
+        <Box className={classes.content_body}>
+          <GuessInputList
+            guesses={guesses}
+            setGuesses={setGuesses}
+            wordSets={parsedWordSets.wordSets}
+            onlyAllowWordListGuesses={onlyAllowWordListGuesses}
+            doAnimations={doAnimations}
+          />
+          <Button
+            variant="filled"
+            onClick={handleGetPossibleWords}
+            disabled={!guesses.length}
+            rightSection={<IconSearch />}
+          >
+            Find possible words
+          </Button>
+          {showResults && (
+            <Results
+              results={results}
+              resultsUpdateKey={resultsUpdateKey}
+              numberToShow={numResultsShown}
               doAnimations={doAnimations}
             />
-            <Button disabled={!guesses.length} onClick={handleGetPossibleWords}>
-              Get Possible Words!
-            </Button>
-
-            {showResults && (
-              <Results
-                key={`${resultUpdateKey}-${results.words.length}`}
-                results={results}
-                numberToShow={numResultsShown}
-                doAnimations={doAnimations}
-              />
-            )}
-          </AppShell.Main>
-        </AppShell>
-      </MantineProvider>
-    </>
+          )}
+        </Box>
+      </Box>
+    </MantineProvider>
   );
 }

@@ -1,0 +1,10 @@
+.result_chars_group {
+  padding: var(--mantine-spacing-md);
+  background-color: light-dark(var(--mantine-color-gray-4), var(--mantine-color-dark-7));
+  border-radius: var(--mantine-radius-xl);
+  gap: var(--mantine-spacing-xs);
+
+  @media (max-width: $mantine-breakpoint-sm) {
+    padding: var(--mantine-spacing-sm);
+  }
+}

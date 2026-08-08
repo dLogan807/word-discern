@@ -219,7 +219,7 @@ export default function CustomWordsForm() {
             label="Replace default word list"
           />
         </Stack>
-        <Group justify="flex-end" mt="md">
+        <Group classNames={{ root: classes.submit_button }}>
           <Button
             type="submit"
             onClick={(event) => {

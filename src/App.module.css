@@ -1,6 +1,119 @@
+.layout {
+  transition: grid-template-columns 0.25s;
+  position: fixed;
+  display: grid;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  grid-template-rows: auto 1fr;
+  grid-template-columns: 3fr 1fr;
+  grid-template-areas: "header header" "content-body settings-pane";
+  z-index: 10;
+
+  @media (max-width: $mantine-breakpoint-lg) {
+    grid-template-columns: 3fr 1.5fr;
+  }
+
+  @media (max-width: $mantine-breakpoint-md) {
+    grid-template-columns: 3fr 2.5fr;
+  }
+
+  @media (max-width: $mantine-breakpoint-sm) {
+    grid-template-columns: 1fr 0fr;
+  }
+}
+
+.layout_settings_pane_closed {
+  grid-template-columns: 1fr 0fr;
+}
+
 .header {
+  grid-area: header;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 1rem 0 1rem;
+  padding: var(--mantine-spacing-xs) var(--mantine-spacing-md);
+  border-bottom: 1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
+}
+
+.header_logo {
+  color: light-dark(var(--mantine-color-dark-4), var(--mantine-color-gray-3));
+
+  @media (max-width: $mantine-breakpoint-xs) {
+    font-size: 1.5rem;
+  }
+}
+
+.content_body {
+  grid-area: content-body;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: var(--mantine-spacing-xl);
+  padding: var(--mantine-spacing-md);
+  overflow-y: scroll;
+  width: 100%;
+
+  > * {
+    flex-shrink: 0;
+  }
+
+  @media (max-width: $mantine-breakpoint-sm) {
+    row-gap: var(--mantine-spacing-lg);
+  }
+
+  @media (max-width: $mantine-breakpoint-xs) {
+    padding: var(--mantine-spacing-xs);
+  }
+}
+
+.settings_pane {
+  transition: transform 0.25s;
+  grid-area: settings-pane;
+  padding: var(--mantine-spacing-md);
+  overflow-y: scroll;
+  overflow-x: hidden;
+  border-left: 1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
+  background-color: light-dark(#ffffff, var(--mantine-color-dark-7));
+
+  @media (max-width: $mantine-breakpoint-sm) {
+    position: absolute;
+    right: 0;
+    height: 100%;
+    width: 100vw;
+    z-index: 11;
+  }
+
+  @media (max-width: $mantine-breakpoint-xs) {
+    padding: var(--mantine-spacing-sm);
+  }
+}
+
+.settings_pane_closed {
+  transform: translateX(100%);
+  border-left: none;
+  overflow: hidden;
+}
+
+.settings_button {
+  --ai-size: var(--ai-size-lg);
+}
+
+.settings_button_icon {
+  color: light-dark(var(--mantine-color-dark-4), var(--mantine-color-gray-3));
+  transition: transform 0.25s;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.settings_button_icon_opened {
+  transform: rotate(90deg);
+}
+
+.no_animation {
+  transition: none;
 }

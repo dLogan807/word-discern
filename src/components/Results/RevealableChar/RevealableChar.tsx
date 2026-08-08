@@ -1,28 +1,32 @@
 import { Button, Text } from "@mantine/core";
-import { useState } from "react";
 import classes from "./RevealableChar.module.css";
+
+export enum CharRevealState {
+  REVEALED,
+  HIDDEN,
+  PERM_REVEALED,
+}
 
 export default function RevealableChar({
   char,
   index,
-  reveal = false,
-  updateRevealed,
+  revealState,
+  toggleCharRevealed,
 }: {
   char: string;
   index: number;
-  reveal?: boolean;
-  updateRevealed: (index: number, hidden: boolean) => void;
+  revealState: CharRevealState;
+  toggleCharRevealed: (index: number) => void;
 }) {
-  const [revealed, setRevealed] = useState(reveal);
+  const shownChar = isLetterRevealed(revealState) ? char : "?";
+
   function handleClick() {
-    const nextRevealed = !revealed;
-    setRevealed(nextRevealed);
-    updateRevealed(index, nextRevealed);
+    toggleCharRevealed(index);
   }
 
-  const shownChar = revealed ? char : "?";
-
-  return (
+  return revealState === CharRevealState.PERM_REVEALED ? (
+    <Text>{char}</Text>
+  ) : (
     <Button
       onClick={handleClick}
       variant="default"
@@ -33,4 +37,8 @@ export default function RevealableChar({
       <Text>{shownChar}</Text>
     </Button>
   );
+}
+
+function isLetterRevealed(revealState: CharRevealState) {
+  return revealState !== CharRevealState.HIDDEN;
 }

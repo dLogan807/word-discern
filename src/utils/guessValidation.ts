@@ -27,7 +27,7 @@ export function validateGuess(
   } else if (alreadyGuessed(trimmedGuess, guesses)) {
     response.message = "Already guessed";
   } else if (!wordSet) {
-    response.message = "No words in list of this length";
+    response.message = "No words of this length in the word list";
   } else if (onlyAllowWordListGuesses && !wordSet.has(trimmedGuess.toLocaleLowerCase())) {
     response.message = "Not in word list";
   } else {
