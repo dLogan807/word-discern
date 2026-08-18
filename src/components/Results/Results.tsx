@@ -54,18 +54,9 @@ function ResultWords({
   const isSoleFullyRevealedResult = soleFullyRevealedResult(results);
 
   const [numResultsMounted, setNumResultsMounted] = useState(actualNumberToShow);
-  const [mountedResults, setMountedResults] = useState<boolean[]>(() =>
-    new Array(results.words.length).fill(false).map((_, idx) => idx < actualNumberToShow)
-  );
 
   function handleShowMoreWords() {
-    const oldNumMounted = numResultsMounted;
-    const newNumMounted = Math.min(numResultsMounted + actualNumberToShow, results.words.length);
-
-    const newMountedResults = [...mountedResults].fill(true, oldNumMounted, newNumMounted);
-
-    setNumResultsMounted(newNumMounted);
-    setMountedResults(newMountedResults);
+    setNumResultsMounted((prev) => Math.min(prev + actualNumberToShow, results.words.length));
   }
 
   const animationDelays = useMemo(() => {
@@ -83,9 +74,7 @@ function ResultWords({
   return (
     <>
       <Box className={classes.results_words_list_columns}>
-        {results.words.map((result, idx) => {
-          if (!mountedResults[idx]) return null;
-
+        {results.words.slice(0, numResultsMounted).map((result, idx) => {
           const modOfShownIdx = idx % actualNumberToShow;
 
           const animationDelay = animationDelays.length > 0 ? animationDelays[modOfShownIdx] : 0;
