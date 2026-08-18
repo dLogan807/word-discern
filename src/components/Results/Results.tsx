@@ -1,6 +1,6 @@
 import { Box, Button, RollingNumber, Text } from "@mantine/core";
 import { IconArrowDown } from "@tabler/icons-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import pluralize from "@/utils/pluralize";
 import { IResults } from "@/utils/resultBuilder";
@@ -51,10 +51,11 @@ function ResultWords({
   numberToShow: number;
 }) {
   const actualNumberToShow = Math.min(numberToShow, results.words.length);
+  const isSoleFullyRevealedResult = soleFullyRevealedResult(results);
 
   const [numResultsMounted, setNumResultsMounted] = useState(actualNumberToShow);
-  const [mountedResults, setMountedResults] = useState<boolean[]>(
-    new Array(results.words.length).fill(false).map((_mounted, idx) => idx < actualNumberToShow)
+  const [mountedResults, setMountedResults] = useState<boolean[]>(() =>
+    new Array(results.words.length).fill(false).map((_, idx) => idx < actualNumberToShow)
   );
 
   function handleShowMoreWords() {
@@ -67,9 +68,16 @@ function ResultWords({
     setMountedResults(newMountedResults);
   }
 
-  const maxAnimationDelay = doAnimations
-    ? calculateAnimationDelay(actualNumberToShow - 1, actualNumberToShow)
-    : 0;
+  const animationDelays = useMemo(() => {
+    if (!doAnimations) return [];
+
+    return Array.from({ length: actualNumberToShow }, (_, i) =>
+      calculateAnimationDelay(i, actualNumberToShow)
+    );
+  }, [doAnimations, actualNumberToShow]);
+
+  const maxAnimationDelay =
+    animationDelays.length > 0 ? animationDelays[animationDelays.length - 1] : 0;
   const animationDuration = doAnimations ? 50 : 0;
 
   return (
@@ -80,9 +88,7 @@ function ResultWords({
 
           const modOfShownIdx = idx % actualNumberToShow;
 
-          const animationDelay = doAnimations
-            ? calculateAnimationDelay(modOfShownIdx, actualNumberToShow)
-            : 0;
+          const animationDelay = animationDelays.length > 0 ? animationDelays[modOfShownIdx] : 0;
 
           return (
             <Box
@@ -95,7 +101,7 @@ function ResultWords({
               }}
               className={classes.result_list_item}
             >
-              {results.defaultHidden && !soleFullyRevealedResult(results) ? (
+              {results.defaultHidden && !isSoleFullyRevealedResult ? (
                 <RevealableWord
                   result={result}
                   initialCharRevealStates={results.initialCharRevealStates}
