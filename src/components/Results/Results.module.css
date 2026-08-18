@@ -40,7 +40,7 @@
 @keyframes resultReveal {
   from {
     opacity: 0;
-    transform: scale3d(1.2, 1.2, 1.2) translate(0, -5rem);
+    transform: scale3d(1.2, 1.2, 1.2) translate(0, -1rem);
   }
 
   to {

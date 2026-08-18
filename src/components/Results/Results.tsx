@@ -50,21 +50,16 @@ function ResultWords({
   doAnimations: boolean;
   numberToShow: number;
 }) {
-  const clampedNumberToShow = Math.min(numberToShow, results.words.length);
+  const actualNumberToShow = Math.min(numberToShow, results.words.length);
 
-  const [numResultsMounted, setNumResultsMounted] = useState(clampedNumberToShow);
+  const [numResultsMounted, setNumResultsMounted] = useState(actualNumberToShow);
   const [mountedResults, setMountedResults] = useState<boolean[]>(
-    new Array(results.words.length).fill(false).map((_mounted, idx) => idx < clampedNumberToShow)
+    new Array(results.words.length).fill(false).map((_mounted, idx) => idx < actualNumberToShow)
   );
-
-  const baseDelay = doAnimations ? 20 : 0;
-  let delay = baseDelay;
-  const delayMult = 1.05 + 1 / Math.max(clampedNumberToShow, 1);
-  const totalDelay = Math.min(baseDelay * delayMult ** clampedNumberToShow, 500);
 
   function handleShowMoreWords() {
     const oldNumMounted = numResultsMounted;
-    const newNumMounted = Math.min(numResultsMounted + clampedNumberToShow, results.words.length);
+    const newNumMounted = Math.min(numResultsMounted + actualNumberToShow, results.words.length);
 
     const newMountedResults = [...mountedResults].fill(true, oldNumMounted, newNumMounted);
 
@@ -72,26 +67,30 @@ function ResultWords({
     setMountedResults(newMountedResults);
   }
 
+  const maxAnimationDelay = doAnimations
+    ? calculateAnimationDelay(actualNumberToShow - 1, actualNumberToShow)
+    : 0;
+  const animationDuration = doAnimations ? 50 : 0;
+
   return (
     <>
       <Box className={classes.results_words_list_columns}>
         {results.words.map((result, idx) => {
-          if (doAnimations) {
-            delay = Math.min(
-              idx % clampedNumberToShow === 0 ? baseDelay : (delay *= delayMult),
-              totalDelay
-            );
-          }
-
           if (!mountedResults[idx]) return null;
+
+          const modOfShownIdx = idx % actualNumberToShow;
+
+          const animationDelay = doAnimations
+            ? calculateAnimationDelay(modOfShownIdx, actualNumberToShow)
+            : 0;
 
           return (
             <Box
               key={idx}
               style={{
                 animationName: classes.resultReveal,
-                animationDuration: `${delay}ms`,
-                animationDelay: `${delay}ms`,
+                animationDuration: `${animationDuration}ms`,
+                animationDelay: `${animationDelay}ms`,
                 animationFillMode: "both",
               }}
               className={classes.result_list_item}
@@ -117,8 +116,8 @@ function ResultWords({
           key={numResultsMounted}
           style={{
             animationName: classes.resultReveal,
-            animationDuration: `${totalDelay}ms`,
-            animationDelay: `${doAnimations ? totalDelay : 200}ms`,
+            animationDuration: `${animationDuration}ms`,
+            animationDelay: `${maxAnimationDelay}ms`,
             animationFillMode: "backwards",
           }}
           onClick={handleShowMoreWords}
@@ -129,6 +128,13 @@ function ResultWords({
       )}
     </>
   );
+}
+
+function calculateAnimationDelay(x: number, actualNumberToShow: number) {
+  const gradient = 100;
+  const y = gradient * actualNumberToShow ** (x / (x + actualNumberToShow));
+
+  return y;
 }
 
 function soleFullyRevealedResult(results: IResults): boolean {
