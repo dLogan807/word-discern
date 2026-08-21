@@ -1,24 +1,26 @@
 import { Box, Button, RollingNumber, Text } from "@mantine/core";
 import { IconArrowDown } from "@tabler/icons-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { CharRevealState } from "@/enums/enums";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import pluralize from "@/utils/pluralize";
 import { IResults } from "@/utils/resultBuilder";
-import { CharRevealState } from "./RevealableChar/RevealableChar";
 import RevealableWord from "./RevealableWord/RevealableWord";
 import classes from "./Results.module.css";
+
+type ResultsProps = {
+  results: IResults;
+  resultsUpdateKey: number;
+  numberToShow: number;
+  doAnimations: boolean;
+};
 
 export default function Results({
   results,
   resultsUpdateKey,
   numberToShow,
   doAnimations,
-}: {
-  results: IResults;
-  resultsUpdateKey: number;
-  numberToShow: number;
-  doAnimations: boolean;
-}) {
+}: ResultsProps) {
   return (
     <Box className={classes.results_container}>
       <Box className={classes.results_text_container}>
@@ -50,53 +52,47 @@ function ResultWords({
   doAnimations: boolean;
   numberToShow: number;
 }) {
-  const clampedNumberToShow = Math.min(numberToShow, results.words.length);
+  const actualNumberToShow = Math.min(numberToShow, results.words.length);
+  const isSoleFullyRevealedResult = soleFullyRevealedResult(results);
 
-  const [numResultsMounted, setNumResultsMounted] = useState(clampedNumberToShow);
-  const [mountedResults, setMountedResults] = useState<boolean[]>(
-    new Array(results.words.length).fill(false).map((_mounted, idx) => idx < clampedNumberToShow)
-  );
-
-  const baseDelay = doAnimations ? 20 : 0;
-  let delay = baseDelay;
-  const delayMult = 1.05 + 1 / Math.max(clampedNumberToShow, 1);
-  const totalDelay = Math.min(baseDelay * delayMult ** clampedNumberToShow, 500);
+  const [numResultsMounted, setNumResultsMounted] = useState(actualNumberToShow);
 
   function handleShowMoreWords() {
-    const oldNumMounted = numResultsMounted;
-    const newNumMounted = Math.min(numResultsMounted + clampedNumberToShow, results.words.length);
-
-    const newMountedResults = [...mountedResults].fill(true, oldNumMounted, newNumMounted);
-
-    setNumResultsMounted(newNumMounted);
-    setMountedResults(newMountedResults);
+    setNumResultsMounted((prev) => Math.min(prev + actualNumberToShow, results.words.length));
   }
+
+  const animationDelays = useMemo(() => {
+    if (!doAnimations) return [];
+
+    return Array.from({ length: actualNumberToShow }, (_, i) =>
+      calculateAnimationDelay(i, actualNumberToShow)
+    );
+  }, [doAnimations, actualNumberToShow]);
+
+  const maxAnimationDelay =
+    animationDelays.length > 0 ? animationDelays[animationDelays.length - 1] : 0;
+  const animationDuration = doAnimations ? 50 : 0;
 
   return (
     <>
       <Box className={classes.results_words_list_columns}>
-        {results.words.map((result, idx) => {
-          if (doAnimations) {
-            delay = Math.min(
-              idx % clampedNumberToShow === 0 ? baseDelay : (delay *= delayMult),
-              totalDelay
-            );
-          }
+        {results.words.slice(0, numResultsMounted).map((result, idx) => {
+          const modOfShownIdx = idx % actualNumberToShow;
 
-          if (!mountedResults[idx]) return null;
+          const animationDelay = animationDelays.length > 0 ? animationDelays[modOfShownIdx] : 0;
 
           return (
             <Box
               key={idx}
               style={{
                 animationName: classes.resultReveal,
-                animationDuration: `${delay}ms`,
-                animationDelay: `${delay}ms`,
+                animationDuration: `${animationDuration}ms`,
+                animationDelay: `${animationDelay}ms`,
                 animationFillMode: "both",
               }}
               className={classes.result_list_item}
             >
-              {results.defaultHidden && !soleFullyRevealedResult(results) ? (
+              {results.defaultHidden && !isSoleFullyRevealedResult ? (
                 <RevealableWord
                   result={result}
                   initialCharRevealStates={results.initialCharRevealStates}
@@ -117,8 +113,8 @@ function ResultWords({
           key={numResultsMounted}
           style={{
             animationName: classes.resultReveal,
-            animationDuration: `${totalDelay}ms`,
-            animationDelay: `${doAnimations ? totalDelay : 200}ms`,
+            animationDuration: `${animationDuration}ms`,
+            animationDelay: `${maxAnimationDelay}ms`,
             animationFillMode: "backwards",
           }}
           onClick={handleShowMoreWords}
@@ -129,6 +125,13 @@ function ResultWords({
       )}
     </>
   );
+}
+
+function calculateAnimationDelay(x: number, actualNumberToShow: number) {
+  const gradient = 100;
+  const y = gradient * actualNumberToShow ** (x / (x + actualNumberToShow));
+
+  return y;
 }
 
 function soleFullyRevealedResult(results: IResults): boolean {

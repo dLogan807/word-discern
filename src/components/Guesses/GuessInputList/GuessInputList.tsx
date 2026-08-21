@@ -7,6 +7,14 @@ import useDebounce from "@/hooks/useDebounce";
 import { validateGuess } from "@/utils/guessValidation";
 import classes from "./GuessInputList.module.css";
 
+type GuessInputListProps = {
+  guesses: Guess[];
+  setGuesses: Dispatch<SetStateAction<Guess[]>>;
+  wordSets: Map<number, Set<string>>;
+  onlyAllowWordListGuesses: boolean;
+  doAnimations: boolean;
+};
+
 export const GuessContext = createContext<{
   removeGuess: (guess: Guess) => void;
   updateGuess: (guess: Guess) => void;
@@ -23,13 +31,7 @@ export default function GuessInputList({
   wordSets,
   onlyAllowWordListGuesses,
   doAnimations,
-}: {
-  guesses: Guess[];
-  setGuesses: Dispatch<SetStateAction<Guess[]>>;
-  wordSets: Map<number, Set<string>>;
-  onlyAllowWordListGuesses: boolean;
-  doAnimations: boolean;
-}) {
+}: GuessInputListProps) {
   const [searchDropdownOpened, setSearchDropDownOpened] = useState(false);
   const [guessValue, setGuessValue] = useState("");
   const [guessError, setGuessError] = useState<null | string>(null);

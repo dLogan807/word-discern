@@ -21,7 +21,12 @@ import classes from "./CustomWords.module.css";
 const VALID_CODE_SEPARATORS: string[] = [",", "space", "newline", ";"];
 const VALID_FILE_TYPES: string[] = [".txt", ".json"];
 
-function SpacedCodeBlocks({ preface, values }: { preface: string; values: string[] }) {
+type SpacedCodeBlocksProps = {
+  preface: string;
+  values: string[];
+};
+
+function SpacedCodeBlocks({ preface, values }: SpacedCodeBlocksProps) {
   return (
     <>
       {preface}
@@ -141,7 +146,6 @@ export default function CustomWordsForm() {
           root: classes.hidden_input,
         };
   };
-  const fileIcon = <IconFileUpload />;
 
   return (
     <Stack>
@@ -155,13 +159,7 @@ export default function CustomWordsForm() {
             { label: "File upload", value: WordInput.FILE },
           ]}
         />
-        <Button
-          variant="light"
-          color="red"
-          onClick={() => {
-            resetCurrentField();
-          }}
-        >
+        <Button variant="light" color="red" onClick={() => resetCurrentField()}>
           Clear Field
         </Button>
       </Group>
@@ -199,13 +197,11 @@ export default function CustomWordsForm() {
             aria-label="Upload word list file"
             description={<SpacedCodeBlocks preface="Accepts: " values={VALID_FILE_TYPES} />}
             placeholder="Upload"
-            leftSection={fileIcon}
+            leftSection={<IconFileUpload />}
             accept={VALID_FILE_TYPES.join(",")}
             clearable
             clearButtonProps={{
-              onClick: () => {
-                resetCurrentField();
-              },
+              onClick: () => resetCurrentField(),
             }}
           />
           <Checkbox
