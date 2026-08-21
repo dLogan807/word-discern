@@ -2,7 +2,7 @@
   padding: var(--mantine-spacing-md);
   background-color: light-dark(var(--mantine-color-gray-4), var(--mantine-color-dark-7));
   border-radius: var(--mantine-radius-xl);
-  gap: 0;
+  gap: var(--mantine-spacing-xs) 0;
 
   @media (max-width: $mantine-breakpoint-sm) {
     padding: var(--mantine-spacing-sm);
@@ -11,4 +11,8 @@
 
 .result_chars_reveal_all_button {
   margin-left: var(--mantine-spacing-xs);
+
+  @media (max-width: $mantine-breakpoint-sm) {
+    margin-left: var(--mantine-spacing-md);
+  }
 }
