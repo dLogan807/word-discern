@@ -15,9 +15,9 @@
 }
 
 .first {
-  border-radius: var(--mantine-radius-xl) 0 0 var(--mantine-radius-xl);
+  border-radius: var(--mantine-radius-md) 0 0 var(--mantine-radius-md);
 }
 
 .last {
-  border-radius: 0 var(--mantine-radius-xl) var(--mantine-radius-xl) 0;
+  border-radius: 0 var(--mantine-radius-md) var(--mantine-radius-md) 0;
 }
