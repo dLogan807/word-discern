@@ -9,3 +9,9 @@ export enum WordInput {
   JSON = "json",
   FILE = "file",
 }
+
+export enum CharRevealState {
+  REVEALED,
+  HIDDEN,
+  PERM_REVEALED,
+}

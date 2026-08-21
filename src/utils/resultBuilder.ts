@@ -1,6 +1,5 @@
 import { Guess } from "@/classes/guess";
-import { CharRevealState } from "@/components/Results/RevealableChar/RevealableChar";
-import { LetterCorrectness } from "@/enums/enums";
+import { CharRevealState, LetterCorrectness } from "@/enums/enums";
 import { stringsAreEqual } from "@/utils/guessValidation";
 
 export interface IResults {

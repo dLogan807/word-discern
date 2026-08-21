@@ -1,10 +1,10 @@
 import { Box, Button, RollingNumber, Text } from "@mantine/core";
 import { IconArrowDown } from "@tabler/icons-react";
 import { useMemo, useState } from "react";
+import { CharRevealState } from "@/enums/enums";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import pluralize from "@/utils/pluralize";
 import { IResults } from "@/utils/resultBuilder";
-import { CharRevealState } from "./RevealableChar/RevealableChar";
 import RevealableWord from "./RevealableWord/RevealableWord";
 import classes from "./Results.module.css";
 

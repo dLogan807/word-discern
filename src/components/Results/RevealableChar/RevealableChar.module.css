@@ -2,4 +2,17 @@
   height: 2rem;
   width: 2rem;
   padding: 0;
+  border-radius: 0;
+}
+
+.perm_revealed {
+  margin: 0 var(--mantine-spacing-xs);
+}
+
+.first {
+  border-radius: var(--mantine-radius-xl) 0 0 var(--mantine-radius-xl);
+}
+
+.last {
+  border-radius: 0 var(--mantine-radius-xl) var(--mantine-radius-xl) 0;
 }

@@ -1,16 +1,16 @@
 import { Group, ActionIcon } from "@mantine/core";
 import { IconEyeOff, IconEye } from "@tabler/icons-react";
 import { useState } from "react";
-import RevealableChar, { CharRevealState } from "../RevealableChar/RevealableChar";
+import { CharRevealState } from "@/enums/enums";
+import RevealableChar from "../RevealableChar/RevealableChar";
 import classes from "./RevealableWord.module.css";
 
-export default function RevealableWord({
-  result,
-  initialCharRevealStates,
-}: {
+type RevealableWordProps = {
   result: string;
   initialCharRevealStates: CharRevealState[];
-}) {
+};
+
+export default function RevealableWord({ result, initialCharRevealStates }: RevealableWordProps) {
   const upperCaseResult = result.toLocaleUpperCase();
   const [charRevealStates, setCharRevealStates] = useState(initialCharRevealStates);
   const [allCharsRevealed, setAllCharsRevealed] = useState(
@@ -45,11 +45,17 @@ export default function RevealableWord({
           key={idx}
           char={char}
           index={idx}
+          isFirst={idx === 0}
+          isLast={idx === upperCaseResult.length - 1}
           revealState={charRevealStates[idx]}
           toggleCharRevealed={toggleCharRevealed}
         />
       ))}
-      <ActionIcon variant="light" onClick={() => toggleAllCharRevealStates()}>
+      <ActionIcon
+        classNames={{ root: classes.result_chars_reveal_all_button }}
+        variant="light"
+        onClick={() => toggleAllCharRevealStates()}
+      >
         {allCharsRevealed ? <IconEyeOff /> : <IconEye />}
       </ActionIcon>
     </Group>
