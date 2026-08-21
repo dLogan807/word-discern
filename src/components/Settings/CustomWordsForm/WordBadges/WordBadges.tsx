@@ -5,34 +5,35 @@ import WordInfoBadge from "@/components/Settings/CustomWordsForm/WordBadges/Word
 import pluralize from "@/utils/pluralize";
 import classes from "./WordBadge.module.css";
 
-export interface WordBadgeData {
+export type WordBadgesProps = {
   replaceDefaultWords: boolean;
   numDefaultWords: number;
   numWordsParsed: number;
   numCustomFormWords: number;
   failedWords: Set<string>;
-}
+};
 
-export default function WordsBadges({ badgeData }: { badgeData: WordBadgeData }) {
-  const customWordsInUse = badgeData.replaceDefaultWords
-    ? badgeData.numWordsParsed
-    : badgeData.numWordsParsed - badgeData.numDefaultWords;
+export default function WordsBadges({
+  replaceDefaultWords,
+  numDefaultWords,
+  numWordsParsed,
+  numCustomFormWords,
+  failedWords,
+}: WordBadgesProps) {
+  const customWordsInUse = replaceDefaultWords ? numWordsParsed : numWordsParsed - numDefaultWords;
 
-  const validCustomWords = badgeData.numCustomFormWords - badgeData.failedWords.size;
+  const validCustomWords = numCustomFormWords - failedWords.size;
 
   const wordsAlreadyExisting = validCustomWords - customWordsInUse;
 
   //Displayed badge text and icons
   const iconSize = 16;
 
-  const totalWordsText = `${badgeData.numWordsParsed} total ${pluralize(
-    badgeData.numWordsParsed,
-    "word"
-  )}`;
+  const totalWordsText = `${numWordsParsed} total ${pluralize(numWordsParsed, "word")}`;
   const totalWordsIcon = <IconList size={iconSize} />;
 
   const customWordsText =
-    !badgeData.numCustomFormWords || !validCustomWords
+    !numCustomFormWords || !validCustomWords
       ? "No custom words loaded"
       : `${validCustomWords} valid custom ${pluralize(validCustomWords, "word")} parsed`;
   const customWordsIcon = <IconAdjustments size={iconSize} />;
@@ -59,9 +60,7 @@ export default function WordsBadges({ badgeData }: { badgeData: WordBadgeData })
           {addedWordsText}
         </WordInfoBadge>
       )}
-      {badgeData.failedWords.size > 0 && (
-        <FailedWordsBadge failedWords={badgeData.failedWords} iconSize={iconSize} />
-      )}
+      {failedWords.size > 0 && <FailedWordsBadge failedWords={failedWords} iconSize={iconSize} />}
     </Box>
   );
 }

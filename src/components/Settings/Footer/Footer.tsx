@@ -24,15 +24,13 @@ export default function Footer() {
   );
 }
 
-function PoweredByIconLink({
-  href,
-  ariaLabel,
-  icon,
-}: {
+type PoweredByIconLinkProps = {
   href: string;
   ariaLabel: string;
   icon: ReactElement;
-}) {
+};
+
+function PoweredByIconLink({ href, ariaLabel, icon }: PoweredByIconLinkProps) {
   return (
     <Anchor className={classes.centered_icon_link} href={href} aria-label={ariaLabel}>
       <ThemeIcon>{icon}</ThemeIcon>

@@ -4,13 +4,12 @@ import WordInfoBadge from "@/components/Settings/CustomWordsForm/WordBadges/Word
 import pluralize from "@/utils/pluralize";
 import classes from "./FailedWordBadge.module.css";
 
-export default function FailedWordsBadge({
-  failedWords,
-  iconSize,
-}: {
+type FailedWordBadgeProps = {
   failedWords: Set<string>;
   iconSize: number;
-}) {
+};
+
+export default function FailedWordsBadge({ failedWords, iconSize }: FailedWordBadgeProps) {
   const failedWordsText: string = `${failedWords.size} invalid ${pluralize(
     failedWords.size,
     "word"

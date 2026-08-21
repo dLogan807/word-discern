@@ -8,17 +8,19 @@ import { IResults } from "@/utils/resultBuilder";
 import RevealableWord from "./RevealableWord/RevealableWord";
 import classes from "./Results.module.css";
 
+type ResultsProps = {
+  results: IResults;
+  resultsUpdateKey: number;
+  numberToShow: number;
+  doAnimations: boolean;
+};
+
 export default function Results({
   results,
   resultsUpdateKey,
   numberToShow,
   doAnimations,
-}: {
-  results: IResults;
-  resultsUpdateKey: number;
-  numberToShow: number;
-  doAnimations: boolean;
-}) {
+}: ResultsProps) {
   return (
     <Box className={classes.results_container}>
       <Box className={classes.results_text_container}>

@@ -6,7 +6,12 @@ import { Letter } from "@/classes/letter";
 import { GuessContext } from "@/components/Guesses/GuessInputList/GuessInputList";
 import classes from "./LetterButton.module.css";
 
-export default function LetterButton({ letter, guess }: { letter: Letter; guess: Guess }) {
+type LetterButtonProps = {
+  letter: Letter;
+  guess: Guess;
+};
+
+export default function LetterButton({ letter, guess }: LetterButtonProps) {
   const [backgroundColor, setBackgroundColor] = useState<Property.BackgroundColor>(
     letter.correctness
   );

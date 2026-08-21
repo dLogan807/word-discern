@@ -1,17 +1,19 @@
 import { Badge } from "@mantine/core";
 import classes from "./WordInfoBadge.module.css";
 
+type WordInfoBadgeProps = {
+  children: string;
+  icon?: React.ReactNode;
+  color?: string;
+  clickable?: boolean;
+};
+
 export default function WordInfoBadge({
   children,
   icon,
   color = "blue",
   clickable,
-}: {
-  children: string;
-  icon?: React.ReactNode;
-  color?: string;
-  clickable?: boolean;
-}) {
+}: WordInfoBadgeProps) {
   return (
     <Badge
       leftSection={icon}
