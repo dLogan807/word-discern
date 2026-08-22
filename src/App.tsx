@@ -1,34 +1,18 @@
 import "@mantine/core/styles.css";
 import wordsUrl from "/words.txt?url";
-import {
-  ActionIcon,
-  Box,
-  Button,
-  Group,
-  MantineProvider,
-  Title,
-  v8CssVariablesResolver,
-} from "@mantine/core";
+import { ActionIcon, Box, Button, Group, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconSearch, IconSettings, IconXFilled } from "@tabler/icons-react";
-import { createContext, Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Guess } from "@/classes/guess";
 import GuessInputList from "@/components/Guesses/GuessInputList/GuessInputList";
 import Results from "@/components/Results/Results";
-import {
-  CustomWordsFormData,
-  DEFAULT_CUSTOM_WORDS_FORM,
-} from "@/components/Settings/CustomWordsForm/CustomWordsForm";
 import Settings from "@/components/Settings/Settings";
-import { theme } from "@/theme";
 import getResults, { IResults } from "@/utils/resultBuilder";
 import { ParsedWordSets, parseWordsToSets } from "@/utils/wordLoading";
 import { ThemeSelector } from "./components/ThemeSelector/ThemeSelector";
+import { useSettingsContext } from "./hooks/useSettingsContext";
 import classes from "./App.module.css";
-
-export const CustomWordsFormContext = createContext<Dispatch<SetStateAction<CustomWordsFormData>>>(
-  () => {}
-);
 
 async function getWords(): Promise<string[]> {
   const res = await fetch(wordsUrl);
@@ -37,6 +21,16 @@ async function getWords(): Promise<string[]> {
 }
 
 export default function App() {
+  const {
+    customWordsFormData,
+    doAnimations,
+    hideResults,
+    numResultsShown,
+    onlyAllowWordListGuesses,
+    onlyHideUnknownChars,
+    shuffleResults,
+  } = useSettingsContext();
+
   const [defaultWords, setDefaultWords] = useState<string[]>([]);
 
   useEffect(() => {
@@ -49,15 +43,14 @@ export default function App() {
     words: [],
     initialCharRevealStates: [],
   });
-  const [storedCustomWordsFormData, setStoredCustomWordsFormData] =
-    useState<CustomWordsFormData>(DEFAULT_CUSTOM_WORDS_FORM);
-  const parsedWordSets: ParsedWordSets = useMemo(() => {
-    const mergedWords: string[] = storedCustomWordsFormData.replaceDefaultWords
-      ? storedCustomWordsFormData.words
-      : [...defaultWords, ...storedCustomWordsFormData.words];
 
-    return parseWordsToSets(mergedWords, storedCustomWordsFormData.allowSpecialChars);
-  }, [defaultWords, storedCustomWordsFormData]);
+  const parsedWordSets: ParsedWordSets = useMemo(() => {
+    const mergedWords: string[] = customWordsFormData.replaceDefaultWords
+      ? customWordsFormData.words
+      : [...defaultWords, ...customWordsFormData.words];
+
+    return parseWordsToSets(mergedWords, customWordsFormData.allowSpecialChars);
+  }, [defaultWords, customWordsFormData]);
 
   // Result state
   const [showResults, setShowResults] = useState(false);
@@ -65,12 +58,6 @@ export default function App() {
 
   // Settings
   const [settingsOpened, { toggle }] = useDisclosure(false);
-  const [onlyAllowWordListGuesses, setOnlyAllowWordListGuesses] = useState(true);
-  const [shuffleResults, setShuffleResults] = useState(true);
-  const [hideResults, setHideResults] = useState(true);
-  const [onlyHideUnknownChars, setOnlyHideUnknownChars] = useState(true);
-  const [numResultsShown, setNumResultsShown] = useState(20);
-  const [doAnimations, setDoAnimations] = useState(true);
 
   function handleGetPossibleWords() {
     if (guesses.length === 0 || !guesses[0]) return;
@@ -90,11 +77,7 @@ export default function App() {
   }
 
   return (
-    <MantineProvider
-      theme={theme}
-      defaultColorScheme="auto"
-      cssVariablesResolver={v8CssVariablesResolver}
-    >
+    <>
       <Box
         className={`${classes.layout}
             ${!settingsOpened ? classes.layout_settings_pane_closed : undefined}
@@ -129,28 +112,15 @@ export default function App() {
             ${!settingsOpened ? classes.settings_pane_closed : undefined}
             ${!doAnimations ? classes.no_animation : undefined}`}
         >
-          <CustomWordsFormContext value={setStoredCustomWordsFormData}>
-            <Settings
-              wordBadgeData={{
-                replaceDefaultWords: storedCustomWordsFormData.replaceDefaultWords,
-                numDefaultWords: defaultWords.length,
-                numWordsParsed: parsedWordSets.wordNum,
-                numCustomFormWords: storedCustomWordsFormData.words.length,
-                failedWords: parsedWordSets.failed,
-              }}
-              shuffleResults={shuffleResults}
-              setShuffleResults={setShuffleResults}
-              hideResults={hideResults}
-              setHideResults={setHideResults}
-              onlyHideUnknownChars={onlyHideUnknownChars}
-              setOnlyHideUnknownChars={setOnlyHideUnknownChars}
-              setOnlyAllowWordListGuesses={setOnlyAllowWordListGuesses}
-              numResultsShown={numResultsShown}
-              setNumResultsShown={setNumResultsShown}
-              doAnimations={doAnimations}
-              setDoAnimations={setDoAnimations}
-            />
-          </CustomWordsFormContext>
+          <Settings
+            wordBadgeData={{
+              replaceDefaultWords: customWordsFormData.replaceDefaultWords,
+              numDefaultWords: defaultWords.length,
+              numWordsParsed: parsedWordSets.wordNum,
+              numCustomFormWords: customWordsFormData.words.length,
+              failedWords: parsedWordSets.failed,
+            }}
+          />
         </Box>
 
         <Box className={classes.content_body}>
@@ -179,6 +149,6 @@ export default function App() {
           )}
         </Box>
       </Box>
-    </MantineProvider>
+    </>
   );
 }

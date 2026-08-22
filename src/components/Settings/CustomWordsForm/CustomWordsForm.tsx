@@ -1,7 +1,6 @@
 import {
   Button,
   Checkbox,
-  Code,
   FileInput,
   Group,
   JsonInput,
@@ -12,33 +11,15 @@ import {
 import { useForm } from "@mantine/form";
 import { IconFileUpload } from "@tabler/icons-react";
 import { parse, ParseError, printParseErrorCode } from "jsonc-parser";
-import { useContext, useState } from "react";
-import { CustomWordsFormContext } from "@/App";
+import { useState } from "react";
 import { WordInput } from "@/enums/enums";
+import { useSettingsContext } from "@/hooks/useSettingsContext";
 import { getWordArray } from "@/utils/wordLoading";
+import { CodeBlocks } from "./CodeBlocks/CodeBlocks";
 import classes from "./CustomWords.module.css";
 
 const VALID_CODE_SEPARATORS: string[] = [",", "space", "newline", ";"];
 const VALID_FILE_TYPES: string[] = [".txt", ".json"];
-
-type SpacedCodeBlocksProps = {
-  preface: string;
-  values: string[];
-};
-
-function SpacedCodeBlocks({ preface, values }: SpacedCodeBlocksProps) {
-  return (
-    <>
-      {preface}
-      {values.map((value, i) => (
-        <span key={value}>
-          <Code>{value}</Code>
-          {i < values.length - 1 && " "}
-        </span>
-      ))}
-    </>
-  );
-}
 
 export interface CustomWordsFormData {
   words: string[];
@@ -53,7 +34,7 @@ export const DEFAULT_CUSTOM_WORDS_FORM: CustomWordsFormData = {
 };
 
 export default function CustomWordsForm() {
-  const updateFormData = useContext(CustomWordsFormContext);
+  const { setCustomWordsFormData } = useSettingsContext();
   const [inputMode, setInputMode] = useState<WordInput>(WordInput.TEXT);
 
   const form = useForm({
@@ -127,7 +108,7 @@ export default function CustomWordsForm() {
     form.setFieldError(inputMode, error);
     if (error) return;
 
-    updateFormData({
+    setCustomWordsFormData({
       words: words,
       allowSpecialChars: formValues.allowSpecialChars,
       replaceDefaultWords: formValues.replaceDefaultWords,
@@ -171,7 +152,7 @@ export default function CustomWordsForm() {
             {...form.getInputProps(WordInput.TEXT)}
             aria-label="Your plaintext list of words"
             description={
-              <SpacedCodeBlocks preface="Separators accepted: " values={VALID_CODE_SEPARATORS} />
+              <CodeBlocks preface="Separators accepted: " values={VALID_CODE_SEPARATORS} />
             }
             placeholder="a,list,of,words"
             autosize
@@ -195,7 +176,7 @@ export default function CustomWordsForm() {
             key={form.key(WordInput.FILE)}
             {...form.getInputProps(WordInput.FILE)}
             aria-label="Upload word list file"
-            description={<SpacedCodeBlocks preface="Accepts: " values={VALID_FILE_TYPES} />}
+            description={<CodeBlocks preface="Accepts: " values={VALID_FILE_TYPES} />}
             placeholder="Upload"
             leftSection={<IconFileUpload />}
             accept={VALID_FILE_TYPES.join(",")}
