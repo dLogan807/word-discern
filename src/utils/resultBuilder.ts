@@ -46,18 +46,19 @@ interface ParsedGuesses {
   // Char that must be preset for a given index
   correctPosChars: string[];
   // Set of blacklisted chars for each index
-  blackListedPosChars: Array<Set<string>>;
+  blackListedPosChars: Set<string>[];
   // Set of chars that must be in the word somewhere
   requiredSomewhereChars: Set<string>;
 }
 
 function parseGuesses(guesses: Guess[]): ParsedGuesses {
   const guessLength = guesses[0].wordString.length;
-  const parseResult: ParsedGuesses = {
-    correctPosChars: new Array(guessLength),
-    blackListedPosChars: Array.from({ length: guessLength }, () => new Set<string>()),
-    requiredSomewhereChars: new Set<string>(),
-  };
+
+  const correctPosChars = new Array(guessLength);
+  const blackListedPosChars = Array.from({ length: guessLength }, () => new Set<string>());
+  const requiredSomewhereChars = new Set<string>();
+
+  const wrongPosCharsAtIndex = Array.from({ length: guessLength }, () => new Set<string>());
 
   for (const guess of guesses) {
     const validCharOccurences = new Map<string, number>();
@@ -66,32 +67,72 @@ function parseGuesses(guesses: Guess[]): ParsedGuesses {
       const char = guess.letters[i];
 
       // Count how many times the char is correct or in the wrong position
-      if (char.correctness !== LetterCorrectness.NotPresent) {
-        validCharOccurences.set(char.value, (validCharOccurences.get(char.value) ?? 0) + 1);
+      if (
+        char.correctness === LetterCorrectness.Correct ||
+        char.correctness === LetterCorrectness.WrongPosition
+      ) {
+        const occurenceCount = (validCharOccurences.get(char.value) ?? 0) + 1;
+        validCharOccurences.set(char.value, occurenceCount);
       }
 
       if (char.correctness === LetterCorrectness.Correct) {
-        parseResult.correctPosChars[i] = char.value;
-        parseResult.blackListedPosChars[i].delete(char.value);
+        correctPosChars[i] = char.value;
+        blackListedPosChars[i].delete(char.value);
         continue;
       }
 
       // Blacklist chars from applicable indexes
-      const correctLetter = parseResult.correctPosChars[i];
+      const correctLetter = correctPosChars[i];
       if (correctLetter === undefined || correctLetter !== char.value) {
         if (char.correctness === LetterCorrectness.WrongPosition) {
-          parseResult.blackListedPosChars[i].add(char.value);
-          parseResult.requiredSomewhereChars.add(char.value);
+          blackListedPosChars[i].add(char.value);
+          requiredSomewhereChars.add(char.value);
+
+          wrongPosCharsAtIndex[i].add(char.value);
         } else if (!validCharOccurences.has(char.value)) {
           for (let j = 0; j < guess.letters.length; j++) {
-            parseResult.blackListedPosChars[j].add(char.value);
+            blackListedPosChars[j].add(char.value);
           }
         }
       }
     }
   }
 
-  return parseResult;
+  inferCorrectPosCharsFromWrongPosChars(
+    correctPosChars,
+    requiredSomewhereChars,
+    wrongPosCharsAtIndex
+  );
+
+  return {
+    correctPosChars,
+    blackListedPosChars,
+    requiredSomewhereChars,
+  };
+}
+
+// If a char is wrong at every position except one, set it as correct at that index
+function inferCorrectPosCharsFromWrongPosChars(
+  correctPosChars: string[],
+  requiredSomewhereChars: Set<string>,
+  wrongPosCharsAtIndex: Array<Set<string>>
+) {
+  for (const char of requiredSomewhereChars) {
+    const allowedIndexes: number[] = [];
+
+    for (let i = 0; i < wrongPosCharsAtIndex.length; i++) {
+      if (!wrongPosCharsAtIndex[i].has(char)) {
+        if (allowedIndexes.length > 0) break;
+
+        allowedIndexes.push(i);
+      }
+    }
+
+    const singleValidCharIndex = allowedIndexes[0];
+    if (allowedIndexes.length === 1 && correctPosChars[singleValidCharIndex] === undefined) {
+      correctPosChars[singleValidCharIndex] = char;
+    }
+  }
 }
 
 function matchGuessesWithWords(wordSet: Set<string>, guessData: ParsedGuesses): string[] {
