@@ -8,7 +8,7 @@ import { Guess } from "@/classes/guess";
 import GuessInputList from "@/components/Guesses/GuessInputList/GuessInputList";
 import Results from "@/components/Results/Results";
 import Settings from "@/components/Settings/Settings";
-import getResults, { IResults } from "@/utils/resultBuilder";
+import getResults, { EMPTY_RESULTS, IResults } from "@/utils/resultBuilder";
 import { ParsedWordSets, parseWordsToSets } from "@/utils/wordLoading";
 import { ThemeSelector } from "./components/ThemeSelector/ThemeSelector";
 import { useSettingsContext } from "./hooks/useSettingsContext";
@@ -39,10 +39,7 @@ export default function App() {
 
   // Word data
   const [guesses, setGuesses] = useState<Guess[]>([]);
-  const [results, setResults] = useState<IResults>({
-    words: [],
-    initialCharRevealStates: [],
-  });
+  const [results, setResults] = useState<IResults>(EMPTY_RESULTS);
 
   const parsedWordSets: ParsedWordSets = useMemo(() => {
     const mergedWords: string[] = customWordsFormData.replaceDefaultWords
@@ -64,7 +61,10 @@ export default function App() {
 
     const guessLength = guesses[0].wordString.length;
     const wordSet = parsedWordSets.wordSets.get(guessLength);
-    if (wordSet === undefined) return;
+    if (wordSet === undefined) {
+      setResults(EMPTY_RESULTS);
+      return;
+    }
 
     const newResults = getResults(wordSet, guesses, shuffleResults, onlyHideUnknownChars);
     setResults({

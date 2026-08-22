@@ -2,6 +2,11 @@ import { Guess } from "@/classes/guess";
 import { CharRevealState, LetterCorrectness } from "@/enums/enums";
 import { stringsAreEqual } from "@/utils/guessValidation";
 
+export const EMPTY_RESULTS: IResults = {
+  words: [],
+  initialCharRevealStates: [],
+};
+
 export interface IResults {
   words: string[];
   initialCharRevealStates: CharRevealState[];
