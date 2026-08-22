@@ -1,23 +1,19 @@
 import { LetterCorrectness } from "@/enums/enums";
 
 export class Letter {
-  value: string;
-  correctness: LetterCorrectness;
+  constructor(
+    public readonly value: string,
+    public readonly correctness: LetterCorrectness
+  ) {}
 
-  constructor(value: string, correctness: LetterCorrectness) {
-    this.value = value;
-    this.correctness = correctness;
-  }
-
-  cycleLetterCorrectness(): LetterCorrectness {
-    if (this.correctness === LetterCorrectness.NotPresent) {
-      this.correctness = LetterCorrectness.WrongPosition;
-    } else if (this.correctness === LetterCorrectness.WrongPosition) {
-      this.correctness = LetterCorrectness.Correct;
-    } else {
-      this.correctness = LetterCorrectness.NotPresent;
+  getNextLetterCorrectness(): LetterCorrectness {
+    switch (this.correctness) {
+      case LetterCorrectness.NotPresent:
+        return LetterCorrectness.WrongPosition;
+      case LetterCorrectness.WrongPosition:
+        return LetterCorrectness.Correct;
+      case LetterCorrectness.Correct:
+        return LetterCorrectness.NotPresent;
     }
-
-    return this.correctness;
   }
 }

@@ -33,12 +33,20 @@
   }
 }
 
-@keyframes letterFlip {
+@keyframes letterFlipOut {
   from {
     transform: none;
   }
-
   to {
     transform: scale(0.9, 0);
+  }
+}
+
+@keyframes letterFlipIn {
+  from {
+    transform: scale(0.9, 0);
+  }
+  to {
+    transform: none;
   }
 }

@@ -2,7 +2,9 @@ import { ActionIcon, Autocomplete, Box } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
 import { createContext, useMemo, useState, KeyboardEvent, Dispatch, SetStateAction } from "react";
 import { Guess } from "@/classes/guess";
+import { Letter } from "@/classes/letter";
 import GuessItem from "@/components/Guesses/GuessItem/GuessItem";
+import { LetterCorrectness } from "@/enums/enums";
 import useDebounce from "@/hooks/useDebounce";
 import { validateGuess } from "@/utils/guessValidation";
 import classes from "./GuessInputList.module.css";
@@ -17,11 +19,11 @@ type GuessInputListProps = {
 
 export const GuessContext = createContext<{
   removeGuess: (guess: Guess) => void;
-  updateGuess: (guess: Guess) => void;
+  setNextLetterCorrectnessForAllGuesses: (letterIndex: number, letter: Letter) => void;
   doAnimations: boolean;
 }>({
   removeGuess: () => {},
-  updateGuess: () => {},
+  setNextLetterCorrectnessForAllGuesses: () => {},
   doAnimations: true,
 });
 
@@ -47,6 +49,31 @@ export default function GuessInputList({
     if (event.key === "Escape") setSearchDropDownOpened(false);
   }
 
+  function setNextLetterCorrectnessForAllGuesses(letterIndex: number, letter: Letter) {
+    const nextLetterCorrectness = letter.getNextLetterCorrectness();
+
+    setGuesses((currentGuesses) =>
+      currentGuesses.map((guess) => {
+        const targetLetter = guess.letters[letterIndex];
+
+        if (!targetLetter || targetLetter.value !== letter.value) {
+          return guess;
+        }
+
+        return {
+          ...guess,
+          letters: guess.letters.map((guessLetter, index) => {
+            if (index !== letterIndex) {
+              return guessLetter;
+            }
+
+            return new Letter(guessLetter.value, nextLetterCorrectness);
+          }),
+        };
+      })
+    );
+  }
+
   function tryAddGuess() {
     setSearchDropDownOpened(false);
     const trimmedGuess = guessValue.trim();
@@ -63,19 +90,36 @@ export default function GuessInputList({
       setGuessError(validationResponse.message);
       return;
     }
+    setGuessError(null);
 
-    const guess = new Guess(trimmedGuess);
+    const guess = new Guess(trimmedGuess, getInitialCorrectnessValuesFromGuesses(trimmedGuess));
     setGuesses([...guesses, guess]);
 
     setGuessValue("");
   }
 
-  function removeGuess(guessToRemove: Guess) {
-    setGuesses(guesses.filter((g) => g.wordString !== guessToRemove.wordString));
+  function getInitialCorrectnessValuesFromGuesses(newGuess: string): LetterCorrectness[] {
+    const initialLetterCorrectnessValues: LetterCorrectness[] = [];
+
+    for (let i = 0; i < newGuess.length; i++) {
+      if (initialLetterCorrectnessValues[i]) continue;
+
+      for (const guess of guesses) {
+        let initialLetterCorrectness = LetterCorrectness.NotPresent;
+
+        if (guess.letters[i].value === newGuess[i]) {
+          initialLetterCorrectness = guess.letters[i].correctness;
+        }
+
+        initialLetterCorrectnessValues.push(initialLetterCorrectness);
+      }
+    }
+
+    return initialLetterCorrectnessValues;
   }
 
-  function updateGuess(updatedGuess: Guess) {
-    setGuesses(guesses.map((g) => (g.wordString === updatedGuess.wordString ? updatedGuess : g)));
+  function removeGuess(guessToRemove: Guess) {
+    setGuesses(guesses.filter((g) => g.wordString !== guessToRemove.wordString));
   }
 
   function handleGuessChanged(guess: string) {
@@ -124,7 +168,9 @@ export default function GuessInputList({
 
       {guesses.length > 0 && (
         <Box className={classes.guess_list}>
-          <GuessContext value={{ removeGuess, updateGuess, doAnimations }}>
+          <GuessContext
+            value={{ removeGuess, setNextLetterCorrectnessForAllGuesses, doAnimations }}
+          >
             {guesses.map((guess) => (
               <GuessItem key={guess.wordString} guess={guess} />
             ))}

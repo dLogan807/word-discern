@@ -5,12 +5,16 @@ export class Guess {
   letters: Letter[];
   wordString: string;
 
-  constructor(wordString: string) {
+  constructor(wordString: string, initialCorrectnessValues?: LetterCorrectness[]) {
     this.wordString = wordString;
 
     this.letters = [];
-    for (const char of this.wordString) {
-      const letter: Letter = new Letter(char, LetterCorrectness.NotPresent);
+    for (let i = 0; i < wordString.length; i++) {
+      const char = wordString[i];
+      const letter = new Letter(
+        char,
+        initialCorrectnessValues?.[i] ?? LetterCorrectness.NotPresent
+      );
       this.letters.push(letter);
     }
   }
