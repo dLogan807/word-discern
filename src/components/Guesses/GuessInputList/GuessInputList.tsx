@@ -4,6 +4,7 @@ import { createContext, useMemo, useState, KeyboardEvent, Dispatch, SetStateActi
 import { Guess } from "@/classes/guess";
 import { Letter } from "@/classes/letter";
 import GuessItem from "@/components/Guesses/GuessItem/GuessItem";
+import { LetterCorrectness } from "@/enums/enums";
 import useDebounce from "@/hooks/useDebounce";
 import { validateGuess } from "@/utils/guessValidation";
 import classes from "./GuessInputList.module.css";
@@ -90,10 +91,30 @@ export default function GuessInputList({
       return;
     }
 
-    const guess = new Guess(trimmedGuess);
+    const guess = new Guess(trimmedGuess, getInitialCorrectnessValuesFromGuesses(trimmedGuess));
     setGuesses([...guesses, guess]);
 
     setGuessValue("");
+  }
+
+  function getInitialCorrectnessValuesFromGuesses(newGuess: string): LetterCorrectness[] {
+    const initialLetterCorrectnessValues: LetterCorrectness[] = [];
+
+    for (let i = 0; i < newGuess.length; i++) {
+      if (initialLetterCorrectnessValues[i]) continue;
+
+      for (const guess of guesses) {
+        let initialLetterCorrectness = LetterCorrectness.NotPresent;
+
+        if (guess.letters[i].value === newGuess[i]) {
+          initialLetterCorrectness = guess.letters[i].correctness;
+        }
+
+        initialLetterCorrectnessValues.push(initialLetterCorrectness);
+      }
+    }
+
+    return initialLetterCorrectnessValues;
   }
 
   function removeGuess(guessToRemove: Guess) {
