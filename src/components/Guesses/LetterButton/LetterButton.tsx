@@ -1,13 +1,12 @@
 import { Box, UnstyledButton } from "@mantine/core";
 import { useState, useContext, AnimationEvent } from "react";
-import { Guess } from "@/classes/guess";
 import { Letter } from "@/classes/letter";
 import { GuessContext } from "@/components/Guesses/GuessInputList/GuessInputList";
 import classes from "./LetterButton.module.css";
 
 type LetterButtonProps = {
   letter: Letter;
-  guess: Guess;
+  letterIndex: number;
 };
 
 enum FlipPhase {
@@ -16,8 +15,8 @@ enum FlipPhase {
   FlippingOut,
 }
 
-export default function LetterButton({ letter, guess }: LetterButtonProps) {
-  const { updateGuess, doAnimations } = useContext(GuessContext);
+export default function LetterButton({ letter, letterIndex }: LetterButtonProps) {
+  const { setNextLetterCorrectnessForAllGuesses, doAnimations } = useContext(GuessContext);
   const halfFlipAnimDuration = doAnimations ? 150 : 0;
 
   const [displayCorrectness, setDisplayCorrectness] = useState(letter.correctness);
@@ -36,13 +35,7 @@ export default function LetterButton({ letter, guess }: LetterButtonProps) {
   }
 
   function handleClick() {
-    const nextCorrectness = letter.getNextLetterCorrectness();
-    const updatedLetter = new Letter(letter.value, nextCorrectness);
-
-    updateGuess({
-      ...guess,
-      letters: guess.letters.map((l) => (l === letter ? updatedLetter : l)),
-    });
+    setNextLetterCorrectnessForAllGuesses(letterIndex, letter);
   }
 
   // Set colour after first half of flip
