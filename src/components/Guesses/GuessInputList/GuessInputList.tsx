@@ -92,7 +92,8 @@ export default function GuessInputList({
     }
     setGuessError(null);
 
-    const guess = new Guess(trimmedGuess, getInitialCorrectnessValuesFromGuesses(trimmedGuess));
+    const initialCorrectnessValues = getInitialCorrectnessValuesFromGuesses(trimmedGuess);
+    const guess = new Guess(trimmedGuess, initialCorrectnessValues);
     setGuesses([...guesses, guess]);
 
     setGuessValue("");
@@ -102,17 +103,16 @@ export default function GuessInputList({
     const initialLetterCorrectnessValues: LetterCorrectness[] = [];
 
     for (let i = 0; i < newGuess.length; i++) {
-      if (initialLetterCorrectnessValues[i]) continue;
+      let initialLetterCorrectness = LetterCorrectness.NotPresent;
 
       for (const guess of guesses) {
-        let initialLetterCorrectness = LetterCorrectness.NotPresent;
-
         if (guess.letters[i].value === newGuess[i]) {
           initialLetterCorrectness = guess.letters[i].correctness;
+          break;
         }
-
-        initialLetterCorrectnessValues.push(initialLetterCorrectness);
       }
+
+      initialLetterCorrectnessValues.push(initialLetterCorrectness);
     }
 
     return initialLetterCorrectnessValues;
