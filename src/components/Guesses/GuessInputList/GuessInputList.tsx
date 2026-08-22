@@ -90,6 +90,7 @@ export default function GuessInputList({
       setGuessError(validationResponse.message);
       return;
     }
+    setGuessError(null);
 
     const guess = new Guess(trimmedGuess, getInitialCorrectnessValuesFromGuesses(trimmedGuess));
     setGuesses([...guesses, guess]);
