@@ -36,7 +36,7 @@ export default {
     "prefer-object-has-own": "error",
     "prefer-object-spread": "error",
     "prefer-promise-reject-errors": "error",
-    "prefer-template": "error",
+    "prefer-template": "warn",
     radix: "error",
     yoda: "error",
     eqeqeq: ["error", "smart"],

@@ -16,43 +16,34 @@ import {
   IconRadiusBottomLeft,
   IconZoomQuestion,
 } from "@tabler/icons-react";
-import { Dispatch, ReactElement, ReactNode, SetStateAction } from "react";
+import { ReactElement, ReactNode } from "react";
 import CustomWordsForm from "@/components/Settings/CustomWordsForm/CustomWordsForm";
 import WordsBadges, {
   WordBadgesProps,
 } from "@/components/Settings/CustomWordsForm/WordBadges/WordBadges";
+import { useSettingsContext } from "@/hooks/useSettingsContext";
 import Footer from "./Footer/Footer";
 import classes from "./Settings.module.css";
 
 type SettingsProps = {
   wordBadgeData: WordBadgesProps;
-  setOnlyAllowWordListGuesses: Dispatch<SetStateAction<boolean>>;
-  shuffleResults: boolean;
-  setShuffleResults: Dispatch<SetStateAction<boolean>>;
-  hideResults: boolean;
-  setHideResults: Dispatch<SetStateAction<boolean>>;
-  onlyHideUnknownChars: boolean;
-  setOnlyHideUnknownChars: Dispatch<SetStateAction<boolean>>;
-  numResultsShown: number;
-  setNumResultsShown: Dispatch<SetStateAction<number>>;
-  doAnimations: boolean;
-  setDoAnimations: Dispatch<SetStateAction<boolean>>;
 };
 
-export default function Settings({
-  wordBadgeData,
-  setOnlyAllowWordListGuesses,
-  shuffleResults,
-  setShuffleResults,
-  hideResults,
-  setHideResults,
-  onlyHideUnknownChars,
-  setOnlyHideUnknownChars,
-  numResultsShown,
-  setNumResultsShown,
-  doAnimations,
-  setDoAnimations,
-}: SettingsProps) {
+export default function Settings({ wordBadgeData }: SettingsProps) {
+  const {
+    setOnlyAllowWordListGuesses,
+    shuffleResults,
+    setShuffleResults,
+    hideResults,
+    setHideResults,
+    onlyHideUnknownChars,
+    setOnlyHideUnknownChars,
+    numResultsShown,
+    setNumResultsShown,
+    doAnimations,
+    setDoAnimations,
+  } = useSettingsContext();
+
   const iconSize = 20;
 
   return (
