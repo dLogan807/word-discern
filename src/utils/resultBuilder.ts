@@ -117,17 +117,13 @@ function inferCorrectPosCharsFromWrongPosChars(
   requiredSomewhereChars: Set<string>,
   wrongPosCharsAtIndex: Array<Set<string>>
 ) {
-  const checkedChars = new Set<string>();
-
-  const allWrongPositionChars = requiredSomewhereChars.values();
-
-  for (const char of allWrongPositionChars) {
-    if (checkedChars.has(char)) continue;
-
+  for (const char of requiredSomewhereChars) {
     const allowedIndexes: number[] = [];
 
     for (let i = 0; i < wrongPosCharsAtIndex.length; i++) {
       if (!wrongPosCharsAtIndex[i].has(char)) {
+        if (allowedIndexes.length > 0) break;
+
         allowedIndexes.push(i);
       }
     }
@@ -136,8 +132,6 @@ function inferCorrectPosCharsFromWrongPosChars(
     if (allowedIndexes.length === 1 && correctPosChars[singleValidCharIndex] === undefined) {
       correctPosChars[singleValidCharIndex] = char;
     }
-
-    checkedChars.add(char);
   }
 }
 
