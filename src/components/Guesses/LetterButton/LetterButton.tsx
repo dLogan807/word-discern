@@ -21,8 +21,19 @@ export default function LetterButton({ letter, guess }: LetterButtonProps) {
   const halfFlipAnimDuration = doAnimations ? 150 : 0;
 
   const [displayCorrectness, setDisplayCorrectness] = useState(letter.correctness);
+  const [lastSeenCorrectness, setLastSeenCorrectness] = useState(letter.correctness);
   const initialPhase = doAnimations ? FlipPhase.FlippingIn : FlipPhase.Idle;
   const [phase, setPhase] = useState<FlipPhase>(initialPhase);
+
+  if (letter.correctness !== lastSeenCorrectness) {
+    setLastSeenCorrectness(letter.correctness);
+
+    if (!doAnimations) {
+      setDisplayCorrectness(letter.correctness);
+    } else if (phase === FlipPhase.Idle) {
+      setPhase(FlipPhase.FlippingOut);
+    }
+  }
 
   function handleClick() {
     const nextCorrectness = letter.getNextLetterCorrectness();
@@ -32,15 +43,6 @@ export default function LetterButton({ letter, guess }: LetterButtonProps) {
       ...guess,
       letters: guess.letters.map((l) => (l === letter ? updatedLetter : l)),
     });
-
-    if (!doAnimations) {
-      setDisplayCorrectness(nextCorrectness);
-      return;
-    }
-
-    if (phase === FlipPhase.Idle) {
-      setPhase(FlipPhase.FlippingOut);
-    }
   }
 
   // Set colour after first half of flip
