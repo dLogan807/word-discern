@@ -37,18 +37,6 @@ export function validateGuess(
   return response;
 }
 
-function alreadyGuessed(guess: string, guesses: Guess[]): boolean {
-  for (const aGuess of guesses) {
-    if (stringsAreEqual(guess, aGuess.wordString)) return true;
-  }
-
-  return false;
-}
-
-export function stringsAreEqual(value: string, otherValue: string): boolean {
-  return (
-    value.localeCompare(otherValue, undefined, {
-      sensitivity: "accent",
-    }) === 0
-  );
+function alreadyGuessed(targetGuess: string, guesses: Guess[]): boolean {
+  return !guesses.every((guess) => guess.wordString !== targetGuess);
 }

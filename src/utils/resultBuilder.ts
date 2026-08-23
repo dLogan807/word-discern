@@ -1,6 +1,5 @@
 import { Guess } from "@/classes/guess";
 import { CharRevealState, LetterCorrectness } from "@/enums/enums";
-import { stringsAreEqual } from "@/utils/guessValidation";
 
 export const EMPTY_RESULTS: IResults = {
   words: [],
@@ -19,8 +18,8 @@ export default function getResults(
   shuffled?: boolean,
   onlyHideUnknownChars?: boolean
 ): IResults {
-  const parseResult = parseGuesses(guesses);
-  const results = matchGuessesWithWords(wordSet, parseResult);
+  const targetWordSpecs = getTargetWordSpecsFromGuesses(guesses);
+  const results = getPossibleWordsFromSpecs(wordSet, targetWordSpecs);
 
   if (shuffled) {
     shuffleArray(results);
@@ -29,9 +28,9 @@ export default function getResults(
   }
 
   const initialCharRevealStates = Array.from(
-    { length: parseResult.correctPosChars.length },
+    { length: targetWordSpecs.wordIndexes.length },
     (_, i) =>
-      parseResult.correctPosChars[i] !== undefined && onlyHideUnknownChars
+      targetWordSpecs.wordIndexes[i].correctChar !== undefined && onlyHideUnknownChars
         ? CharRevealState.PERM_REVEALED
         : CharRevealState.HIDDEN
   );
@@ -42,21 +41,28 @@ export default function getResults(
   };
 }
 
-interface ParsedGuesses {
-  // Char that must be preset for a given index
-  correctPosChars: Array<string | undefined>;
-  // Set of blacklisted chars for each index
-  blackListedPosChars: Set<string>[];
-  // Set of chars that must be in the word somewhere
-  requiredSomewhereChars: Set<string>;
-}
+type TargetWordIndex = {
+  // The correct character for this index
+  correctChar: string | undefined;
+  // Characters blacklisted from this index
+  blackListedChars: Set<string>;
+};
 
-function parseGuesses(guesses: Guess[]): ParsedGuesses {
+type TargetWordSpecs = {
+  // Represents each character of the word
+  wordIndexes: TargetWordIndex[];
+  // Characters that must appear *somewhere*
+  charsRequiredAtUnknownPosition: Set<string>; // NOTE instead of this, consider recording *potential* chars at each index
+};
+
+function getTargetWordSpecsFromGuesses(guesses: Guess[]): TargetWordSpecs {
   const guessLength = guesses[0].wordString.length;
 
-  const correctPosChars = new Array<string | undefined>(guessLength);
-  const blackListedPosChars = Array.from({ length: guessLength }, () => new Set<string>());
-  const requiredSomewhereChars = new Set<string>();
+  const wordIndexes: TargetWordIndex[] = Array.from({ length: guessLength }, () => ({
+    correctChar: undefined,
+    blackListedChars: new Set<string>(),
+  }));
+  const charsRequiredAtUnknownPosition = new Set<string>();
 
   for (const guess of guesses) {
     const validCharOccurences = new Map<string, number>();
@@ -74,48 +80,48 @@ function parseGuesses(guesses: Guess[]): ParsedGuesses {
       }
 
       if (char.correctness === LetterCorrectness.Correct) {
-        correctPosChars[i] = char.value;
-        blackListedPosChars[i].delete(char.value);
+        wordIndexes[i].correctChar = char.value;
+        wordIndexes[i].blackListedChars.delete(char.value);
         continue;
       }
 
       // Blacklist chars from applicable indexes
-      const correctLetter = correctPosChars[i];
+      const correctLetter = wordIndexes[i].correctChar;
       if (correctLetter === undefined || correctLetter !== char.value) {
         if (char.correctness === LetterCorrectness.WrongPosition) {
-          blackListedPosChars[i].add(char.value);
-          requiredSomewhereChars.add(char.value);
+          wordIndexes[i].blackListedChars.add(char.value);
+          charsRequiredAtUnknownPosition.add(char.value);
         } else if (!validCharOccurences.has(char.value)) {
           for (let j = 0; j < guess.letters.length; j++) {
-            blackListedPosChars[j].add(char.value);
+            wordIndexes[j].blackListedChars.add(char.value);
           }
         }
       }
     }
   }
 
-  inferCorrectPosChars(correctPosChars, requiredSomewhereChars, blackListedPosChars);
-
-  return {
-    correctPosChars,
-    blackListedPosChars,
-    requiredSomewhereChars,
+  const targetWordSpecs: TargetWordSpecs = {
+    wordIndexes: wordIndexes,
+    charsRequiredAtUnknownPosition: charsRequiredAtUnknownPosition,
   };
+
+  inferCorrectPosChars(targetWordSpecs);
+
+  return targetWordSpecs;
 }
 
 // If a char is wrong at every position except one, set it as correct at that index
-function inferCorrectPosChars(
-  correctPosChars: Array<string | undefined>,
-  requiredSomewhereChars: Set<string>,
-  blackListedPosChars: Set<string>[]
-) {
-  for (const char of requiredSomewhereChars) {
-    if (correctPosChars.includes(char)) continue;
+function inferCorrectPosChars(targetWordSpecs: TargetWordSpecs) {
+  const { wordIndexes, charsRequiredAtUnknownPosition } = targetWordSpecs;
+
+  for (const char of charsRequiredAtUnknownPosition) {
+    const charCorrectPositionIsKnown = !wordIndexes.every((index) => index.correctChar !== char);
+    if (charCorrectPositionIsKnown) continue;
 
     const allowedIndexes: number[] = [];
 
-    for (let i = 0; i < blackListedPosChars.length; i++) {
-      if (correctPosChars[i] === undefined && !blackListedPosChars[i].has(char)) {
+    for (let i = 0; i < wordIndexes.length; i++) {
+      if (wordIndexes[i].correctChar === undefined && !wordIndexes[i].blackListedChars.has(char)) {
         if (allowedIndexes.length > 1) break;
 
         allowedIndexes.push(i);
@@ -124,24 +130,27 @@ function inferCorrectPosChars(
 
     if (allowedIndexes.length === 1) {
       const singularValidCharIndex = allowedIndexes[0];
-      correctPosChars[singularValidCharIndex] = char;
+      wordIndexes[singularValidCharIndex].correctChar = char;
     }
   }
 }
 
-function matchGuessesWithWords(wordSet: Set<string>, guessData: ParsedGuesses): string[] {
-  const { correctPosChars, blackListedPosChars, requiredSomewhereChars } = guessData;
+function getPossibleWordsFromSpecs(
+  wordSet: Set<string>,
+  targetWordSpecs: TargetWordSpecs
+): string[] {
+  const { wordIndexes, charsRequiredAtUnknownPosition } = targetWordSpecs;
 
   const results: string[] = [];
 
   for (const word of wordSet) {
-    const requiredSomewhereCharsCopy = new Set(requiredSomewhereChars);
+    const requiredSomewhereCharsCopy = new Set(charsRequiredAtUnknownPosition);
     let invalidWord = false;
 
     for (let i = 0; i < word.length; i++) {
       if (
-        requiredCharMissing(correctPosChars[i], word[i]) ||
-        charAtBadPos(blackListedPosChars[i], word[i])
+        requiredCharMissing(wordIndexes[i].correctChar, word[i]) ||
+        charAtBadPos(wordIndexes[i].blackListedChars, word[i])
       ) {
         invalidWord = true;
         break;
@@ -159,7 +168,7 @@ function matchGuessesWithWords(wordSet: Set<string>, guessData: ParsedGuesses): 
 }
 
 function requiredCharMissing(requiredChar: string | undefined, charToCompare: string): boolean {
-  return requiredChar !== undefined && !stringsAreEqual(requiredChar, charToCompare);
+  return requiredChar !== undefined && requiredChar !== charToCompare;
 }
 
 function charAtBadPos(blackListedCharArray: Set<string>, charToCompare: string): boolean {
