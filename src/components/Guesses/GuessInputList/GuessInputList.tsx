@@ -57,21 +57,36 @@ export default function GuessInputList({
         const targetLetter = guess.letters[letterIndex];
 
         if (!targetLetter || targetLetter.value !== letter.value) {
+          if (
+            nextLetterCorrectness === LetterCorrectness.Correct &&
+            targetLetter.correctness === LetterCorrectness.Correct
+          ) {
+            return updateLetterCorrectness(guess, letterIndex, LetterCorrectness.NotPresent);
+          }
+
           return guess;
         }
 
-        return {
-          ...guess,
-          letters: guess.letters.map((guessLetter, index) => {
-            if (index !== letterIndex) {
-              return guessLetter;
-            }
-
-            return new Letter(guessLetter.value, nextLetterCorrectness);
-          }),
-        };
+        return updateLetterCorrectness(guess, letterIndex, nextLetterCorrectness);
       })
     );
+  }
+
+  function updateLetterCorrectness(
+    guess: Guess,
+    letterIndex: number,
+    nextLetterCorrectness: LetterCorrectness
+  ) {
+    return {
+      ...guess,
+      letters: guess.letters.map((guessLetter, index) => {
+        if (index !== letterIndex) {
+          return guessLetter;
+        }
+
+        return new Letter(guessLetter.value, nextLetterCorrectness);
+      }),
+    };
   }
 
   function tryAddGuess() {
