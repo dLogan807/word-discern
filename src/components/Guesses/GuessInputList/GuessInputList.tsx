@@ -1,11 +1,11 @@
 import { ActionIcon, Autocomplete, Box } from "@mantine/core";
+import { useDebouncedValue } from "@mantine/hooks";
 import { IconPlus } from "@tabler/icons-react";
 import { createContext, useMemo, useState, KeyboardEvent, Dispatch, SetStateAction } from "react";
 import { Guess } from "@/classes/guess";
 import { Letter } from "@/classes/letter";
 import GuessItem from "@/components/Guesses/GuessItem/GuessItem";
 import { LetterCorrectness } from "@/enums/enums";
-import useDebounce from "@/hooks/useDebounce";
 import { validateGuess } from "@/utils/guessValidation";
 import classes from "./GuessInputList.module.css";
 
@@ -37,7 +37,7 @@ export default function GuessInputList({
   const [searchDropdownOpened, setSearchDropDownOpened] = useState(false);
   const [guessValue, setGuessValue] = useState("");
   const [guessError, setGuessError] = useState<null | string>(null);
-  const debouncedSearch = useDebounce(guessValue, 100).trim().toLocaleLowerCase();
+  const [debouncedSearch] = useDebouncedValue(guessValue.trim().toLocaleLowerCase(), 100);
 
   const searchableWords = useMemo(
     () => getSuggestions(debouncedSearch, wordSets, guesses),
