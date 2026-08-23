@@ -110,19 +110,21 @@ function inferCorrectPosChars(
   blackListedPosChars: Set<string>[]
 ) {
   for (const char of requiredSomewhereChars) {
+    if (correctPosChars.includes(char)) continue;
+
     const allowedIndexes: number[] = [];
 
     for (let i = 0; i < blackListedPosChars.length; i++) {
-      if (!blackListedPosChars[i].has(char)) {
+      if (correctPosChars[i] === undefined && !blackListedPosChars[i].has(char)) {
         if (allowedIndexes.length > 1) break;
 
         allowedIndexes.push(i);
       }
     }
 
-    const singleValidCharIndex = allowedIndexes[0];
-    if (allowedIndexes.length === 1 && correctPosChars[singleValidCharIndex] === undefined) {
-      correctPosChars[singleValidCharIndex] = char;
+    if (allowedIndexes.length === 1) {
+      const singularValidCharIndex = allowedIndexes[0];
+      correctPosChars[singularValidCharIndex] = char;
     }
   }
 }
