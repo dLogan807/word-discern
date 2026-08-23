@@ -44,7 +44,7 @@ export default function getResults(
 
 interface ParsedGuesses {
   // Char that must be preset for a given index
-  correctPosChars: string[];
+  correctPosChars: Array<string | undefined>;
   // Set of blacklisted chars for each index
   blackListedPosChars: Set<string>[];
   // Set of chars that must be in the word somewhere
@@ -54,7 +54,7 @@ interface ParsedGuesses {
 function parseGuesses(guesses: Guess[]): ParsedGuesses {
   const guessLength = guesses[0].wordString.length;
 
-  const correctPosChars = new Array(guessLength);
+  const correctPosChars = new Array<string | undefined>(guessLength);
   const blackListedPosChars = Array.from({ length: guessLength }, () => new Set<string>());
   const requiredSomewhereChars = new Set<string>();
 
@@ -105,7 +105,7 @@ function parseGuesses(guesses: Guess[]): ParsedGuesses {
 
 // If a char is wrong at every position except one, set it as correct at that index
 function inferCorrectPosChars(
-  correctPosChars: string[],
+  correctPosChars: Array<string | undefined>,
   requiredSomewhereChars: Set<string>,
   blackListedPosChars: Set<string>[]
 ) {
@@ -130,18 +130,18 @@ function inferCorrectPosChars(
 }
 
 function matchGuessesWithWords(wordSet: Set<string>, guessData: ParsedGuesses): string[] {
+  const { correctPosChars, blackListedPosChars, requiredSomewhereChars } = guessData;
+
   const results: string[] = [];
 
   for (const word of wordSet) {
-    const requiredSomewhereCharsCopy: Set<string> = new Set<string>(
-      guessData.requiredSomewhereChars
-    );
+    const requiredSomewhereCharsCopy = new Set(requiredSomewhereChars);
     let invalidWord = false;
 
     for (let i = 0; i < word.length; i++) {
       if (
-        requiredCharMissing(guessData.correctPosChars[i], word[i]) ||
-        charAtBadPos(guessData.blackListedPosChars[i], word[i])
+        requiredCharMissing(correctPosChars[i], word[i]) ||
+        charAtBadPos(blackListedPosChars[i], word[i])
       ) {
         invalidWord = true;
         break;
@@ -162,11 +162,8 @@ function requiredCharMissing(requiredChar: string | undefined, charToCompare: st
   return requiredChar !== undefined && !stringsAreEqual(requiredChar, charToCompare);
 }
 
-function charAtBadPos(
-  blackListedCharArray: Set<string> | undefined,
-  charToCompare: string
-): boolean {
-  return blackListedCharArray !== undefined && blackListedCharArray.has(charToCompare);
+function charAtBadPos(blackListedCharArray: Set<string>, charToCompare: string): boolean {
+  return blackListedCharArray.has(charToCompare);
 }
 
 // Fisher-Yates shuffle algorithm
