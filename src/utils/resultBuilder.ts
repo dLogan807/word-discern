@@ -58,8 +58,6 @@ function parseGuesses(guesses: Guess[]): ParsedGuesses {
   const blackListedPosChars = Array.from({ length: guessLength }, () => new Set<string>());
   const requiredSomewhereChars = new Set<string>();
 
-  const wrongPosCharsAtIndex = Array.from({ length: guessLength }, () => new Set<string>());
-
   for (const guess of guesses) {
     const validCharOccurences = new Map<string, number>();
 
@@ -87,8 +85,6 @@ function parseGuesses(guesses: Guess[]): ParsedGuesses {
         if (char.correctness === LetterCorrectness.WrongPosition) {
           blackListedPosChars[i].add(char.value);
           requiredSomewhereChars.add(char.value);
-
-          wrongPosCharsAtIndex[i].add(char.value);
         } else if (!validCharOccurences.has(char.value)) {
           for (let j = 0; j < guess.letters.length; j++) {
             blackListedPosChars[j].add(char.value);
@@ -98,11 +94,7 @@ function parseGuesses(guesses: Guess[]): ParsedGuesses {
     }
   }
 
-  inferCorrectPosCharsFromWrongPosChars(
-    correctPosChars,
-    requiredSomewhereChars,
-    wrongPosCharsAtIndex
-  );
+  inferCorrectPosChars(correctPosChars, requiredSomewhereChars, blackListedPosChars);
 
   return {
     correctPosChars,
@@ -112,17 +104,17 @@ function parseGuesses(guesses: Guess[]): ParsedGuesses {
 }
 
 // If a char is wrong at every position except one, set it as correct at that index
-function inferCorrectPosCharsFromWrongPosChars(
+function inferCorrectPosChars(
   correctPosChars: string[],
   requiredSomewhereChars: Set<string>,
-  wrongPosCharsAtIndex: Array<Set<string>>
+  blackListedPosChars: Set<string>[]
 ) {
   for (const char of requiredSomewhereChars) {
     const allowedIndexes: number[] = [];
 
-    for (let i = 0; i < wrongPosCharsAtIndex.length; i++) {
-      if (!wrongPosCharsAtIndex[i].has(char)) {
-        if (allowedIndexes.length > 0) break;
+    for (let i = 0; i < blackListedPosChars.length; i++) {
+      if (!blackListedPosChars[i].has(char)) {
+        if (allowedIndexes.length > 1) break;
 
         allowedIndexes.push(i);
       }
