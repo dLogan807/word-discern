@@ -81,7 +81,6 @@ function getTargetWordSpecs(guesses: Guess[]): TargetWordSpecs {
 
       if (char.correctness === LetterCorrectness.Correct) {
         wordIndexes[i].correctChar = char.value;
-        wordIndexes[i].blackListedChars;
         continue;
       }
 
@@ -148,8 +147,8 @@ function getPossibleWords(
 
     for (let i = 0; i < word.length; i++) {
       if (
-        requiredCharMissing(wordIndexes[i].correctChar, word[i]) ||
-        charAtBadPos(wordIndexes[i].blackListedChars, word[i])
+        correctCharDoesNotMatch(wordIndexes[i].correctChar, word[i]) ||
+        charAtBlackListedIndex(wordIndexes[i].blackListedChars, word[i])
       ) {
         invalidWord = true;
         break;
@@ -166,14 +165,14 @@ function getPossibleWords(
   return possibleWords;
 }
 
-function requiredCharMissing(
+function correctCharDoesNotMatch(
   requiredChar: TargetWordIndex["correctChar"],
   charToCompare: string
 ): boolean {
   return requiredChar !== undefined && requiredChar !== charToCompare;
 }
 
-function charAtBadPos(
+function charAtBlackListedIndex(
   blackListedCharArray: TargetWordIndex["blackListedChars"],
   charToCompare: string
 ): boolean {
