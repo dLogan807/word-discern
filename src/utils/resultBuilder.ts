@@ -81,6 +81,7 @@ function getTargetWordSpecs(guesses: Guess[]): TargetWordSpecs {
 
       if (char.correctness === LetterCorrectness.Correct) {
         wordIndexes[i].correctChar = char.value;
+        wordIndexes[i].blackListedChars = undefined;
         continue;
       }
 
@@ -92,7 +93,7 @@ function getTargetWordSpecs(guesses: Guess[]): TargetWordSpecs {
           charsRequiredAtUnknownIndex.add(char.value);
         } else if (!validCharOccurences.has(char.value)) {
           for (let j = 0; j < guess.letters.length; j++) {
-            getBlackListedChars(wordIndexes[i]).add(char.value);
+            getBlackListedChars(wordIndexes[j]).add(char.value);
           }
         }
       }
