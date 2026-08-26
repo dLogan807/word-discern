@@ -52,7 +52,7 @@ type TargetWordSpecs = {
   // Represents each character of the word
   wordIndexes: TargetWordIndex[];
   // Characters that must appear *somewhere*
-  charsRequiredAtUnknownIndex: Set<string>; // NOTE instead of this, consider recording *potential* chars at each index
+  charsRequiredAtUnknownIndex: Set<string>;
 };
 
 const getBlackListedChars = (wordIndex: TargetWordIndex): Set<string> =>
@@ -65,19 +65,8 @@ function getTargetWordSpecs(guesses: Guess[]): TargetWordSpecs {
   const charsRequiredAtUnknownIndex = new Set<string>();
 
   for (const guess of guesses) {
-    const validCharOccurences = new Map<string, number>();
-
     for (let i = 0; i < guess.letters.length; i++) {
       const char = guess.letters[i];
-
-      // Count how many times the char is correct or in the wrong position
-      if (
-        char.correctness === LetterCorrectness.Correct ||
-        char.correctness === LetterCorrectness.WrongPosition
-      ) {
-        const occurenceCount = (validCharOccurences.get(char.value) ?? 0) + 1;
-        validCharOccurences.set(char.value, occurenceCount);
-      }
 
       if (char.correctness === LetterCorrectness.Correct) {
         wordIndexes[i].correctChar = char.value;
@@ -91,12 +80,24 @@ function getTargetWordSpecs(guesses: Guess[]): TargetWordSpecs {
         if (char.correctness === LetterCorrectness.WrongPosition) {
           getBlackListedChars(wordIndexes[i]).add(char.value);
           charsRequiredAtUnknownIndex.add(char.value);
-        } else if (!validCharOccurences.has(char.value)) {
-          for (let j = 0; j < guess.letters.length; j++) {
-            getBlackListedChars(wordIndexes[j]).add(char.value);
-          }
+        } else if (
+          char.correctness === LetterCorrectness.NotPresent &&
+          !charsRequiredAtUnknownIndex.has(char.value)
+        ) {
+          blacklistCharFromAllUncertainIndexes(wordIndexes, char.value);
         }
       }
+    }
+  }
+
+  function blacklistCharFromAllUncertainIndexes(
+    wordIndexes: TargetWordIndex[],
+    charToBlackList: string
+  ) {
+    for (const index of wordIndexes) {
+      if (index.correctChar !== undefined) continue;
+
+      getBlackListedChars(index).add(charToBlackList);
     }
   }
 
