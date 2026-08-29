@@ -1,5 +1,6 @@
 import { Guess } from "@/classes/guess";
 import { CharRevealState, LetterCorrectness } from "@/enums/enums";
+import shuffleArray from "./shuffleArray";
 
 export const EMPTY_RESULTS: IResults = {
   words: [],
@@ -11,6 +12,32 @@ export interface IResults {
   initialCharRevealStates: CharRevealState[];
   defaultHidden?: boolean;
 }
+
+type TargetWordIndex = {
+  // The correct character for this index
+  correctChar?: string;
+  // Characters blacklisted from this index
+  blackListedChars?: Set<string>;
+};
+
+type RequiredChar = {
+  minCorrect?: number;
+  minRequiredSomewhere?: number;
+  minOccurences?: number;
+  minOccurencesIsMax?: boolean;
+};
+
+type IncrementableRequiredCharFields = Pick<
+  RequiredChar,
+  "minCorrect" | "minRequiredSomewhere" | "minOccurences"
+>;
+
+type TargetWordSpecs = {
+  // Represents each character of the word
+  wordIndexes: TargetWordIndex[];
+  // Characters that must appear *somewhere*
+  charsRequired: Map<string, RequiredChar>;
+};
 
 export default function getResults(
   wordSet: Set<string>,
@@ -41,69 +68,59 @@ export default function getResults(
   };
 }
 
-type TargetWordIndex = {
-  // The correct character for this index
-  correctChar?: string;
-  // Characters blacklisted from this index
-  blackListedChars?: Set<string>;
-};
-
-type TargetWordSpecs = {
-  // Represents each character of the word
-  wordIndexes: TargetWordIndex[];
-  // Characters that must appear *somewhere*
-  charsRequiredAtUnknownIndex: Set<string>;
-};
-
-const getBlackListedChars = (wordIndex: TargetWordIndex): Set<string> =>
-  (wordIndex.blackListedChars ??= new Set<string>());
-
 function getTargetWordSpecs(guesses: Guess[]): TargetWordSpecs {
   const guessLength = guesses[0].wordString.length;
 
   const wordIndexes: TargetWordIndex[] = Array.from({ length: guessLength }, () => ({}));
-  const charsRequiredAtUnknownIndex = new Set<string>();
+  const charsRequired = new Map<string, RequiredChar>();
+  const charsToBlacklistAcrossIndexes = new Set<string>();
 
   for (const guess of guesses) {
+    const charsRequiredThisGuess = new Map<string, RequiredChar>();
+    const charsBlacklistedThisGuess = new Set<string>();
+
     for (let i = 0; i < guess.letters.length; i++) {
       const char = guess.letters[i];
 
       if (char.correctness === LetterCorrectness.Correct) {
         wordIndexes[i].correctChar = char.value;
         wordIndexes[i].blackListedChars = undefined;
+
+        incrementMinCorrect(charsRequiredThisGuess, char.value);
         continue;
       }
 
       // Blacklist chars from applicable indexes
-      const correctLetter = wordIndexes[i].correctChar;
-      if (correctLetter === undefined || correctLetter !== char.value) {
+      const correctChar = wordIndexes[i].correctChar;
+      if (correctChar === undefined || correctChar !== char.value) {
         if (char.correctness === LetterCorrectness.WrongPosition) {
-          getBlackListedChars(wordIndexes[i]).add(char.value);
-          charsRequiredAtUnknownIndex.add(char.value);
-        } else if (
-          char.correctness === LetterCorrectness.NotPresent &&
-          !charsRequiredAtUnknownIndex.has(char.value)
-        ) {
-          blacklistCharFromAllUncertainIndexes(wordIndexes, char.value);
+          getIndexBlackListedChars(wordIndexes[i]).add(char.value);
+          charsToBlacklistAcrossIndexes.delete(char.value);
+
+          incrementMinRequiredSomewhere(charsRequiredThisGuess, char.value);
+        } else if (char.correctness === LetterCorrectness.NotPresent) {
+          if (wordIndexes[i].correctChar !== undefined) continue;
+
+          getIndexBlackListedChars(wordIndexes[i]).add(char.value);
+
+          const shouldBlackListEverywhere = !charsRequired.get(char.value)?.minRequiredSomewhere;
+          if (shouldBlackListEverywhere) {
+            charsToBlacklistAcrossIndexes.add(char.value);
+          }
+
+          charsBlacklistedThisGuess.add(char.value);
         }
       }
     }
+
+    updateRequiredChars(charsRequired, charsBlacklistedThisGuess, charsRequiredThisGuess);
   }
 
-  function blacklistCharFromAllUncertainIndexes(
-    wordIndexes: TargetWordIndex[],
-    charToBlackList: string
-  ) {
-    for (const index of wordIndexes) {
-      if (index.correctChar !== undefined) continue;
-
-      getBlackListedChars(index).add(charToBlackList);
-    }
-  }
+  blacklistCharFromAllIncorrectIndexes(wordIndexes, charsToBlacklistAcrossIndexes);
 
   const targetWordSpecs: TargetWordSpecs = {
     wordIndexes: wordIndexes,
-    charsRequiredAtUnknownIndex: charsRequiredAtUnknownIndex,
+    charsRequired: charsRequired,
   };
 
   inferAndUpdateCorrectPosChars(targetWordSpecs);
@@ -111,12 +128,154 @@ function getTargetWordSpecs(guesses: Guess[]): TargetWordSpecs {
   return targetWordSpecs;
 }
 
+function getPossibleWords(
+  wordSet: Set<string>,
+  { wordIndexes, charsRequired }: TargetWordSpecs
+): string[] {
+  const possibleWords: string[] = [];
+
+  for (const word of wordSet) {
+    const charDetailsThisWord = new Map<string, RequiredChar>();
+    let isInvalidWord = false;
+
+    for (let i = 0; i < word.length; i++) {
+      const char = word[i];
+      const correctChar = wordIndexes[i].correctChar;
+      const correctCharDoesNotMatch = correctChar !== undefined && correctChar !== char;
+
+      if (
+        correctCharDoesNotMatch ||
+        charAtBlackListedIndex(wordIndexes[i].blackListedChars, char)
+      ) {
+        isInvalidWord = true;
+        break;
+      }
+
+      const correctCharMatches = correctChar !== undefined && correctChar === char;
+      if (correctCharMatches) {
+        incrementMinCorrect(charDetailsThisWord, char);
+        continue;
+      }
+
+      const charIsRequiredSomewhere = charsRequired.get(char)?.minRequiredSomewhere !== undefined;
+      if (charIsRequiredSomewhere) {
+        incrementMinRequiredSomewhere(charDetailsThisWord, char);
+      }
+    }
+
+    if (isInvalidWord) continue;
+
+    if (charsRequired.size !== charDetailsThisWord.size) continue;
+
+    for (const [char, thisWordRequiredChar] of charDetailsThisWord) {
+      const correctThisWord = thisWordRequiredChar.minCorrect ?? 0;
+      const requiredSomewhereThisWord = thisWordRequiredChar.minRequiredSomewhere ?? 0;
+      const totalThisWord = correctThisWord + requiredSomewhereThisWord;
+
+      const requiredCharDetails = charsRequired.get(char);
+      const totalRequired = requiredCharDetails?.minOccurences ?? 0;
+
+      if (requiredCharDetails?.minOccurencesIsMax && totalThisWord !== totalRequired) {
+        isInvalidWord = true;
+        break;
+      }
+
+      if (totalThisWord < totalRequired) {
+        isInvalidWord = true;
+      }
+    }
+
+    if (isInvalidWord) continue;
+
+    possibleWords.push(word);
+  }
+
+  return possibleWords;
+}
+
+const incrementMinCorrect = (charsRequired: Map<string, RequiredChar>, char: string) =>
+  incrementFieldAmount(charsRequired, char, "minCorrect", 1);
+
+const incrementMinRequiredSomewhere = (charsRequired: Map<string, RequiredChar>, char: string) =>
+  incrementFieldAmount(charsRequired, char, "minRequiredSomewhere", 1);
+
+function incrementFieldAmount(
+  charsRequired: Map<string, RequiredChar>,
+  char: string,
+  field: keyof IncrementableRequiredCharFields,
+  amount: number
+) {
+  const currentValue = charsRequired.get(char)?.[field] ?? 0;
+
+  setFieldValue(charsRequired, char, field, currentValue + amount);
+}
+
+function setFieldValue(
+  charsRequired: Map<string, RequiredChar>,
+  char: string,
+  field: keyof IncrementableRequiredCharFields,
+  value: number
+) {
+  const requiredChar = charsRequired.get(char);
+
+  charsRequired.set(char, {
+    ...requiredChar,
+    [field]: value,
+  });
+}
+
+const getIndexBlackListedChars = (wordIndex: TargetWordIndex): Set<string> =>
+  (wordIndex.blackListedChars ??= new Set<string>());
+
+// Update the number of each character required
+function updateRequiredChars(
+  charsRequired: Map<string, RequiredChar>,
+  charsBlacklistedThisGuess: Set<string>,
+  charsRequiredThisGuess: Map<string, RequiredChar>
+) {
+  for (const [char, guessDetails] of charsRequiredThisGuess) {
+    const currentDetails = charsRequired.get(char);
+
+    const guessMinCorrect = guessDetails.minCorrect ?? 0;
+    const guessMinRequiredSomewhere = guessDetails.minRequiredSomewhere ?? 0;
+    const guessTotal = guessMinCorrect + guessMinRequiredSomewhere;
+
+    // If max char occurences is known and the new known correct number isn't more informative, then skip the update
+    if (
+      currentDetails?.minOccurencesIsMax &&
+      (guessTotal > (currentDetails?.minOccurences ?? 0) ||
+        (currentDetails.minCorrect ?? 0) >= guessMinCorrect)
+    ) {
+      continue;
+    }
+
+    charsRequired.set(char, {
+      minCorrect: guessMinCorrect,
+      minRequiredSomewhere: guessMinRequiredSomewhere,
+      minOccurences: guessTotal,
+      minOccurencesIsMax: charsBlacklistedThisGuess.has(char),
+    });
+  }
+}
+
+function blacklistCharFromAllIncorrectIndexes(
+  wordIndexes: TargetWordIndex[],
+  charsToBlacklistAcrossIndexes: Set<string>
+) {
+  for (const charToBlackList of charsToBlacklistAcrossIndexes) {
+    for (const index of wordIndexes) {
+      if (index.correctChar !== undefined) continue;
+
+      getIndexBlackListedChars(index).add(charToBlackList);
+    }
+  }
+}
+
 // If a char is wrong at every position except one, set it as correct at that index
-function inferAndUpdateCorrectPosChars({
-  wordIndexes,
-  charsRequiredAtUnknownIndex,
-}: TargetWordSpecs) {
-  for (const char of charsRequiredAtUnknownIndex) {
+function inferAndUpdateCorrectPosChars({ wordIndexes, charsRequired }: TargetWordSpecs) {
+  // todo: update to handle for multiple required
+  // if (chars required at an unknown position = number of positions left, then those chars must belong in the free positions)
+  for (const [char, _] of charsRequired) {
     const charCorrectPositionIsKnown = !wordIndexes.every((index) => index.correctChar !== char);
     if (charCorrectPositionIsKnown) continue;
 
@@ -137,55 +296,9 @@ function inferAndUpdateCorrectPosChars({
   }
 }
 
-function getPossibleWords(
-  wordSet: Set<string>,
-  { wordIndexes, charsRequiredAtUnknownIndex }: TargetWordSpecs
-): string[] {
-  const possibleWords: string[] = [];
-
-  for (const word of wordSet) {
-    const charsRequiredAtUnknownIndexCopy = new Set(charsRequiredAtUnknownIndex);
-    let invalidWord = false;
-
-    for (let i = 0; i < word.length; i++) {
-      if (
-        correctCharDoesNotMatch(wordIndexes[i].correctChar, word[i]) ||
-        charAtBlackListedIndex(wordIndexes[i].blackListedChars, word[i])
-      ) {
-        invalidWord = true;
-        break;
-      }
-
-      charsRequiredAtUnknownIndexCopy.delete(word[i]);
-    }
-
-    if (!invalidWord && charsRequiredAtUnknownIndexCopy.size === 0) {
-      possibleWords.push(word);
-    }
-  }
-
-  return possibleWords;
-}
-
-function correctCharDoesNotMatch(
-  requiredChar: TargetWordIndex["correctChar"],
-  charToCompare: string
-): boolean {
-  return requiredChar !== undefined && requiredChar !== charToCompare;
-}
-
 function charAtBlackListedIndex(
-  blackListedCharArray: TargetWordIndex["blackListedChars"],
+  blackListedCharArray: Set<string> | undefined,
   charToCompare: string
 ): boolean {
   return blackListedCharArray?.has(charToCompare) ?? false;
-}
-
-// Fisher-Yates shuffle algorithm
-function shuffleArray<T>(array: T[]): T[] {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
 }
