@@ -56,6 +56,8 @@ export default function LetterButton({ letter, letterIndex }: LetterButtonProps)
         ? classes.letterFlipIn
         : "none";
 
+  const char = letter.value.toLocaleUpperCase();
+
   return (
     <UnstyledButton classNames={{ root: classes.letter_button }} onClick={handleClick}>
       <Box
@@ -68,7 +70,7 @@ export default function LetterButton({ letter, letterIndex }: LetterButtonProps)
         }}
         onAnimationEnd={handleAnimationEnd}
       >
-        {letter.value.toLocaleUpperCase()}
+        {char}
       </Box>
     </UnstyledButton>
   );
