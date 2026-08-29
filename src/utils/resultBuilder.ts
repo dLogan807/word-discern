@@ -245,27 +245,24 @@ function blacklistCharFromAllIncorrectIndexes(
   }
 }
 
-// If a char is wrong at every position except one, set it as correct at that index
+// If chars required somewhere = number of positions left, then those chars must belong there
 function inferAndUpdateCorrectPosChars({ wordIndexes, charsRequired }: TargetWordSpecs) {
-  // todo: update to handle for multiple required
-  // if (chars required at an unknown position = number of positions left, then those chars must belong in the free positions)
   for (const [char, _] of charsRequired) {
-    const charCorrectPositionIsKnown = !wordIndexes.every((index) => index.correctChar !== char);
-    if (charCorrectPositionIsKnown) continue;
-
     const allowedIndexes: number[] = [];
 
     for (let i = 0; i < wordIndexes.length; i++) {
       if (wordIndexes[i].correctChar === undefined && !wordIndexes[i].blackListedChars?.has(char)) {
-        if (allowedIndexes.length > 1) break;
-
         allowedIndexes.push(i);
       }
     }
+    if (!allowedIndexes) continue;
 
-    if (allowedIndexes.length === 1) {
-      const singularValidCharIndex = allowedIndexes[0];
-      wordIndexes[singularValidCharIndex].correctChar = char;
+    const minRequiredSomewhere = charsRequired.get(char)?.minRequiredSomewhere;
+    if (allowedIndexes.length === minRequiredSomewhere) {
+      for (let i = 0; i < allowedIndexes.length; i++) {
+        const validCharIndex = allowedIndexes[i];
+        wordIndexes[validCharIndex].correctChar = char;
+      }
     }
   }
 }
