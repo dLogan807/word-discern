@@ -81,7 +81,6 @@ function getTargetWordSpecs(guesses: Guess[]): TargetWordSpecs {
 
       if (char.correctness === LetterCorrectness.Correct) {
         wordIndexes[i].correctChar = char.value;
-        wordIndexes[i].blackListedChars = undefined;
 
         incrementMinCorrect(charsRequiredThisGuess, char.value);
         continue;
@@ -96,8 +95,6 @@ function getTargetWordSpecs(guesses: Guess[]): TargetWordSpecs {
 
           incrementMinRequiredSomewhere(charsRequiredThisGuess, char.value);
         } else if (char.correctness === LetterCorrectness.NotPresent) {
-          if (wordIndexes[i].correctChar !== undefined) continue;
-
           getIndexBlackListedChars(wordIndexes[i]).add(char.value);
 
           const shouldBlackListEverywhere = !charsRequiredThisGuess.get(char.value)
