@@ -100,7 +100,8 @@ function getTargetWordSpecs(guesses: Guess[]): TargetWordSpecs {
 
           getIndexBlackListedChars(wordIndexes[i]).add(char.value);
 
-          const shouldBlackListEverywhere = !charsRequired.get(char.value)?.minRequiredSomewhere;
+          const shouldBlackListEverywhere = !charsRequiredThisGuess.get(char.value)
+            ?.minRequiredSomewhere;
           if (shouldBlackListEverywhere) {
             charsToBlacklistAcrossIndexes.add(char.value);
           }
