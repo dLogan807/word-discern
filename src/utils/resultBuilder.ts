@@ -21,9 +21,9 @@ type TargetWordIndex = {
 };
 
 type RequiredChar = {
-  minCorrect?: number;
-  minRequiredSomewhere?: number;
-  minOccurences?: number;
+  minCorrect: number;
+  minRequiredSomewhere: number;
+  minOccurences: number;
   minOccurencesIsMax?: boolean;
 };
 
@@ -186,8 +186,12 @@ function incrementFieldAmount(
   char: string,
   field: keyof IncrementableRequiredCharFields
 ) {
-  const requiredChar = charsRequired.get(char);
-  const currentValue = requiredChar?.[field] ?? 0;
+  const requiredChar = charsRequired.get(char) ?? {
+    minCorrect: 0,
+    minRequiredSomewhere: 0,
+    minOccurences: 0,
+  };
+  const currentValue = requiredChar[field];
 
   charsRequired.set(char, {
     ...requiredChar,
@@ -207,15 +211,14 @@ function updateRequiredChars(
   for (const [char, guessDetails] of charsRequiredThisGuess) {
     const currentDetails = charsRequired.get(char);
 
-    const guessMinCorrect = guessDetails.minCorrect ?? 0;
-    const guessMinRequiredSomewhere = guessDetails.minRequiredSomewhere ?? 0;
+    const guessMinCorrect = guessDetails.minCorrect;
+    const guessMinRequiredSomewhere = guessDetails.minRequiredSomewhere;
     const guessTotal = guessMinCorrect + guessMinRequiredSomewhere;
 
     // If max char occurences is known and the new known correct number isn't more informative, then skip the update
     if (
       currentDetails?.minOccurencesIsMax &&
-      (guessTotal > (currentDetails?.minOccurences ?? 0) ||
-        (currentDetails.minCorrect ?? 0) >= guessMinCorrect)
+      (guessTotal > currentDetails.minOccurences || currentDetails.minCorrect >= guessMinCorrect)
     ) {
       continue;
     }
@@ -280,7 +283,7 @@ function notEnoughOfRequiredCharInWord(
   charsRequired: Map<string, RequiredChar>
 ): boolean {
   const totalThisWord =
-    (targetWordRequiredChar.minCorrect ?? 0) + (targetWordRequiredChar.minRequiredSomewhere ?? 0);
+    targetWordRequiredChar.minCorrect + targetWordRequiredChar.minRequiredSomewhere;
 
   const requiredCharDetails = charsRequired.get(char);
   const totalRequired = requiredCharDetails?.minOccurences ?? 0;
