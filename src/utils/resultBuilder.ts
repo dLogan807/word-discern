@@ -160,22 +160,10 @@ function getPossibleWords(
       }
     }
 
-    if (isInvalidWord) continue;
-
-    if (charsRequired.size !== charDetailsThisWord.size) continue;
+    if (isInvalidWord || charsRequired.size !== charDetailsThisWord.size) continue;
 
     for (const [char, thisWordRequiredChar] of charDetailsThisWord) {
-      const totalThisWord =
-        (thisWordRequiredChar.minCorrect ?? 0) + (thisWordRequiredChar.minRequiredSomewhere ?? 0);
-
-      const requiredCharDetails = charsRequired.get(char);
-      const totalRequired = requiredCharDetails?.minOccurences ?? 0;
-
-      // Word doesn't have enough of a particular char
-      if (
-        (requiredCharDetails?.minOccurencesIsMax && totalThisWord !== totalRequired) ||
-        totalThisWord < totalRequired
-      ) {
+      if (notEnoughOfRequiredCharInWord(char, thisWordRequiredChar, charsRequired)) {
         isInvalidWord = true;
         break;
       }
@@ -286,4 +274,21 @@ function charAtBlackListedIndex(
   charToCompare: string
 ): boolean {
   return blackListedCharArray?.has(charToCompare) ?? false;
+}
+
+function notEnoughOfRequiredCharInWord(
+  char: string,
+  targetWordRequiredChar: RequiredChar,
+  charsRequired: Map<string, RequiredChar>
+): boolean {
+  const totalThisWord =
+    (targetWordRequiredChar.minCorrect ?? 0) + (targetWordRequiredChar.minRequiredSomewhere ?? 0);
+
+  const requiredCharDetails = charsRequired.get(char);
+  const totalRequired = requiredCharDetails?.minOccurences ?? 0;
+
+  return (
+    (requiredCharDetails?.minOccurencesIsMax && totalThisWord !== totalRequired) ||
+    totalThisWord < totalRequired
+  );
 }
