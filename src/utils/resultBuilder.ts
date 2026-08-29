@@ -27,10 +27,7 @@ type RequiredChar = {
   minOccurencesIsMax?: boolean;
 };
 
-type IncrementableRequiredCharFields = Pick<
-  RequiredChar,
-  "minCorrect" | "minRequiredSomewhere" | "minOccurences"
->;
+type IncrementableRequiredCharFields = Pick<RequiredChar, "minCorrect" | "minRequiredSomewhere">;
 
 type TargetWordSpecs = {
   // Represents each character of the word
@@ -168,20 +165,19 @@ function getPossibleWords(
     if (charsRequired.size !== charDetailsThisWord.size) continue;
 
     for (const [char, thisWordRequiredChar] of charDetailsThisWord) {
-      const correctThisWord = thisWordRequiredChar.minCorrect ?? 0;
-      const requiredSomewhereThisWord = thisWordRequiredChar.minRequiredSomewhere ?? 0;
-      const totalThisWord = correctThisWord + requiredSomewhereThisWord;
+      const totalThisWord =
+        (thisWordRequiredChar.minCorrect ?? 0) + (thisWordRequiredChar.minRequiredSomewhere ?? 0);
 
       const requiredCharDetails = charsRequired.get(char);
       const totalRequired = requiredCharDetails?.minOccurences ?? 0;
 
-      if (requiredCharDetails?.minOccurencesIsMax && totalThisWord !== totalRequired) {
+      // Word doesn't have enough of a particular char
+      if (
+        (requiredCharDetails?.minOccurencesIsMax && totalThisWord !== totalRequired) ||
+        totalThisWord < totalRequired
+      ) {
         isInvalidWord = true;
         break;
-      }
-
-      if (totalThisWord < totalRequired) {
-        isInvalidWord = true;
       }
     }
 
@@ -194,33 +190,22 @@ function getPossibleWords(
 }
 
 const incrementMinCorrect = (charsRequired: Map<string, RequiredChar>, char: string) =>
-  incrementFieldAmount(charsRequired, char, "minCorrect", 1);
+  incrementFieldAmount(charsRequired, char, "minCorrect");
 
 const incrementMinRequiredSomewhere = (charsRequired: Map<string, RequiredChar>, char: string) =>
-  incrementFieldAmount(charsRequired, char, "minRequiredSomewhere", 1);
+  incrementFieldAmount(charsRequired, char, "minRequiredSomewhere");
 
 function incrementFieldAmount(
   charsRequired: Map<string, RequiredChar>,
   char: string,
-  field: keyof IncrementableRequiredCharFields,
-  amount: number
-) {
-  const currentValue = charsRequired.get(char)?.[field] ?? 0;
-
-  setFieldValue(charsRequired, char, field, currentValue + amount);
-}
-
-function setFieldValue(
-  charsRequired: Map<string, RequiredChar>,
-  char: string,
-  field: keyof IncrementableRequiredCharFields,
-  value: number
+  field: keyof IncrementableRequiredCharFields
 ) {
   const requiredChar = charsRequired.get(char);
+  const currentValue = requiredChar?.[field] ?? 0;
 
   charsRequired.set(char, {
     ...requiredChar,
-    [field]: value,
+    [field]: currentValue + 1,
   });
 }
 
