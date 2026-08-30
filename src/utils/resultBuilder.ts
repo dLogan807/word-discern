@@ -211,21 +211,20 @@ function updateRequiredChars(
   for (const [char, guessDetails] of charsRequiredThisGuess) {
     const currentDetails = charsRequired.get(char);
 
-    const guessMinCorrect = guessDetails.minCorrect;
-    const guessMinRequiredSomewhere = guessDetails.minRequiredSomewhere;
-    const guessTotal = guessMinCorrect + guessMinRequiredSomewhere;
+    const guessTotal = guessDetails.minCorrect + guessDetails.minRequiredSomewhere;
 
     // If max char occurences is known and the new known correct number isn't more informative, then skip the update
     if (
       currentDetails?.minOccurencesIsMax &&
-      (guessTotal > currentDetails.minOccurences || currentDetails.minCorrect >= guessMinCorrect)
+      (guessTotal > currentDetails.minOccurences ||
+        currentDetails.minCorrect >= guessDetails.minCorrect)
     ) {
       continue;
     }
 
     charsRequired.set(char, {
-      minCorrect: guessMinCorrect,
-      minRequiredSomewhere: guessMinRequiredSomewhere,
+      minCorrect: guessDetails.minCorrect,
+      minRequiredSomewhere: guessDetails.minRequiredSomewhere,
       minOccurences: guessTotal,
       minOccurencesIsMax: charsBlacklistedThisGuess.has(char),
     });
@@ -267,12 +266,10 @@ function inferAndUpdateCorrectPosChars({ wordIndexes, charsRequired }: TargetWor
   }
 }
 
-function charAtBlackListedIndex(
+const charAtBlackListedIndex = (
   blackListedCharArray: Set<string> | undefined,
   charToCompare: string
-): boolean {
-  return blackListedCharArray?.has(charToCompare) ?? false;
-}
+): boolean => blackListedCharArray?.has(charToCompare) ?? false;
 
 function notEnoughOfRequiredCharInWord(
   char: string,
