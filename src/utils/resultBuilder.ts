@@ -158,16 +158,12 @@ function getPossibleWords(
       }
     }
 
-    if (isInvalidWord || charsRequired.size !== charDetailsThisWord.size) continue;
-
-    for (const [char, thisWordRequiredChar] of charDetailsThisWord) {
-      if (notEnoughOfRequiredCharInWord(char, thisWordRequiredChar, charsRequired)) {
-        isInvalidWord = true;
-        break;
-      }
+    if (
+      isInvalidWord ||
+      numCharsThisWordDoNotMatchGuessRequirements(charsRequired, charDetailsThisWord)
+    ) {
+      continue;
     }
-
-    if (isInvalidWord) continue;
 
     possibleWords.push(word);
   }
@@ -270,6 +266,23 @@ const charAtBlackListedIndex = (
   blackListedCharArray: Set<string> | undefined,
   charToCompare: string
 ): boolean => blackListedCharArray?.has(charToCompare) ?? false;
+
+function numCharsThisWordDoNotMatchGuessRequirements(
+  charsRequired: Map<string, RequiredChar>,
+  charDetailsThisWord: Map<string, RequiredChar>
+): boolean {
+  if (charsRequired.size !== charDetailsThisWord.size) {
+    return true;
+  }
+
+  for (const [char, thisWordRequiredChar] of charDetailsThisWord) {
+    if (notEnoughOfRequiredCharInWord(char, thisWordRequiredChar, charsRequired)) {
+      return true;
+    }
+  }
+
+  return false;
+}
 
 function notEnoughOfRequiredCharInWord(
   char: string,
