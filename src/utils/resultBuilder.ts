@@ -136,24 +136,18 @@ function getPossibleWords(
     for (let i = 0; i < word.length; i++) {
       const char = word[i];
       const correctChar = wordIndexes[i].correctChar;
-      const correctCharDoesNotMatch = correctChar !== undefined && correctChar !== char;
 
-      if (
-        correctCharDoesNotMatch ||
-        charAtBlackListedIndex(wordIndexes[i].blackListedChars, char)
-      ) {
+      if (guessRequirementsDisallowsChar(char, correctChar, wordIndexes[i].blackListedChars)) {
         isInvalidWord = true;
         break;
       }
 
-      const correctCharMatches = correctChar !== undefined && correctChar === char;
-      if (correctCharMatches) {
+      if (guessRequirementsCorrectCharDoesNotMatch(char, correctChar)) {
         incrementMinCorrect(charDetailsThisWord, char);
         continue;
       }
 
-      const charIsRequiredSomewhere = charsRequired.get(char)?.minRequiredSomewhere !== undefined;
-      if (charIsRequiredSomewhere) {
+      if (guessRequirementsRequiresCharSomewhere(char, charsRequired)) {
         incrementMinRequiredSomewhere(charDetailsThisWord, char);
       }
     }
@@ -262,10 +256,24 @@ function inferAndUpdateCorrectPosChars({ wordIndexes, charsRequired }: TargetWor
   }
 }
 
-const charAtBlackListedIndex = (
-  blackListedCharArray: Set<string> | undefined,
-  charToCompare: string
-): boolean => blackListedCharArray?.has(charToCompare) ?? false;
+function guessRequirementsDisallowsChar(
+  char: string,
+  correctChar: string | undefined,
+  blackListedChars: Set<string> | undefined
+): boolean {
+  const correctCharDoesNotMatch = correctChar !== undefined && correctChar !== char;
+  return correctCharDoesNotMatch || (blackListedChars?.has(char) ?? false);
+}
+
+const guessRequirementsCorrectCharDoesNotMatch = (
+  char: string,
+  correctChar: string | undefined
+): boolean => correctChar !== undefined && correctChar === char;
+
+const guessRequirementsRequiresCharSomewhere = (
+  char: string,
+  charsRequired: Map<string, RequiredChar>
+): boolean => charsRequired.get(char)?.minRequiredSomewhere !== undefined;
 
 function numCharsThisWordDoNotMatchGuessRequirements(
   charsRequired: Map<string, RequiredChar>,
