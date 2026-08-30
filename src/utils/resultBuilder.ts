@@ -247,7 +247,7 @@ function blacklistCharFromAllIncorrectIndexes(
 
 // If chars required somewhere = number of positions left, then those chars must belong there
 function inferAndUpdateCorrectPosChars({ wordIndexes, charsRequired }: TargetWordSpecs) {
-  for (const [char, _] of charsRequired) {
+  for (const [char, charIsRequiredSomewhere] of charsRequired) {
     const allowedIndexes: number[] = [];
 
     for (let i = 0; i < wordIndexes.length; i++) {
@@ -255,9 +255,9 @@ function inferAndUpdateCorrectPosChars({ wordIndexes, charsRequired }: TargetWor
         allowedIndexes.push(i);
       }
     }
-    if (!allowedIndexes) continue;
+    if (!allowedIndexes.length) continue;
 
-    const minRequiredSomewhere = charsRequired.get(char)?.minRequiredSomewhere;
+    const minRequiredSomewhere = charIsRequiredSomewhere.minRequiredSomewhere;
     if (allowedIndexes.length === minRequiredSomewhere) {
       for (let i = 0; i < allowedIndexes.length; i++) {
         const validCharIndex = allowedIndexes[i];
