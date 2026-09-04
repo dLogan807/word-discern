@@ -26,7 +26,6 @@ export default function App() {
     doAnimations,
     hideResults,
     numResultsShown,
-    onlyAllowWordListGuesses,
     onlyHideUnknownChars,
     shuffleResults,
   } = useSettingsContext();
@@ -128,8 +127,6 @@ export default function App() {
             guesses={guesses}
             setGuesses={setGuesses}
             wordSets={parsedWordSets.wordSets}
-            onlyAllowWordListGuesses={onlyAllowWordListGuesses}
-            doAnimations={doAnimations}
           />
           <Button
             variant="filled"

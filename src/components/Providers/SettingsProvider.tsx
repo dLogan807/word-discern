@@ -1,36 +1,54 @@
-import { Dispatch, ReactNode, SetStateAction, createContext, useState } from "react";
-import {
-  CustomWordsFormData,
-  DEFAULT_CUSTOM_WORDS_FORM,
-} from "@/components/Settings/CustomWordsForm/CustomWordsForm";
+import { useLocalStorage } from "@mantine/hooks";
+import { ReactNode } from "react";
+import { CustomWordsFormData } from "@/components/Settings/CustomWordsForm/CustomWordsForm";
+import { SettingsContext } from "@/contexts/settingsContext";
+import { WordInput } from "@/enums/enums";
 
-export type SettingsContextType = {
-  customWordsFormData: CustomWordsFormData;
-  setCustomWordsFormData: Dispatch<SetStateAction<CustomWordsFormData>>;
-  doAnimations: boolean;
-  setDoAnimations: Dispatch<SetStateAction<boolean>>;
-  hideResults: boolean;
-  setHideResults: Dispatch<SetStateAction<boolean>>;
-  numResultsShown: number;
-  setNumResultsShown: Dispatch<SetStateAction<number>>;
-  onlyAllowWordListGuesses: boolean;
-  setOnlyAllowWordListGuesses: Dispatch<SetStateAction<boolean>>;
-  onlyHideUnknownChars: boolean;
-  setOnlyHideUnknownChars: Dispatch<SetStateAction<boolean>>;
-  shuffleResults: boolean;
-  setShuffleResults: Dispatch<SetStateAction<boolean>>;
+const DEFAULT_CUSTOM_WORDS_FORM: CustomWordsFormData = {
+  words: [],
+  allowSpecialChars: false,
+  replaceDefaultWords: false,
+  lastUpdatedWithInputMode: WordInput.TEXT,
+  text: "",
+  json: "",
 };
 
-export const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
-
 export default function SettingsProvider({ children }: { children: ReactNode }) {
-  const [onlyAllowWordListGuesses, setOnlyAllowWordListGuesses] = useState(true);
-  const [shuffleResults, setShuffleResults] = useState(true);
-  const [hideResults, setHideResults] = useState(true);
-  const [onlyHideUnknownChars, setOnlyHideUnknownChars] = useState(true);
-  const [numResultsShown, setNumResultsShown] = useState(20);
-  const [doAnimations, setDoAnimations] = useState(true);
-  const [customWordsFormData, setCustomWordsFormData] = useState(DEFAULT_CUSTOM_WORDS_FORM);
+  const [onlyAllowWordListGuesses, setOnlyAllowWordListGuesses] = useLocalStorage({
+    key: "only-allow-word-list-guesses",
+    defaultValue: true,
+    getInitialValueInEffect: false,
+  });
+  const [shuffleResults, setShuffleResults] = useLocalStorage({
+    key: "shuffle-results",
+    defaultValue: true,
+    getInitialValueInEffect: false,
+  });
+  const [hideResults, setHideResults] = useLocalStorage({
+    key: "hide-results",
+    defaultValue: true,
+    getInitialValueInEffect: false,
+  });
+  const [onlyHideUnknownChars, setOnlyHideUnknownChars] = useLocalStorage({
+    key: "only-hide-unknown-chars",
+    defaultValue: true,
+    getInitialValueInEffect: false,
+  });
+  const [numResultsShown, setNumResultsShown] = useLocalStorage({
+    key: "num-results-shown",
+    defaultValue: 20,
+    getInitialValueInEffect: false,
+  });
+  const [doAnimations, setDoAnimations] = useLocalStorage({
+    key: "do-animations",
+    defaultValue: true,
+    getInitialValueInEffect: false,
+  });
+  const [customWordsFormData, setCustomWordsFormData] = useLocalStorage({
+    key: "custom-words-form-data",
+    defaultValue: DEFAULT_CUSTOM_WORDS_FORM,
+    getInitialValueInEffect: false,
+  });
 
   return (
     <SettingsContext

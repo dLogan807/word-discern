@@ -1,8 +1,7 @@
 import { ActionIcon } from "@mantine/core";
 import { IconTrash } from "@tabler/icons-react";
-import { useContext } from "react";
 import { Guess } from "@/classes/guess";
-import { GuessContext } from "@/components/Guesses/GuessInputList/GuessInputList";
+import { useGuessContext } from "@/hooks/useGuessContext";
 import classes from "./RemoveButton.module.css";
 
 type RemoveButtonProps = {
@@ -10,14 +9,14 @@ type RemoveButtonProps = {
 };
 
 export default function RemoveButton({ guess }: RemoveButtonProps) {
-  const removeGuess = useContext(GuessContext);
+  const { removeGuess } = useGuessContext();
 
   return (
     <ActionIcon
       variant="light"
       color="red"
       aria-label="Remove"
-      onClick={() => removeGuess.removeGuess(guess)}
+      onClick={() => removeGuess(guess)}
       classNames={{
         root: classes.remove_button,
       }}

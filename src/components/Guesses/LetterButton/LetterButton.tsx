@@ -1,7 +1,8 @@
 import { Box, UnstyledButton } from "@mantine/core";
-import { useState, useContext, AnimationEvent } from "react";
+import { useState, AnimationEvent } from "react";
 import { Letter } from "@/classes/letter";
-import { GuessContext } from "@/components/Guesses/GuessInputList/GuessInputList";
+import { useGuessContext } from "@/hooks/useGuessContext";
+import { useSettingsContext } from "@/hooks/useSettingsContext";
 import classes from "./LetterButton.module.css";
 
 type LetterButtonProps = {
@@ -16,7 +17,9 @@ enum FlipPhase {
 }
 
 export default function LetterButton({ letter, letterIndex }: LetterButtonProps) {
-  const { setNextLetterCorrectnessForAllGuesses, doAnimations } = useContext(GuessContext);
+  const { setNextLetterCorrectnessForAllGuesses } = useGuessContext();
+  const { doAnimations } = useSettingsContext();
+
   const halfFlipAnimDuration = doAnimations ? 150 : 0;
 
   const [displayCorrectness, setDisplayCorrectness] = useState(letter.correctness);
