@@ -12,7 +12,7 @@ import WordsBadges, {
   WordBadgesProps,
 } from "@/components/Settings/CustomWordsForm/WordBadges/WordBadges";
 import { useSettingsContext } from "@/hooks/useSettingsContext";
-import Footer from "./Footer/Footer";
+import Footer from "../Footer/Footer";
 import classes from "./Settings.module.css";
 
 type SettingsProps = {

@@ -1,7 +1,7 @@
 import { Box } from "@mantine/core";
 import { IconAdjustments, IconCheck, IconCopyOff, IconList } from "@tabler/icons-react";
-import FailedWordsBadge from "@/components/Settings/CustomWordsForm/WordBadges/WordInfoBadge/FailedWordBadge/FailedWordBadge";
-import WordInfoBadge from "@/components/Settings/CustomWordsForm/WordBadges/WordInfoBadge/WordInfoBadge";
+import FailedWordsBadge from "@/components/Badges/FailedWordBadge/FailedWordBadge";
+import WordInfoBadge from "@/components/Badges/WordInfoBadge/WordInfoBadge";
 import classes from "./WordBadge.module.css";
 
 export type WordBadgesProps = {

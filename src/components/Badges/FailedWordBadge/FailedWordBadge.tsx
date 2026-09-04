@@ -1,6 +1,6 @@
 import { Button, List, ListItem, Popover, ScrollArea } from "@mantine/core";
 import { IconX } from "@tabler/icons-react";
-import WordInfoBadge from "@/components/Settings/CustomWordsForm/WordBadges/WordInfoBadge/WordInfoBadge";
+import WordInfoBadge from "@/components/Badges/WordInfoBadge/WordInfoBadge";
 import pluralize from "@/utils/pluralize";
 import classes from "./FailedWordBadge.module.css";
 

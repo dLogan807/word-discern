@@ -2,7 +2,7 @@ import { Group, ActionIcon } from "@mantine/core";
 import { IconEyeOff, IconEye } from "@tabler/icons-react";
 import { useState } from "react";
 import { CharRevealState } from "@/enums/enums";
-import RevealableChar from "../RevealableChar/RevealableChar";
+import RevealableChar from "../../Buttons/RevealableChar/RevealableChar";
 import classes from "./RevealableWord.module.css";
 
 type RevealableWordProps = {

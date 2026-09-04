@@ -13,12 +13,12 @@ import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { parse, ParseError, printParseErrorCode } from "jsonc-parser";
 import { useState } from "react";
+import FileUploadModal from "@/components/Modals/FileUploadModal/FileUploadModal";
 import { WordInput } from "@/enums/enums";
 import { useSettingsContext } from "@/hooks/useSettingsContext";
 import { getWordArray } from "@/utils/wordLoading";
+import ResetTextFieldActionIcon from "../../Buttons/ResetTextFieldActionIcon/ResetTextFieldActionIcon";
 import { CodeBlocks } from "./CodeBlocks/CodeBlocks";
-import FileUploadModal from "./FileUploadModal/FileUploadModal";
-import ResetTextFieldActionIcon from "./ResetTextFieldActionIcon/ResetTextFieldActionIcon";
 import classes from "./CustomWords.module.css";
 
 const VALID_CODE_SEPARATORS: string[] = [",", "space", "newline", ";"];

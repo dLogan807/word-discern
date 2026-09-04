@@ -10,7 +10,7 @@ import Results from "@/components/Results/Results";
 import Settings from "@/components/Settings/Settings";
 import getResults, { EMPTY_RESULTS, IResults } from "@/utils/resultBuilder";
 import { ParsedWordSets, parseWordsToSets } from "@/utils/wordLoading";
-import { ThemeSelector } from "./components/ThemeSelector/ThemeSelector";
+import { ThemeSelector } from "./components/Buttons/ThemeSelector/ThemeSelector";
 import { useSettingsContext } from "./hooks/useSettingsContext";
 import classes from "./App.module.css";
 

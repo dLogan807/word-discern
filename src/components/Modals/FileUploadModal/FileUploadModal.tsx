@@ -1,8 +1,8 @@
 import { Modal, Button, FileInput } from "@mantine/core";
 import { useField } from "@mantine/form";
 import { IconFileUpload } from "@tabler/icons-react";
+import { CodeBlocks } from "@/components/Settings/CustomWordsForm/CodeBlocks/CodeBlocks";
 import { useSettingsContext } from "@/hooks/useSettingsContext";
-import { CodeBlocks } from "../CodeBlocks/CodeBlocks";
 import classes from "./FileUploadModal.module.css";
 
 type FileInputModalProps = {
