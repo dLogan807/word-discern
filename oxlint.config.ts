@@ -81,6 +81,7 @@ export default {
     "react/no-string-refs": "error",
     "react/self-closing-comp": "error",
     "react/void-dom-elements-no-children": "error",
+    "react/only-export-components": "warn",
 
     "jsx-a11y/anchor-has-content": "off",
     "jsx-a11y/anchor-is-valid": "off",
