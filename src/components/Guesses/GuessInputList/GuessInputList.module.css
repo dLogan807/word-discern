@@ -1,7 +1,4 @@
 .guess_autocomplete_root {
-  transition:
-    width 0.25s,
-    height 0.25s;
   width: 40%;
   height: 4rem;
 
@@ -18,12 +15,17 @@
   }
 }
 
+.guess_autocomplete_root_transition {
+  transition:
+    width 0.25s,
+    height 0.25s;
+}
+
 .guess_autocomplete_wrapper {
   height: 100%;
 }
 
 .guess_autocomplete_input {
-  transition: font-size 0.25s;
   padding-left: var(--mantine-spacing-lg);
   border-radius: var(--mantine-radius-xl);
   font-size: var(--mantine-font-size-xl);
@@ -39,7 +41,6 @@
 }
 
 .guess_autocomplete_option {
-  transition: font-size 0.25s;
   font-size: var(--mantine-font-size-xl);
 
   @media (max-width: $mantine-breakpoint-xs) {
@@ -48,7 +49,6 @@
 }
 
 .guess_autocomplete_section {
-  transition: width 0.25s;
   padding: var(--mantine-spacing-xs);
   border-radius: var(--mantine-radius-xl);
   width: 4rem;
@@ -56,6 +56,10 @@
   @media (max-width: $mantine-breakpoint-xs) {
     width: 3rem;
   }
+}
+
+.guess_autocomplete_section_transition {
+  transition: width 0.25s;
 }
 
 .add_guess_button {
@@ -77,4 +81,8 @@
   flex-direction: column;
   align-items: center;
   row-gap: var(--mantine-spacing-md);
+}
+
+.font_size_transition {
+  transition: font-size 0.25s;
 }

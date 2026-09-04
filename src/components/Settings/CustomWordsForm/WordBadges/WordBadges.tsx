@@ -2,7 +2,6 @@ import { Box } from "@mantine/core";
 import { IconAdjustments, IconCheck, IconCopyOff, IconList } from "@tabler/icons-react";
 import FailedWordsBadge from "@/components/Settings/CustomWordsForm/WordBadges/WordInfoBadge/FailedWordBadge/FailedWordBadge";
 import WordInfoBadge from "@/components/Settings/CustomWordsForm/WordBadges/WordInfoBadge/WordInfoBadge";
-import pluralize from "@/utils/pluralize";
 import classes from "./WordBadge.module.css";
 
 export type WordBadgesProps = {
@@ -29,34 +28,27 @@ export default function WordsBadges({
   //Displayed badge text and icons
   const iconSize = 16;
 
-  const totalWordsText = `${numWordsParsed} total ${pluralize(numWordsParsed, "word")}`;
-  const totalWordsIcon = <IconList size={iconSize} />;
-
+  const totalWordsText = `${numWordsParsed} total`;
   const customWordsText =
     !numCustomFormWords || !validCustomWords
       ? "No custom words loaded"
-      : `${validCustomWords} valid custom ${pluralize(validCustomWords, "word")} parsed`;
-  const customWordsIcon = <IconAdjustments size={iconSize} />;
-
-  const alreadyExistingText = `${wordsAlreadyExisting} already existed in word list`;
-  const alreadyExistingIcon = <IconCopyOff size={iconSize} />;
-
-  const addedWordsText = `${customWordsInUse} added to word list`;
-  const addedWordsIcon = <IconCheck size={iconSize} />;
+      : `${validCustomWords} parsed`;
+  const alreadyExistingText = `${wordsAlreadyExisting} duplicates`;
+  const addedWordsText = `${customWordsInUse} added`;
 
   return (
     <Box className={classes.badge_wrapper}>
-      <WordInfoBadge icon={totalWordsIcon}>{totalWordsText}</WordInfoBadge>
-      <WordInfoBadge color="yellow" icon={customWordsIcon}>
+      <WordInfoBadge icon={<IconList size={iconSize} />}>{totalWordsText}</WordInfoBadge>
+      <WordInfoBadge color="yellow" icon={<IconAdjustments size={iconSize} />}>
         {customWordsText}
       </WordInfoBadge>
       {wordsAlreadyExisting > 0 && (
-        <WordInfoBadge color="yellow" icon={alreadyExistingIcon}>
+        <WordInfoBadge color="yellow" icon={<IconCopyOff size={iconSize} />}>
           {alreadyExistingText}
         </WordInfoBadge>
       )}
       {customWordsInUse > 0 && (
-        <WordInfoBadge color="green" icon={addedWordsIcon}>
+        <WordInfoBadge color="green" icon={<IconCheck size={iconSize} />}>
           {addedWordsText}
         </WordInfoBadge>
       )}

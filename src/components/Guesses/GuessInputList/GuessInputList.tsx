@@ -158,12 +158,12 @@ export default function GuessInputList({ guesses, setGuesses, wordSets }: GuessI
           </ActionIcon>
         }
         classNames={{
-          root: classes.guess_autocomplete_root,
+          root: `${classes.guess_autocomplete_root} ${doAnimations && classes.guess_autocomplete_root_transition}`,
           wrapper: classes.guess_autocomplete_wrapper,
-          input: classes.guess_autocomplete_input,
-          section: classes.guess_autocomplete_section,
+          input: `${classes.guess_autocomplete_input} ${doAnimations && classes.font_size_transition}`,
+          section: `${classes.guess_autocomplete_section} ${doAnimations && classes.guess_autocomplete_section_transition}`,
           dropdown: classes.guess_autocomplete_dropdown,
-          option: classes.guess_autocomplete_option,
+          option: `${classes.guess_autocomplete_option} ${doAnimations && classes.font_size_transition}`,
         }}
       />
 
