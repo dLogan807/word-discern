@@ -5,6 +5,7 @@ export interface ParsedWordSets {
 }
 
 const IS_ONLY_LETTERS_REGEX: RegExp = /^[a-zA-Z]+$/;
+const WORD_SPLIT_REGEX: RegExp = /;|,| |\n/;
 
 export function parseWordsToSets(words: string[], specialCharsAllowed: boolean): ParsedWordSets {
   const wordSets = new Map<number, Set<string>>();
@@ -48,9 +49,8 @@ export function getWordArray(text: string): string[] {
 
   if (!text) return words;
 
-  const splitRegex: RegExp = /;|,| |\n/;
   words = text
-    .split(splitRegex)
+    .split(WORD_SPLIT_REGEX)
     .map((word) => word.trim())
     .filter((word) => word.length > 0);
 
