@@ -118,6 +118,7 @@ export default function App() {
               numWordsParsed: parsedWordSets.wordNum,
               numCustomFormWords: customWordsFormData.words.length,
               failedWords: parsedWordSets.failed,
+              duplicateWords: parsedWordSets.duplicates,
             }}
           />
         </Box>

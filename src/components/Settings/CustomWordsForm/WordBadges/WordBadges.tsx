@@ -1,5 +1,5 @@
 import { Box } from "@mantine/core";
-import { IconAdjustments, IconCheck, IconCopyOff, IconList } from "@tabler/icons-react";
+import { IconAdjustments, IconCheck, IconCopyOff, IconList, IconX } from "@tabler/icons-react";
 import PopoverWordBadge from "@/components/Badges/WordInfoBadge/PopoverWordBadge/PopoverWordBadge";
 import WordInfoBadge from "@/components/Badges/WordInfoBadge/WordInfoBadge";
 import pluralize from "@/utils/pluralize";
@@ -11,6 +11,7 @@ export type WordBadgesProps = {
   numWordsParsed: number;
   numCustomFormWords: number;
   failedWords: Set<string>;
+  duplicateWords: Set<string>;
 };
 
 export default function WordsBadges({
@@ -19,11 +20,10 @@ export default function WordsBadges({
   numWordsParsed,
   numCustomFormWords,
   failedWords,
+  duplicateWords,
 }: WordBadgesProps) {
   const customWordsInUse = replaceDefaultWords ? numWordsParsed : numWordsParsed - numDefaultWords;
-
   const validCustomWords = numCustomFormWords - failedWords.size;
-
   const wordsAlreadyExisting = validCustomWords - customWordsInUse;
 
   //Displayed badge text and icons
@@ -34,7 +34,7 @@ export default function WordsBadges({
     !numCustomFormWords || !validCustomWords
       ? "No custom words loaded"
       : `${validCustomWords} parsed`;
-  const alreadyExistingText = `${wordsAlreadyExisting} duplicates`;
+  const alreadyExistingText = `${wordsAlreadyExisting} ${pluralize(wordsAlreadyExisting, "duplicate")}`;
   const addedWordsText = `${customWordsInUse} added`;
   const failedWordsText = `${failedWords.size} invalid ${pluralize(failedWords.size, "word")}`;
 
@@ -45,9 +45,13 @@ export default function WordsBadges({
         {customWordsText}
       </WordInfoBadge>
       {wordsAlreadyExisting > 0 && (
-        <WordInfoBadge color="yellow" icon={<IconCopyOff size={iconSize} />}>
+        <PopoverWordBadge
+          words={duplicateWords}
+          color="yellow"
+          icon={<IconCopyOff size={iconSize} />}
+        >
           {alreadyExistingText}
-        </WordInfoBadge>
+        </PopoverWordBadge>
       )}
       {customWordsInUse > 0 && (
         <WordInfoBadge color="green" icon={<IconCheck size={iconSize} />}>
@@ -55,12 +59,9 @@ export default function WordsBadges({
         </WordInfoBadge>
       )}
       {failedWords.size > 0 && (
-        <PopoverWordBadge
-          words={failedWords}
-          text={failedWordsText}
-          color="red"
-          iconSize={iconSize}
-        />
+        <PopoverWordBadge words={failedWords} color="red" icon={<IconX size={iconSize} />}>
+          {failedWordsText}
+        </PopoverWordBadge>
       )}
     </Box>
   );

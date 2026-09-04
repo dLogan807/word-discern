@@ -1,8 +1,9 @@
 import { Badge } from "@mantine/core";
+import { ReactNode } from "react";
 import classes from "./WordInfoBadge.module.css";
 
 type WordInfoBadgeProps = {
-  children: string;
+  children: ReactNode;
   icon?: React.ReactNode;
   color?: string;
   clickable?: boolean;

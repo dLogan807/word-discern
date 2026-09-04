@@ -1,7 +1,8 @@
 export interface ParsedWordSets {
-  failed: Set<string>;
   wordNum: number;
   wordSets: Map<number, Set<string>>;
+  failed: Set<string>;
+  duplicates: Set<string>;
 }
 
 const IS_ONLY_LETTERS_REGEX: RegExp = /^[a-zA-Z]+$/;
@@ -10,6 +11,7 @@ const WORD_SPLIT_REGEX: RegExp = /;|,| |\n/;
 export function parseWordsToSets(words: string[], specialCharsAllowed: boolean): ParsedWordSets {
   const wordSets = new Map<number, Set<string>>();
   const succeeded = new Set<string>();
+  const duplicates = new Set<string>();
   const failed = new Set<string>();
 
   for (let word of words) {
@@ -22,7 +24,13 @@ export function parseWordsToSets(words: string[], specialCharsAllowed: boolean):
         wordSets.set(word.length, new Set<string>());
       }
 
-      wordSets.get(word.length)?.add(word);
+      const wordSetOfThisLength = wordSets.get(word.length);
+      if (wordSetOfThisLength?.has(word)) {
+        duplicates.add(word);
+      } else {
+        wordSetOfThisLength?.add(word);
+      }
+
       succeeded.add(word);
     } else {
       failed.add(word);
@@ -33,6 +41,7 @@ export function parseWordsToSets(words: string[], specialCharsAllowed: boolean):
     wordSets: wordSets,
     wordNum: succeeded.size,
     failed: failed,
+    duplicates: duplicates,
   };
 }
 

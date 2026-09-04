@@ -1,16 +1,16 @@
 import { Button, List, ListItem, Popover, ScrollArea } from "@mantine/core";
-import { IconX } from "@tabler/icons-react";
+import { ReactNode } from "react";
 import WordInfoBadge from "@/components/Badges/WordInfoBadge/WordInfoBadge";
 import classes from "./PopoverWordBadge.module.css";
 
 type PopoverWordBadgeProps = {
   words: Set<string>;
-  text: string;
-  iconSize: number;
+  icon: ReactNode;
   color: string;
+  children: ReactNode;
 };
 
-export default function PopoverWordBadge({ words, text, iconSize, color }: PopoverWordBadgeProps) {
+export default function PopoverWordBadge({ words, icon, color, children }: PopoverWordBadgeProps) {
   return (
     <Popover position="bottom" withArrow shadow="md">
       <Popover.Target>
@@ -20,8 +20,8 @@ export default function PopoverWordBadge({ words, text, iconSize, color }: Popov
             root: classes.word_badge_button,
           }}
         >
-          <WordInfoBadge color={color} icon={<IconX size={iconSize} />} clickable>
-            {text}
+          <WordInfoBadge color={color} icon={icon} clickable>
+            {children}
           </WordInfoBadge>
         </Button>
       </Popover.Target>
