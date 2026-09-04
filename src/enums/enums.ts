@@ -7,7 +7,6 @@ export enum LetterCorrectness {
 export enum WordInput {
   TEXT = "text",
   JSON = "json",
-  FILE = "file",
 }
 
 export enum CharRevealState {

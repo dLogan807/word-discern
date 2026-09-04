@@ -1,7 +1,7 @@
 import { Box } from "@mantine/core";
-import { IconAdjustments, IconCheck, IconCopyOff, IconList } from "@tabler/icons-react";
-import FailedWordsBadge from "@/components/Settings/CustomWordsForm/WordBadges/WordInfoBadge/FailedWordBadge/FailedWordBadge";
-import WordInfoBadge from "@/components/Settings/CustomWordsForm/WordBadges/WordInfoBadge/WordInfoBadge";
+import { IconAdjustments, IconCheck, IconCopyOff, IconList, IconX } from "@tabler/icons-react";
+import PopoverWordBadge from "@/components/Badges/WordInfoBadge/PopoverWordBadge/PopoverWordBadge";
+import WordInfoBadge from "@/components/Badges/WordInfoBadge/WordInfoBadge";
 import pluralize from "@/utils/pluralize";
 import classes from "./WordBadge.module.css";
 
@@ -11,6 +11,7 @@ export type WordBadgesProps = {
   numWordsParsed: number;
   numCustomFormWords: number;
   failedWords: Set<string>;
+  duplicateWords: Set<string>;
 };
 
 export default function WordsBadges({
@@ -19,48 +20,49 @@ export default function WordsBadges({
   numWordsParsed,
   numCustomFormWords,
   failedWords,
+  duplicateWords,
 }: WordBadgesProps) {
   const customWordsInUse = replaceDefaultWords ? numWordsParsed : numWordsParsed - numDefaultWords;
-
   const validCustomWords = numCustomFormWords - failedWords.size;
-
   const wordsAlreadyExisting = validCustomWords - customWordsInUse;
 
   //Displayed badge text and icons
   const iconSize = 16;
 
-  const totalWordsText = `${numWordsParsed} total ${pluralize(numWordsParsed, "word")}`;
-  const totalWordsIcon = <IconList size={iconSize} />;
-
+  const totalWordsText = `${numWordsParsed} total`;
   const customWordsText =
     !numCustomFormWords || !validCustomWords
       ? "No custom words loaded"
-      : `${validCustomWords} valid custom ${pluralize(validCustomWords, "word")} parsed`;
-  const customWordsIcon = <IconAdjustments size={iconSize} />;
-
-  const alreadyExistingText = `${wordsAlreadyExisting} already existed in word list`;
-  const alreadyExistingIcon = <IconCopyOff size={iconSize} />;
-
-  const addedWordsText = `${customWordsInUse} added to word list`;
-  const addedWordsIcon = <IconCheck size={iconSize} />;
+      : `${validCustomWords} parsed`;
+  const alreadyExistingText = `${wordsAlreadyExisting} ${pluralize(wordsAlreadyExisting, "duplicate")}`;
+  const addedWordsText = `${customWordsInUse} added`;
+  const failedWordsText = `${failedWords.size} invalid ${pluralize(failedWords.size, "word")}`;
 
   return (
     <Box className={classes.badge_wrapper}>
-      <WordInfoBadge icon={totalWordsIcon}>{totalWordsText}</WordInfoBadge>
-      <WordInfoBadge color="yellow" icon={customWordsIcon}>
+      <WordInfoBadge icon={<IconList size={iconSize} />}>{totalWordsText}</WordInfoBadge>
+      <WordInfoBadge color="yellow" icon={<IconAdjustments size={iconSize} />}>
         {customWordsText}
       </WordInfoBadge>
       {wordsAlreadyExisting > 0 && (
-        <WordInfoBadge color="yellow" icon={alreadyExistingIcon}>
+        <PopoverWordBadge
+          words={duplicateWords}
+          color="yellow"
+          icon={<IconCopyOff size={iconSize} />}
+        >
           {alreadyExistingText}
-        </WordInfoBadge>
+        </PopoverWordBadge>
       )}
       {customWordsInUse > 0 && (
-        <WordInfoBadge color="green" icon={addedWordsIcon}>
+        <WordInfoBadge color="green" icon={<IconCheck size={iconSize} />}>
           {addedWordsText}
         </WordInfoBadge>
       )}
-      {failedWords.size > 0 && <FailedWordsBadge failedWords={failedWords} iconSize={iconSize} />}
+      {failedWords.size > 0 && (
+        <PopoverWordBadge words={failedWords} color="red" icon={<IconX size={iconSize} />}>
+          {failedWordsText}
+        </PopoverWordBadge>
+      )}
     </Box>
   );
 }

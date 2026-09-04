@@ -1,14 +1,4 @@
-import {
-  Box,
-  Checkbox,
-  Divider,
-  Group,
-  InputLabel,
-  Slider,
-  Stack,
-  Switch,
-  Title,
-} from "@mantine/core";
+import { Box, Checkbox, Divider, Group, InputLabel, Slider, Stack, Title } from "@mantine/core";
 import {
   IconAccessible,
   IconBook2,
@@ -22,7 +12,7 @@ import WordsBadges, {
   WordBadgesProps,
 } from "@/components/Settings/CustomWordsForm/WordBadges/WordBadges";
 import { useSettingsContext } from "@/hooks/useSettingsContext";
-import Footer from "./Footer/Footer";
+import Footer from "../Footer/Footer";
 import classes from "./Settings.module.css";
 
 type SettingsProps = {
@@ -53,7 +43,6 @@ export default function Settings({ wordBadgeData }: SettingsProps) {
           Settings
         </Title>
         <SettingsSection title="Guess input" icon={<IconZoomQuestion size={iconSize} />}>
-          <Switch label="Character Mode" disabled />
           <Checkbox
             label="Only allow words from the word list"
             onChange={(event) => setOnlyAllowWordListGuesses(event.currentTarget.checked)}
@@ -89,7 +78,7 @@ export default function Settings({ wordBadgeData }: SettingsProps) {
             <Slider
               onChangeEnd={setNumResultsShown}
               domain={[0, 100]}
-              defaultValue={20}
+              defaultValue={numResultsShown}
               min={5}
               max={100}
               step={5}

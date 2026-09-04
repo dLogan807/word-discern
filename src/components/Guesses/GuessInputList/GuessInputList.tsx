@@ -1,11 +1,13 @@
 import { ActionIcon, Autocomplete, Box } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import { IconPlus } from "@tabler/icons-react";
-import { createContext, useMemo, useState, KeyboardEvent, Dispatch, SetStateAction } from "react";
+import { useMemo, useState, KeyboardEvent, Dispatch, SetStateAction } from "react";
 import { Guess } from "@/classes/guess";
 import { Letter } from "@/classes/letter";
 import GuessItem from "@/components/Guesses/GuessItem/GuessItem";
+import GuessProvider from "@/components/Providers/GuessProvider";
 import { LetterCorrectness } from "@/enums/enums";
+import { useSettingsContext } from "@/hooks/useSettingsContext";
 import { validateGuess } from "@/utils/guessValidation";
 import classes from "./GuessInputList.module.css";
 
@@ -13,27 +15,11 @@ type GuessInputListProps = {
   guesses: Guess[];
   setGuesses: Dispatch<SetStateAction<Guess[]>>;
   wordSets: Map<number, Set<string>>;
-  onlyAllowWordListGuesses: boolean;
-  doAnimations: boolean;
 };
 
-export const GuessContext = createContext<{
-  removeGuess: (guess: Guess) => void;
-  setNextLetterCorrectnessForAllGuesses: (letterIndex: number, letter: Letter) => void;
-  doAnimations: boolean;
-}>({
-  removeGuess: () => {},
-  setNextLetterCorrectnessForAllGuesses: () => {},
-  doAnimations: true,
-});
+export default function GuessInputList({ guesses, setGuesses, wordSets }: GuessInputListProps) {
+  const { onlyAllowWordListGuesses, doAnimations } = useSettingsContext();
 
-export default function GuessInputList({
-  guesses,
-  setGuesses,
-  wordSets,
-  onlyAllowWordListGuesses,
-  doAnimations,
-}: GuessInputListProps) {
   const [searchDropdownOpened, setSearchDropDownOpened] = useState(false);
   const [guessValue, setGuessValue] = useState("");
   const [guessError, setGuessError] = useState<null | string>(null);
@@ -172,24 +158,22 @@ export default function GuessInputList({
           </ActionIcon>
         }
         classNames={{
-          root: classes.guess_autocomplete_root,
+          root: `${classes.guess_autocomplete_root} ${doAnimations && classes.guess_autocomplete_root_transition}`,
           wrapper: classes.guess_autocomplete_wrapper,
-          input: classes.guess_autocomplete_input,
-          section: classes.guess_autocomplete_section,
+          input: `${classes.guess_autocomplete_input} ${doAnimations && classes.font_size_transition}`,
+          section: `${classes.guess_autocomplete_section} ${doAnimations && classes.guess_autocomplete_section_transition}`,
           dropdown: classes.guess_autocomplete_dropdown,
-          option: classes.guess_autocomplete_option,
+          option: `${classes.guess_autocomplete_option} ${doAnimations && classes.font_size_transition}`,
         }}
       />
 
       {guesses.length > 0 && (
         <Box className={classes.guess_list}>
-          <GuessContext
-            value={{ removeGuess, setNextLetterCorrectnessForAllGuesses, doAnimations }}
-          >
+          <GuessProvider guessOperations={{ removeGuess, setNextLetterCorrectnessForAllGuesses }}>
             {guesses.map((guess) => (
               <GuessItem key={guess.wordString} guess={guess} />
             ))}
-          </GuessContext>
+          </GuessProvider>
         </Box>
       )}
     </>

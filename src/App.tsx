@@ -10,7 +10,7 @@ import Results from "@/components/Results/Results";
 import Settings from "@/components/Settings/Settings";
 import getResults, { EMPTY_RESULTS, IResults } from "@/utils/resultBuilder";
 import { ParsedWordSets, parseWordsToSets } from "@/utils/wordLoading";
-import { ThemeSelector } from "./components/ThemeSelector/ThemeSelector";
+import { ThemeSelector } from "./components/Buttons/ThemeSelector/ThemeSelector";
 import { useSettingsContext } from "./hooks/useSettingsContext";
 import classes from "./App.module.css";
 
@@ -26,7 +26,6 @@ export default function App() {
     doAnimations,
     hideResults,
     numResultsShown,
-    onlyAllowWordListGuesses,
     onlyHideUnknownChars,
     shuffleResults,
   } = useSettingsContext();
@@ -119,6 +118,7 @@ export default function App() {
               numWordsParsed: parsedWordSets.wordNum,
               numCustomFormWords: customWordsFormData.words.length,
               failedWords: parsedWordSets.failed,
+              duplicateWords: parsedWordSets.duplicates,
             }}
           />
         </Box>
@@ -128,8 +128,6 @@ export default function App() {
             guesses={guesses}
             setGuesses={setGuesses}
             wordSets={parsedWordSets.wordSets}
-            onlyAllowWordListGuesses={onlyAllowWordListGuesses}
-            doAnimations={doAnimations}
           />
           <Button
             variant="filled"

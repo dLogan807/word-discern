@@ -1,7 +1,7 @@
 import { Box } from "@mantine/core";
 import { Guess } from "@/classes/guess";
-import LetterButton from "@/components/Guesses/LetterButton/LetterButton";
-import RemoveButton from "@/components/Guesses/RemoveButton/RemoveButton";
+import LetterButton from "@/components/Buttons/LetterButton/LetterButton";
+import RemoveButton from "@/components/Buttons/RemoveButton/RemoveButton";
 import classes from "./GuessItem.module.css";
 
 type GuessItemProps = {
