@@ -1,0 +1,65 @@
+.license_paper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mantine-spacing-lg);
+  padding: var(--mantine-spacing-xs);
+}
+
+.licenses_box {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  gap: var(--mantine-spacing-sm);
+}
+
+.package_link {
+  @media (max-width: $mantine-breakpoint-sm) {
+    width: 100%;
+
+    button {
+      font-size: var(--mantine-font-size-sm);
+      width: 100%;
+
+      span {
+        width: 100%;
+      }
+    }
+  }
+
+  @media (max-width: $mantine-breakpoint-xs) {
+    button {
+      padding: var(--mantine-font-size-xs);
+      height: fit-content;
+    }
+  }
+}
+
+.license_box {
+  display: flex;
+  align-items: center;
+  column-gap: var(--mantine-spacing-sm);
+
+  p {
+    margin: 0;
+
+    @media (max-width: $mantine-breakpoint-xs) {
+      width: 100%;
+      text-align: left;
+    }
+  }
+
+  @media (max-width: $mantine-breakpoint-sm) {
+    width: 100%;
+  }
+
+  @media (max-width: $mantine-breakpoint-xs) {
+    flex-direction: column;
+  }
+}
+
+.license_link_icon {
+  @media (max-width: $mantine-breakpoint-sm) {
+    position: absolute;
+    right: 1rem;
+  }
+}
