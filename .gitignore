@@ -130,3 +130,6 @@ dist
 .pnp.*
 
 .DS_Store
+
+# Build-time licenses
+public/licenses.json
