@@ -30,6 +30,8 @@ export default function Settings({ wordBadgeData }: SettingsProps) {
     setOnlyHideUnknownChars,
     numResultsShown,
     setNumResultsShown,
+    showHelpButton,
+    setShowHelpButton,
     doAnimations,
     setDoAnimations,
   } = useSettingsContext();
@@ -95,6 +97,11 @@ export default function Settings({ wordBadgeData }: SettingsProps) {
             label="Animations"
             checked={doAnimations}
             onChange={(event) => setDoAnimations(event.currentTarget.checked)}
+          />
+          <Checkbox
+            label="Show help button"
+            checked={showHelpButton}
+            onChange={(event) => setShowHelpButton(event.currentTarget.checked)}
           />
         </SettingsSection>
       </Stack>

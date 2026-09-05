@@ -44,6 +44,11 @@ export default function SettingsProvider({ children }: { children: ReactNode }) 
     defaultValue: true,
     getInitialValueInEffect: false,
   });
+  const [showHelpButton, setShowHelpButton] = useLocalStorage({
+    key: "show-help-button",
+    defaultValue: true,
+    getInitialValueInEffect: false,
+  });
   const [customWordsFormData, setCustomWordsFormData] = useLocalStorage({
     key: "custom-words-form-data",
     defaultValue: DEFAULT_CUSTOM_WORDS_FORM,
@@ -65,6 +70,8 @@ export default function SettingsProvider({ children }: { children: ReactNode }) 
         setOnlyAllowWordListGuesses,
         onlyHideUnknownChars,
         setOnlyHideUnknownChars,
+        showHelpButton,
+        setShowHelpButton,
         shuffleResults,
         setShuffleResults,
       }}

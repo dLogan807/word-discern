@@ -28,6 +28,7 @@ export default function App() {
     hideResults,
     numResultsShown,
     onlyHideUnknownChars,
+    showHelpButton,
     shuffleResults,
   } = useSettingsContext();
 
@@ -145,7 +146,7 @@ export default function App() {
             doAnimations={doAnimations}
           />
         )}
-        <HelpPopover />
+        {showHelpButton && <HelpPopover />}
       </Box>
     </Box>
   );
