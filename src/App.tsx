@@ -11,6 +11,7 @@ import Settings from "@/components/Settings/Settings";
 import getResults, { EMPTY_RESULTS, IResults } from "@/utils/resultBuilder";
 import { ParsedWordSets, parseWordsToSets } from "@/utils/wordLoading";
 import { ThemeSelector } from "./components/Buttons/ThemeSelector/ThemeSelector";
+import HelpPopover from "./components/Overlays/HelpPopover/HelpPopover";
 import { useSettingsContext } from "./hooks/useSettingsContext";
 import classes from "./App.module.css";
 
@@ -27,6 +28,7 @@ export default function App() {
     hideResults,
     numResultsShown,
     onlyHideUnknownChars,
+    showHelpButton,
     shuffleResults,
   } = useSettingsContext();
 
@@ -76,77 +78,76 @@ export default function App() {
   }
 
   return (
-    <>
-      <Box
-        className={`${classes.layout}
+    <Box
+      className={`${classes.layout}
             ${!settingsOpened ? classes.layout_settings_pane_closed : undefined}
             ${!doAnimations ? classes.no_animation : undefined}
           `}
-      >
-        <Box className={classes.header}>
-          <Title order={1} classNames={{ root: classes.header_logo }}>
-            Word Discern
-          </Title>
+    >
+      <Box className={classes.header}>
+        <Title order={1} classNames={{ root: classes.header_logo }}>
+          Word Discern
+        </Title>
 
-          <Group>
-            <ThemeSelector />
-            <ActionIcon
-              variant="transparent"
-              aria-label="Settings"
-              onClick={toggle}
-              classNames={{
-                root: classes.settings_button,
-                icon: `${classes.settings_button_icon}
+        <Group>
+          <ThemeSelector />
+          <ActionIcon
+            variant="transparent"
+            aria-label="Settings"
+            onClick={toggle}
+            classNames={{
+              root: classes.settings_button,
+              icon: `${classes.settings_button_icon}
                   ${settingsOpened ? classes.settings_button_icon_opened : undefined}
                   ${!doAnimations ? classes.no_animation : undefined}`,
-              }}
-            >
-              {settingsOpened ? <IconXFilled /> : <IconSettings />}
-            </ActionIcon>
-          </Group>
-        </Box>
+            }}
+          >
+            {settingsOpened ? <IconXFilled /> : <IconSettings />}
+          </ActionIcon>
+        </Group>
+      </Box>
 
-        <Box
-          className={`${classes.settings_pane}
+      <Box
+        className={`${classes.settings_pane}
             ${!settingsOpened ? classes.settings_pane_closed : undefined}
             ${!doAnimations ? classes.no_animation : undefined}`}
-        >
-          <Settings
-            wordBadgeData={{
-              replaceDefaultWords: customWordsFormData.replaceDefaultWords,
-              numDefaultWords: defaultWords.length,
-              numWordsParsed: parsedWordSets.wordNum,
-              numCustomFormWords: customWordsFormData.words.length,
-              failedWords: parsedWordSets.failed,
-              duplicateWords: parsedWordSets.duplicates,
-            }}
-          />
-        </Box>
-
-        <Box className={classes.content_body}>
-          <GuessInputList
-            guesses={guesses}
-            setGuesses={setGuesses}
-            wordSets={parsedWordSets.wordSets}
-          />
-          <Button
-            variant="filled"
-            onClick={handleGetPossibleWords}
-            disabled={!guesses.length}
-            rightSection={<IconSearch />}
-          >
-            Find possible words
-          </Button>
-          {showResults && (
-            <Results
-              results={results}
-              resultsUpdateKey={resultsUpdateKey}
-              numberToShow={numResultsShown}
-              doAnimations={doAnimations}
-            />
-          )}
-        </Box>
+      >
+        <Settings
+          wordBadgeData={{
+            replaceDefaultWords: customWordsFormData.replaceDefaultWords,
+            numDefaultWords: defaultWords.length,
+            numWordsParsed: parsedWordSets.wordNum,
+            numCustomFormWords: customWordsFormData.words.length,
+            failedWords: parsedWordSets.failed,
+            duplicateWords: parsedWordSets.duplicates,
+          }}
+        />
       </Box>
-    </>
+
+      <Box className={classes.content_body}>
+        <GuessInputList
+          guesses={guesses}
+          setGuesses={setGuesses}
+          wordSets={parsedWordSets.wordSets}
+        />
+        <Button
+          variant="filled"
+          onClick={handleGetPossibleWords}
+          disabled={!guesses.length}
+          rightSection={<IconSearch />}
+        >
+          Find possible words
+        </Button>
+        {showResults && (
+          <Results
+            results={results}
+            resultsUpdateKey={resultsUpdateKey}
+            numberToShow={numResultsShown}
+            doAnimations={doAnimations}
+          />
+        )}
+        {showHelpButton && <HelpPopover />}
+      </Box>
+    </Box>
   );
 }

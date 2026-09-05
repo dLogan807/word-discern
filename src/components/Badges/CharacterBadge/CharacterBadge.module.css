@@ -1,0 +1,17 @@
+.character_badge_root {
+  width: 4rem;
+  height: 4rem;
+  font-weight: 600;
+  font-size: 1.5rem;
+
+  @media (max-width: $mantine-breakpoint-sm) {
+    font-size: var(--mantine-font-size-lg);
+    width: 3rem;
+    height: 3rem;
+  }
+
+  @media (max-width: $mantine-breakpoint-xs) {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+}
