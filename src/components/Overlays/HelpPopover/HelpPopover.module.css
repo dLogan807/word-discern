@@ -1,0 +1,27 @@
+.icon_root {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 3rem;
+  height: 3rem;
+  margin: var(--mantine-spacing-md);
+}
+
+.icon_icon {
+  svg {
+    width: 3rem;
+    height: 3rem;
+  }
+}
+
+.all_character_box {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mantine-spacing-md);
+}
+
+.character_colour_explanation_box {
+  display: flex;
+  align-items: center;
+  gap: var(--mantine-spacing-xs);
+}
