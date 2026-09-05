@@ -1,16 +1,21 @@
 import { Button, List, ListItem, Popover, ScrollArea } from "@mantine/core";
 import { ReactNode } from "react";
 import WordInfoBadge from "@/components/Badges/WordInfoBadge/WordInfoBadge";
-import classes from "./PopoverWordBadge.module.css";
+import classes from "./WordInfoBadgePopover.module.css";
 
-type PopoverWordBadgeProps = {
+type WordInfoBadgePopoverProps = {
   words: Set<string>;
   icon: ReactNode;
   color: string;
   children: ReactNode;
 };
 
-export default function PopoverWordBadge({ words, icon, color, children }: PopoverWordBadgeProps) {
+export default function WordInfoBadgePopover({
+  words,
+  icon,
+  color,
+  children,
+}: WordInfoBadgePopoverProps) {
   return (
     <Popover position="bottom" withArrow shadow="md">
       <Popover.Target>

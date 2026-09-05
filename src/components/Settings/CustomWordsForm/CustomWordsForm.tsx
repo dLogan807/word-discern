@@ -13,7 +13,7 @@ import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { parse, ParseError, printParseErrorCode } from "jsonc-parser";
 import { useState } from "react";
-import FileUploadModal from "@/components/Modals/FileUploadModal/FileUploadModal";
+import FileUploadModal from "@/components/Overlays/FileUploadModal/FileUploadModal";
 import { WordInput } from "@/enums/enums";
 import { useSettingsContext } from "@/hooks/useSettingsContext";
 import { getWordArray } from "@/utils/wordLoading";

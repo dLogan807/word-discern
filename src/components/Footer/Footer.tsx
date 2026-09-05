@@ -1,7 +1,7 @@
 import { Box, Text, Button } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconBrandMantine, IconBrandVite } from "@tabler/icons-react";
-import LicenseModal from "../Modals/LiscensesModal/LicensesModal";
+import LicenseModal from "../Overlays/LiscensesModal/LicensesModal";
 import PoweredByIconLink from "./PoweredByIconLink/PoweredByIconLink";
 import classes from "./Footer.module.css";
 

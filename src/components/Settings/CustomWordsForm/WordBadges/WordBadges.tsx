@@ -1,7 +1,7 @@
 import { Box } from "@mantine/core";
 import { IconAdjustments, IconCheck, IconCopyOff, IconList, IconX } from "@tabler/icons-react";
-import PopoverWordBadge from "@/components/Badges/WordInfoBadge/PopoverWordBadge/PopoverWordBadge";
 import WordInfoBadge from "@/components/Badges/WordInfoBadge/WordInfoBadge";
+import WordInfoBadgePopover from "@/components/Overlays/WordInfoBadgePopover/WordInfoBadgePopover";
 import pluralize from "@/utils/pluralize";
 import classes from "./WordBadge.module.css";
 
@@ -45,13 +45,13 @@ export default function WordsBadges({
         {customWordsText}
       </WordInfoBadge>
       {wordsAlreadyExisting > 0 && (
-        <PopoverWordBadge
+        <WordInfoBadgePopover
           words={duplicateWords}
           color="yellow"
           icon={<IconCopyOff size={iconSize} />}
         >
           {alreadyExistingText}
-        </PopoverWordBadge>
+        </WordInfoBadgePopover>
       )}
       {customWordsInUse > 0 && (
         <WordInfoBadge color="green" icon={<IconCheck size={iconSize} />}>
@@ -59,9 +59,9 @@ export default function WordsBadges({
         </WordInfoBadge>
       )}
       {failedWords.size > 0 && (
-        <PopoverWordBadge words={failedWords} color="red" icon={<IconX size={iconSize} />}>
+        <WordInfoBadgePopover words={failedWords} color="red" icon={<IconX size={iconSize} />}>
           {failedWordsText}
-        </PopoverWordBadge>
+        </WordInfoBadgePopover>
       )}
     </Box>
   );
