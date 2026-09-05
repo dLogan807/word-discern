@@ -6,13 +6,14 @@ import classes from "./GuessItem.module.css";
 
 type GuessItemProps = {
   guess: Guess;
+  guessIndex: number;
 };
 
-export default function GuessItem({ guess }: GuessItemProps) {
+export default function GuessItem({ guess, guessIndex }: GuessItemProps) {
   return (
     <Box className={classes.guess_item}>
       {guess.letters.map((letter, idx) => (
-        <LetterButton key={idx} letter={letter} letterIndex={idx} />
+        <LetterButton key={idx} letter={letter} letterIndex={idx} guessIndex={guessIndex} />
       ))}
       <RemoveButton guess={guess} />
     </Box>

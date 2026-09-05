@@ -8,6 +8,7 @@ import classes from "./LetterButton.module.css";
 type LetterButtonProps = {
   letter: Letter;
   letterIndex: number;
+  guessIndex: number;
 };
 
 enum FlipPhase {
@@ -16,7 +17,7 @@ enum FlipPhase {
   FlippingOut,
 }
 
-export default function LetterButton({ letter, letterIndex }: LetterButtonProps) {
+export default function LetterButton({ letter, letterIndex, guessIndex }: LetterButtonProps) {
   const { setNextLetterCorrectnessForAllGuesses } = useGuessContext();
   const { doAnimations } = useSettingsContext();
 
@@ -38,7 +39,7 @@ export default function LetterButton({ letter, letterIndex }: LetterButtonProps)
   }
 
   function handleClick() {
-    setNextLetterCorrectnessForAllGuesses(letterIndex, letter);
+    setNextLetterCorrectnessForAllGuesses(letter, letterIndex, guessIndex);
   }
 
   // Set colour after first half of flip
