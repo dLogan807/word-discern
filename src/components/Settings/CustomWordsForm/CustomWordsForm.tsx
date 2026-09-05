@@ -81,8 +81,7 @@ export default function CustomWordsForm() {
       words = getWordArray(formValues.text);
     } else {
       error = validateJSON(formValues.json);
-
-      if (!error) {
+      if (!error && formValues.json) {
         words = JSON.parse(formValues.json);
       }
     }
