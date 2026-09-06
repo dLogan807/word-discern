@@ -41,32 +41,37 @@ export default function GuessInputList({ guesses, setGuesses, wordSets }: GuessI
     guessIndex: number
   ) {
     const nextLetterCorrectness = letter.getNextLetterCorrectness();
+    function getCorrectnessToApply(
+      guess: Guess,
+      currentGuessIndex: number
+    ): LetterCorrectness | undefined {
+      const targetLetter = guess.letters[letterIndex];
+      const isSameLetter = letter.value === targetLetter.value;
+
+      if (letter.correctness === LetterCorrectness.Correct) {
+        return isSameLetter ? LetterCorrectness.NotPresent : undefined;
+      }
+
+      if (nextLetterCorrectness === LetterCorrectness.Correct) {
+        if (isSameLetter) {
+          return LetterCorrectness.Correct;
+        }
+
+        return targetLetter.correctness === LetterCorrectness.Correct
+          ? LetterCorrectness.NotPresent
+          : undefined;
+      }
+
+      return currentGuessIndex === guessIndex ? nextLetterCorrectness : undefined;
+    }
 
     setGuesses((currentGuesses) =>
       currentGuesses.map((guess, currentGuessIndex) => {
-        const targetLetter = guess.letters[letterIndex];
+        const correctness = getCorrectnessToApply(guess, currentGuessIndex);
 
-        if (letter.correctness === LetterCorrectness.Correct) {
-          if (letter.value === targetLetter.value) {
-            return updateLetterCorrectness(guess, letterIndex, LetterCorrectness.NotPresent);
-          }
-
-          return guess;
-        }
-
-        if (nextLetterCorrectness === LetterCorrectness.Correct) {
-          if (letter.value === targetLetter.value) {
-            return updateLetterCorrectness(guess, letterIndex, LetterCorrectness.Correct);
-          }
-
-          return updateLetterCorrectness(guess, letterIndex, LetterCorrectness.NotPresent);
-        }
-
-        if (currentGuessIndex === guessIndex) {
-          return updateLetterCorrectness(guess, letterIndex, nextLetterCorrectness);
-        }
-
-        return guess;
+        return correctness === undefined
+          ? guess
+          : updateLetterCorrectness(guess, letterIndex, correctness);
       })
     );
   }
