@@ -5,6 +5,7 @@ import csp from "vite-plugin-csp-guard";
 
 export default defineConfig(() => {
   return {
+    base: "/word-discern/",
     plugins: [
       react(),
       csp({
