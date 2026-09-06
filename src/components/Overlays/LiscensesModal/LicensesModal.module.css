@@ -1,3 +1,10 @@
+.modal_title {
+  font-weight: var(--mantine-h2-font-weight);
+  line-height: var(--mantine-h2-line-height);
+  font-size: var(--mantine-h2-font-size);
+  font-family: var(--mantine-font-family-headings);
+}
+
 .license_paper {
   display: flex;
   flex-direction: column;

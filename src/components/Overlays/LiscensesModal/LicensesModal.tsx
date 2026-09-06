@@ -1,4 +1,4 @@
-import { Box, Paper, Button, Text, ThemeIcon, Anchor, Modal, Title } from "@mantine/core";
+import { Box, Paper, Button, Text, ThemeIcon, Anchor, Modal } from "@mantine/core";
 import { IconExternalLink } from "@tabler/icons-react";
 import licenses from "@/generated/licenses.json";
 import { useSettingsContext } from "@/hooks/useSettingsContext";
@@ -32,9 +32,12 @@ export default function LicenseModal({ opened, close }: LicensesModalProps) {
     <Modal
       opened={opened}
       onClose={close}
-      title={<Title order={2}>Open Source Licenses</Title>}
+      title="Open Source Licenses"
       closeButtonProps={{ "aria-label": "Close licenses modal" }}
       transitionProps={doAnimations ? undefined : { duration: 0 }}
+      classNames={{
+        title: classes.modal_title,
+      }}
       centered
     >
       <Box className={classes.licenses_box}>
