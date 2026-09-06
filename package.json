@@ -1,14 +1,14 @@
 {
   "name": "word-discern",
   "private": true,
-  "version": "0.0.1",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "npm run generate-licenses && tsc && vite build",
     "preview": "vite preview",
     "typecheck": "npm run generate-licenses && tsc --noEmit",
-    "generate-licenses": "license-report --only=prod --output=json > ./src/generated/licenses.json",
+    "generate-licenses": "license-report --output=json > ./src/generated/licenses.json",
     "lint": "npm run generate-licenses && npm run oxlint && npm run stylelint",
     "oxlint": "oxlint .",
     "stylelint": "stylelint \"**/*.css\" --cache",
@@ -38,7 +38,8 @@
     "postcss-preset-mantine": "^1.18.0",
     "postcss-simple-vars": "^7.0.1",
     "typescript": "^7.0.2",
-    "vite": "^8.2.2"
+    "vite": "^8.2.2",
+    "vite-plugin-csp-guard": "^4.0.1"
   },
   "engines": {
     "node": "^22.22.2"

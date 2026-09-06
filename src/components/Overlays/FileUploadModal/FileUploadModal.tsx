@@ -62,6 +62,7 @@ export default function FileUploadModal({ opened, close, submit }: FileInputModa
       onClose={onClose}
       title="Word list file upload"
       classNames={{
+        title: classes.modal_title,
         body: classes.modal_body,
       }}
       closeButtonProps={{ "aria-label": "Close word list upload modal" }}

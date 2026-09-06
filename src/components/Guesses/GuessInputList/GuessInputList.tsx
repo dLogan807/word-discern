@@ -35,25 +35,38 @@ export default function GuessInputList({ guesses, setGuesses, wordSets }: GuessI
     if (event.key === "Escape") setSearchDropDownOpened(false);
   }
 
-  function setNextLetterCorrectnessForAllGuesses(letterIndex: number, letter: Letter) {
+  function setNextLetterCorrectnessForAllGuesses(
+    letter: Letter,
+    letterIndex: number,
+    guessIndex: number
+  ) {
     const nextLetterCorrectness = letter.getNextLetterCorrectness();
 
     setGuesses((currentGuesses) =>
-      currentGuesses.map((guess) => {
+      currentGuesses.map((guess, currentGuessIndex) => {
         const targetLetter = guess.letters[letterIndex];
 
-        if (!targetLetter || targetLetter.value !== letter.value) {
-          if (
-            nextLetterCorrectness === LetterCorrectness.Correct &&
-            targetLetter.correctness === LetterCorrectness.Correct
-          ) {
+        if (letter.correctness === LetterCorrectness.Correct) {
+          if (letter.value === targetLetter.value) {
             return updateLetterCorrectness(guess, letterIndex, LetterCorrectness.NotPresent);
           }
 
           return guess;
         }
 
-        return updateLetterCorrectness(guess, letterIndex, nextLetterCorrectness);
+        if (nextLetterCorrectness === LetterCorrectness.Correct) {
+          if (letter.value === targetLetter.value) {
+            return updateLetterCorrectness(guess, letterIndex, LetterCorrectness.Correct);
+          }
+
+          return updateLetterCorrectness(guess, letterIndex, LetterCorrectness.NotPresent);
+        }
+
+        if (currentGuessIndex === guessIndex) {
+          return updateLetterCorrectness(guess, letterIndex, nextLetterCorrectness);
+        }
+
+        return guess;
       })
     );
   }
@@ -170,8 +183,8 @@ export default function GuessInputList({ guesses, setGuesses, wordSets }: GuessI
       {guesses.length > 0 && (
         <Box className={classes.guess_list}>
           <GuessProvider guessOperations={{ removeGuess, setNextLetterCorrectnessForAllGuesses }}>
-            {guesses.map((guess) => (
-              <GuessItem key={guess.wordString} guess={guess} />
+            {guesses.map((guess, idx) => (
+              <GuessItem key={guess.wordString} guess={guess} guessIndex={idx} />
             ))}
           </GuessProvider>
         </Box>

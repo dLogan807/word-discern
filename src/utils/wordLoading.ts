@@ -16,7 +16,7 @@ export function parseWordsToSets(words: string[], specialCharsAllowed: boolean):
 
   for (let word of words) {
     if (typeof word === "string") {
-      word = word.trim();
+      word = word.trim().toLocaleLowerCase();
     }
 
     if (isValidWord(word, specialCharsAllowed)) {

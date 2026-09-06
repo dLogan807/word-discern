@@ -30,7 +30,7 @@ type CustomWordsFormValues = {
   replaceDefaultWords: boolean;
 };
 
-export type CustomWordsFormData = Omit<CustomWordsFormValues, "file"> & {
+export type CustomWordsFormData = CustomWordsFormValues & {
   lastUpdatedWithInputMode: WordInput;
   words: string[];
 };
@@ -161,7 +161,9 @@ export default function CustomWordsForm() {
               autosize
               minRows={4}
               maxRows={10}
-              rightSection={<ResetTextFieldActionIcon reset={resetCurrentField} />}
+              rightSection={
+                form.values.text && <ResetTextFieldActionIcon reset={resetCurrentField} />
+              }
               rightSectionWidth={0}
             />
             <JsonInput
@@ -171,7 +173,9 @@ export default function CustomWordsForm() {
               aria-label="Your JSON array of words"
               placeholder='["a","list","of","words"]'
               validationError={validateJSON(form.getValues().json)}
-              rightSection={<ResetTextFieldActionIcon reset={resetCurrentField} />}
+              rightSection={
+                form.values.json && <ResetTextFieldActionIcon reset={resetCurrentField} />
+              }
               formatOnBlur
               autosize
               minRows={4}

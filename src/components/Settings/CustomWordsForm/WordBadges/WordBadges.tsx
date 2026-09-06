@@ -33,7 +33,7 @@ export default function WordsBadges({
   const customWordsText =
     !numCustomFormWords || !validCustomWords
       ? "No custom words loaded"
-      : `${validCustomWords} parsed`;
+      : `${validCustomWords} valid parsed`;
   const alreadyExistingText = `${wordsAlreadyExisting} ${pluralize(wordsAlreadyExisting, "duplicate")}`;
   const addedWordsText = `${customWordsInUse} added`;
   const failedWordsText = `${failedWords.size} invalid ${pluralize(failedWords.size, "word")}`;

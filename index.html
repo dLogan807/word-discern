@@ -2,14 +2,15 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.png" />
     <meta
       name="viewport"
       content="minimum-scale=1, initial-scale=1, width=device-width, user-scalable=no"
     />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
     <title>Word Discern</title>
     <script data-mantine-script="true">
-      //Mantine ColorSchemeScript
+      // Mantine ColorSchemeScript
       try {
         var colorScheme = window.localStorage.getItem("mantine-color-scheme-value");
         if (colorScheme !== "light" && colorScheme !== "dark") {
@@ -18,7 +19,7 @@
             : "light";
         }
 
-        document.documentElement.setAttribute("data-mantine-color-scheme", computedColorScheme);
+        document.documentElement.setAttribute("data-mantine-color-scheme", colorScheme);
       } catch (e) {}
     </script>
   </head>
