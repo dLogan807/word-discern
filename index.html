@@ -9,7 +9,7 @@
     />
     <title>Word Discern</title>
     <script data-mantine-script="true">
-      //Mantine ColorSchemeScript
+      // Mantine ColorSchemeScript
       try {
         var colorScheme = window.localStorage.getItem("mantine-color-scheme-value");
         if (colorScheme !== "light" && colorScheme !== "dark") {
@@ -18,7 +18,7 @@
             : "light";
         }
 
-        document.documentElement.setAttribute("data-mantine-color-scheme", computedColorScheme);
+        document.documentElement.setAttribute("data-mantine-color-scheme", colorScheme);
       } catch (e) {}
     </script>
   </head>
