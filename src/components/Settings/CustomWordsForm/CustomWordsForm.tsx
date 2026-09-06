@@ -30,7 +30,7 @@ type CustomWordsFormValues = {
   replaceDefaultWords: boolean;
 };
 
-export type CustomWordsFormData = Omit<CustomWordsFormValues, "file"> & {
+export type CustomWordsFormData = CustomWordsFormValues & {
   lastUpdatedWithInputMode: WordInput;
   words: string[];
 };
