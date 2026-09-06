@@ -38,6 +38,7 @@ export default function LicenseModal({ opened, close }: LicensesModalProps) {
       classNames={{
         title: classes.modal_title,
       }}
+      size="auto"
       centered
     >
       <Box className={classes.licenses_box}>
