@@ -1,26 +1,5 @@
-import { createContext, Dispatch, SetStateAction, useContext } from "react";
-import { CustomWordsFormData } from "@/components/Settings/CustomWordsForm/CustomWordsForm";
-
-export type SettingsContextType = {
-  customWordsFormData: CustomWordsFormData;
-  setCustomWordsFormData: Dispatch<SetStateAction<CustomWordsFormData>>;
-  doAnimations: boolean;
-  setDoAnimations: Dispatch<SetStateAction<boolean>>;
-  hideResults: boolean;
-  setHideResults: Dispatch<SetStateAction<boolean>>;
-  numResultsShown: number;
-  setNumResultsShown: Dispatch<SetStateAction<number>>;
-  onlyAllowWordListGuesses: boolean;
-  setOnlyAllowWordListGuesses: Dispatch<SetStateAction<boolean>>;
-  onlyHideUnknownChars: boolean;
-  setOnlyHideUnknownChars: Dispatch<SetStateAction<boolean>>;
-  showHelpButton: boolean;
-  setShowHelpButton: Dispatch<SetStateAction<boolean>>;
-  shuffleResults: boolean;
-  setShuffleResults: Dispatch<SetStateAction<boolean>>;
-};
-
-export const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
+import { useContext } from "react";
+import { SettingsContext, SettingsContextType } from "@/contexts/SettingsContext";
 
 export function useSettingsContext(): SettingsContextType {
   const context = useContext(SettingsContext);

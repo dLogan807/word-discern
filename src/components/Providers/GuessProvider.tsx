@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { GuessContext, GuessContextType } from "@/hooks/useGuessContext";
+import { GuessContext, GuessContextType } from "@/contexts/GuessContext";
 
 export default function GuessProvider({
   children,
