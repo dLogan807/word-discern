@@ -2,19 +2,18 @@ import { Box } from "@mantine/core";
 import { IconAdjustments, IconCheck, IconCopyOff, IconList, IconX } from "@tabler/icons-react";
 import WordInfoBadge from "@/components/Badges/WordInfoBadge/WordInfoBadge";
 import WordInfoBadgePopover from "@/components/Overlays/WordInfoBadgePopover/WordInfoBadgePopover";
+import { useSettingsContext } from "@/hooks/useSettingsContext";
 import { useWordListContext } from "@/hooks/useWordListContext";
 import pluralize from "@/utils/pluralize";
 import classes from "./WordBadge.module.css";
 
-export type WordBadgesProps = {
-  replaceDefaultWords: boolean;
-  numCustomFormWords: number;
-};
-
-export default function WordsBadges({ replaceDefaultWords, numCustomFormWords }: WordBadgesProps) {
+export default function WordsBadges() {
+  const { customWordsFormData } = useSettingsContext();
   const { defaultWords, totalParsedWords, invalidWords, duplicateWords } = useWordListContext();
 
-  const customWordsInUse = replaceDefaultWords
+  const numCustomFormWords = customWordsFormData.words.length;
+
+  const customWordsInUse = customWordsFormData.replaceDefaultWords
     ? totalParsedWords
     : totalParsedWords - defaultWords.length;
   const validCustomWords = numCustomFormWords - invalidWords.size;
