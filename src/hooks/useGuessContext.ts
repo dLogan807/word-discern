@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { GuessContext, GuessContextType } from "@/contexts/guessContext";
+import { GuessContext, GuessContextType } from "@/contexts/GuessContext";
 
 export function useGuessContext(): GuessContextType {
   const context = useContext(GuessContext);

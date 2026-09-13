@@ -1,7 +1,7 @@
 import { useLocalStorage } from "@mantine/hooks";
 import { ReactNode } from "react";
 import { CustomWordsFormData } from "@/components/Settings/CustomWordsForm/CustomWordsForm";
-import { SettingsContext } from "@/contexts/settingsContext";
+import { SettingsContext } from "@/contexts/SettingsContext";
 import { WordInput } from "@/enums/enums";
 
 const DEFAULT_CUSTOM_WORDS_FORM: CustomWordsFormData = {

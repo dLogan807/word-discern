@@ -1,4 +1,4 @@
-import { createContext, Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, createContext } from "react";
 import { CustomWordsFormData } from "@/components/Settings/CustomWordsForm/CustomWordsForm";
 
 export type SettingsContextType = {

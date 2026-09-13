@@ -8,17 +8,18 @@ import GuessItem from "@/components/Guesses/GuessItem/GuessItem";
 import GuessProvider from "@/components/Providers/GuessProvider";
 import { LetterCorrectness } from "@/enums/enums";
 import { useSettingsContext } from "@/hooks/useSettingsContext";
+import { useWordListContext } from "@/hooks/useWordListContext";
 import { validateGuess } from "@/utils/guessValidation";
 import classes from "./GuessInputList.module.css";
 
 type GuessInputListProps = {
   guesses: Guess[];
   setGuesses: Dispatch<SetStateAction<Guess[]>>;
-  wordSets: Map<number, Set<string>>;
 };
 
-export default function GuessInputList({ guesses, setGuesses, wordSets }: GuessInputListProps) {
+export default function GuessInputList({ guesses, setGuesses }: GuessInputListProps) {
   const { onlyAllowWordListGuesses, doAnimations } = useSettingsContext();
+  const { wordSets } = useWordListContext();
 
   const [searchDropdownOpened, setSearchDropDownOpened] = useState(false);
   const [guessValue, setGuessValue] = useState("");
