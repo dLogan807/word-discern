@@ -15,7 +15,7 @@ type GuessInputListProps = {
 
 export default function GuessInputList({ guesses, setGuesses }: GuessInputListProps) {
   function addGuess(newGuess: string) {
-    const initialCorrectnessValues = getInitialCorrectnessValuesFromGuesses(newGuess);
+    const initialCorrectnessValues = getInitialCorrectnessValuesFromGuesses(newGuess, guesses);
     const guess = new Guess(newGuess, initialCorrectnessValues);
     setGuesses([...guesses, guess]);
   }
@@ -25,34 +25,15 @@ export default function GuessInputList({ guesses, setGuesses }: GuessInputListPr
     letterIndex: number,
     guessIndex: number
   ) {
-    const nextLetterCorrectness = letter.getNextLetterCorrectness();
-    function getCorrectnessToApply(
-      guess: Guess,
-      currentGuessIndex: number
-    ): LetterCorrectness | undefined {
-      const targetLetter = guess.letters[letterIndex];
-      const isSameLetter = letter.value === targetLetter.value;
-
-      if (letter.correctness === LetterCorrectness.Correct) {
-        return isSameLetter ? LetterCorrectness.NotPresent : undefined;
-      }
-
-      if (nextLetterCorrectness === LetterCorrectness.Correct) {
-        if (isSameLetter) {
-          return LetterCorrectness.Correct;
-        }
-
-        return targetLetter.correctness === LetterCorrectness.Correct
-          ? LetterCorrectness.NotPresent
-          : undefined;
-      }
-
-      return currentGuessIndex === guessIndex ? nextLetterCorrectness : undefined;
-    }
-
     setGuesses((currentGuesses) =>
       currentGuesses.map((guess, currentGuessIndex) => {
-        const correctness = getCorrectnessToApply(guess, currentGuessIndex);
+        const correctness = getCorrectnessToApply(
+          guess,
+          guessIndex,
+          currentGuessIndex,
+          letter,
+          letterIndex
+        );
 
         return correctness === undefined
           ? guess
@@ -78,25 +59,6 @@ export default function GuessInputList({ guesses, setGuesses }: GuessInputListPr
     };
   }
 
-  function getInitialCorrectnessValuesFromGuesses(newGuess: string): LetterCorrectness[] {
-    const initialLetterCorrectnessValues: LetterCorrectness[] = [];
-
-    for (let i = 0; i < newGuess.length; i++) {
-      let initialLetterCorrectness = LetterCorrectness.NotPresent;
-
-      for (const guess of guesses) {
-        if (guess.letters[i].value === newGuess[i]) {
-          initialLetterCorrectness = guess.letters[i].correctness;
-          break;
-        }
-      }
-
-      initialLetterCorrectnessValues.push(initialLetterCorrectness);
-    }
-
-    return initialLetterCorrectnessValues;
-  }
-
   function removeGuess(guessToRemove: Guess) {
     setGuesses(guesses.filter((g) => g.wordString !== guessToRemove.wordString));
   }
@@ -116,4 +78,54 @@ export default function GuessInputList({ guesses, setGuesses }: GuessInputListPr
       )}
     </>
   );
+}
+
+function getInitialCorrectnessValuesFromGuesses(
+  newGuess: string,
+  guesses: Guess[]
+): LetterCorrectness[] {
+  const initialLetterCorrectnessValues: LetterCorrectness[] = [];
+
+  for (let i = 0; i < newGuess.length; i++) {
+    let initialLetterCorrectness = LetterCorrectness.NotPresent;
+
+    for (const guess of guesses) {
+      if (guess.letters[i].value === newGuess[i]) {
+        initialLetterCorrectness = guess.letters[i].correctness;
+        break;
+      }
+    }
+
+    initialLetterCorrectnessValues.push(initialLetterCorrectness);
+  }
+
+  return initialLetterCorrectnessValues;
+}
+
+function getCorrectnessToApply(
+  guess: Guess,
+  guessIndex: number,
+  currentGuessIndex: number,
+  letter: Letter,
+  letterIndex: number
+): LetterCorrectness | undefined {
+  const targetLetter = guess.letters[letterIndex];
+  const isSameLetter = letter.value === targetLetter.value;
+  const nextLetterCorrectness = letter.getNextLetterCorrectness();
+
+  if (letter.correctness === LetterCorrectness.Correct) {
+    return isSameLetter ? LetterCorrectness.NotPresent : undefined;
+  }
+
+  if (nextLetterCorrectness === LetterCorrectness.Correct) {
+    if (isSameLetter) {
+      return LetterCorrectness.Correct;
+    }
+
+    return targetLetter.correctness === LetterCorrectness.Correct
+      ? LetterCorrectness.NotPresent
+      : undefined;
+  }
+
+  return currentGuessIndex === guessIndex ? nextLetterCorrectness : undefined;
 }
