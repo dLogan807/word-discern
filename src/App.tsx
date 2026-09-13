@@ -7,19 +7,12 @@ import GuessInputList from "@/components/Guesses/GuessInputList/GuessInputList";
 import Results from "@/components/Results/Results";
 import getResults, { EMPTY_RESULTS, IResults } from "@/utils/resultBuilder";
 import RootLayout from "./components/Layout/RootLayout/RootLayout";
-import HelpPopover from "./components/Overlays/HelpPopover/HelpPopover";
 import { useSettingsContext } from "./hooks/useSettingsContext";
 import { useWordListContext } from "./hooks/useWordListContext";
 
 export default function App() {
-  const {
-    doAnimations,
-    hideResults,
-    numResultsShown,
-    onlyHideUnknownChars,
-    showHelpButton,
-    shuffleResults,
-  } = useSettingsContext();
+  const { doAnimations, hideResults, numResultsShown, onlyHideUnknownChars, shuffleResults } =
+    useSettingsContext();
 
   const { wordSets } = useWordListContext();
 
@@ -70,7 +63,6 @@ export default function App() {
           doAnimations={doAnimations}
         />
       )}
-      {showHelpButton && <HelpPopover />}
     </RootLayout>
   );
 }

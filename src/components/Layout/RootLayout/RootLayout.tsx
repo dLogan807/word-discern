@@ -1,6 +1,7 @@
 import { Box } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { ReactNode } from "react";
+import HelpPopover from "@/components/Overlays/HelpPopover/HelpPopover";
 import Settings from "@/components/Settings/Settings";
 import { useSettingsContext } from "@/hooks/useSettingsContext";
 import Header from "../Header/Header";
@@ -11,7 +12,7 @@ type RootLayoutProps = {
 };
 
 export default function RootLayout({ children }: RootLayoutProps) {
-  const { doAnimations } = useSettingsContext();
+  const { doAnimations, showHelpButton } = useSettingsContext();
 
   const [settingsOpened, { toggle }] = useDisclosure(false);
 
@@ -33,6 +34,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
       </Box>
 
       <Box className={classes.content_body}>{children}</Box>
+      {showHelpButton && <HelpPopover />}
     </Box>
   );
 }
