@@ -3,6 +3,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "@/App.tsx";
 import { theme } from "@/theme";
+import WordListProvider from "./components/Providers/DefaultWordListProvider";
 import SettingsProvider from "./components/Providers/SettingsProvider";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
@@ -13,7 +14,9 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
       cssVariablesResolver={v8CssVariablesResolver}
     >
       <SettingsProvider>
-        <App />
+        <WordListProvider>
+          <App />
+        </WordListProvider>
       </SettingsProvider>
     </MantineProvider>
   </React.StrictMode>

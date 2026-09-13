@@ -8,18 +8,17 @@ import {
 } from "@tabler/icons-react";
 import { ReactElement, ReactNode } from "react";
 import CustomWordsForm from "@/components/Settings/CustomWordsForm/CustomWordsForm";
-import WordsBadges, {
-  WordBadgesProps,
-} from "@/components/Settings/CustomWordsForm/WordBadges/WordBadges";
+import WordsBadges from "@/components/Settings/CustomWordsForm/WordBadges/WordBadges";
 import { useSettingsContext } from "@/hooks/useSettingsContext";
 import Footer from "../Footer/Footer";
 import classes from "./Settings.module.css";
 
 type SettingsProps = {
-  wordBadgeData: WordBadgesProps;
+  replaceDefaultWords: boolean;
+  numCustomFormWords: number;
 };
 
-export default function Settings({ wordBadgeData }: SettingsProps) {
+export default function Settings({ replaceDefaultWords, numCustomFormWords }: SettingsProps) {
   const {
     setOnlyAllowWordListGuesses,
     shuffleResults,
@@ -89,7 +88,10 @@ export default function Settings({ wordBadgeData }: SettingsProps) {
           </Stack>
         </SettingsSection>
         <SettingsSection title="Word list" icon={<IconBook2 size={iconSize} />}>
-          <WordsBadges {...wordBadgeData} />
+          <WordsBadges
+            replaceDefaultWords={replaceDefaultWords}
+            numCustomFormWords={numCustomFormWords}
+          />
           <CustomWordsForm />
         </SettingsSection>
         <SettingsSection title="Accessibility" icon={<IconAccessible size={iconSize} />}>
