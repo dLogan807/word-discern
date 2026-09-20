@@ -1,0 +1,22 @@
+.guess_input_skeleton {
+  width: 40%;
+  height: 4rem;
+  border-radius: var(--mantine-radius-xl);
+
+  @media (max-width: $mantine-breakpoint-md) {
+    width: 70%;
+  }
+
+  @media (max-width: $mantine-breakpoint-sm) {
+    width: 100%;
+  }
+
+  @media (max-width: $mantine-breakpoint-xs) {
+    height: 3rem;
+  }
+}
+
+.find_words_button_skeleton {
+  width: 12.5rem;
+  height: 2.25em;
+}

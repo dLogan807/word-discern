@@ -1,20 +1,32 @@
 import "@mantine/core/styles.css";
 import { Button } from "@mantine/core";
-import { IconSearch } from "@tabler/icons-react";
-import { useState } from "react";
+import { IconExclamationCircle, IconSearch } from "@tabler/icons-react";
+import { Suspense, useState } from "react";
 import { Guess } from "@/classes/guess";
 import GuessInputList from "@/components/Guesses/GuessInputList/GuessInputList";
 import Results from "@/components/Results/Results";
 import getResults, { EMPTY_RESULTS, IResults } from "@/utils/resultBuilder";
+import WordInfoBadge from "./components/Badges/WordInfoBadge/WordInfoBadge";
 import RootLayout from "./components/Layout/RootLayout/RootLayout";
+import AppContentSkeleton from "./components/Skeletons/AppContentSkeleton/AppContentSkeleton";
 import { useSettingsContext } from "./hooks/useSettingsContext";
 import { useWordListContext } from "./hooks/useWordListContext";
 
 export default function App() {
+  return (
+    <RootLayout>
+      <Suspense fallback={<AppContentSkeleton />}>
+        <AppBody />
+      </Suspense>
+    </RootLayout>
+  );
+}
+
+function AppBody() {
   const { doAnimations, hideResults, numResultsShown, onlyHideUnknownChars, shuffleResults } =
     useSettingsContext();
 
-  const { wordSets } = useWordListContext();
+  const { fetchSuccess, wordSets } = useWordListContext();
 
   // Word data
   const [guesses, setGuesses] = useState<Guess[]>([]);
@@ -45,7 +57,12 @@ export default function App() {
   }
 
   return (
-    <RootLayout>
+    <>
+      {fetchSuccess === false && (
+        <WordInfoBadge color="red" icon={<IconExclamationCircle size={16} />}>
+          Failed to fetch default word list
+        </WordInfoBadge>
+      )}
       <GuessInputList guesses={guesses} setGuesses={setGuesses} />
       <Button
         variant="filled"
@@ -63,6 +80,6 @@ export default function App() {
           doAnimations={doAnimations}
         />
       )}
-    </RootLayout>
+    </>
   );
 }

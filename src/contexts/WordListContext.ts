@@ -1,12 +1,8 @@
 import { createContext } from "react";
-import { ParsedWordSets } from "@/utils/wordLoading";
+import { DefaultWordsPromise } from "@/components/Providers/WordListProvider";
 
-export type WordListContextType = {
-  defaultWords: string[];
-  totalParsedWords: ParsedWordSets["wordNum"];
-  wordSets: ParsedWordSets["wordSets"];
-  invalidWords: ParsedWordSets["failed"];
-  duplicateWords: ParsedWordSets["duplicates"];
+export type WordListResourceContextType = {
+  defaultWordsPromise: DefaultWordsPromise;
 };
 
-export const WordListContext = createContext<WordListContextType | undefined>(undefined);
+export const WordListContext = createContext<WordListResourceContextType | undefined>(undefined);

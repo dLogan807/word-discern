@@ -13,11 +13,11 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
       defaultColorScheme="auto"
       cssVariablesResolver={v8CssVariablesResolver}
     >
-      <SettingsProvider>
-        <WordListProvider>
+      <WordListProvider>
+        <SettingsProvider>
           <App />
-        </WordListProvider>
-      </SettingsProvider>
+        </SettingsProvider>
+      </WordListProvider>
     </MantineProvider>
   </React.StrictMode>
 );

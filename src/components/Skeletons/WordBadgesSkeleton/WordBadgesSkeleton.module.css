@@ -1,0 +1,5 @@
+.badge_skeleton {
+  width: 8rem;
+  height: 1.25rem;
+  border-radius: var(--mantine-radius-xl);
+}
