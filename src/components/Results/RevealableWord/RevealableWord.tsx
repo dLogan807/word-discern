@@ -11,6 +11,8 @@ type RevealableWordProps = {
 };
 
 export default function RevealableWord({ result, initialCharRevealStates }: RevealableWordProps) {
+  const revealEntireResultButtonId = `${result}RevealEntireResultButton`;
+
   const upperCaseResult = result.toLocaleUpperCase();
   const [charRevealStates, setCharRevealStates] = useState(initialCharRevealStates);
   const [allCharsRevealed, setAllCharsRevealed] = useState(
@@ -52,11 +54,17 @@ export default function RevealableWord({ result, initialCharRevealStates }: Reve
         />
       ))}
       <ActionIcon
+        id={revealEntireResultButtonId}
         classNames={{ root: classes.result_chars_reveal_all_button }}
         variant="light"
         onClick={() => toggleAllCharRevealStates()}
+        aria-label="Reveal result"
       >
-        {allCharsRevealed ? <IconEyeOff /> : <IconEye />}
+        {allCharsRevealed ? (
+          <IconEyeOff aria-labelledby={revealEntireResultButtonId} />
+        ) : (
+          <IconEye aria-labelledby={revealEntireResultButtonId} />
+        )}
       </ActionIcon>
     </Group>
   );

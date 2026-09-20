@@ -16,7 +16,7 @@ export default function HelpPopover() {
             icon: classes.icon_icon,
           }}
         >
-          <IconHelp />
+          <IconHelp aria-label="Help button" />
         </ActionIcon>
       </Popover.Target>
       <Popover.Dropdown>

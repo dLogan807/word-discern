@@ -61,10 +61,11 @@ function AppBody() {
       {fetchSuccess === false && <WordListFetchFailureBadge iconSize={16} />}
       <GuessInputList guesses={guesses} setGuesses={setGuesses} />
       <Button
+        id="findWordsButton"
         variant="filled"
         onClick={handleGetPossibleWords}
         disabled={!guesses.length}
-        rightSection={<IconSearch />}
+        rightSection={<IconSearch aria-labelledby="findWordsButton" />}
       >
         Find possible words
       </Button>

@@ -38,14 +38,22 @@ export default function Settings() {
         <Title order={2} classNames={{ root: classes.settings_title }}>
           Settings
         </Title>
-        <SettingsSection title="Guess input" icon={<IconZoomQuestion size={iconSize} />}>
+        <SettingsSection
+          idForAriaLabelledBy="guessInputSettingsSection"
+          title="Guess input"
+          icon={<IconZoomQuestion aria-labelledby="guessInputSettingsSection" size={iconSize} />}
+        >
           <Checkbox
             label="Only allow words from the word list"
             onChange={(event) => setOnlyAllowWordListGuesses(event.currentTarget.checked)}
             defaultChecked
           />
         </SettingsSection>
-        <SettingsSection title="Results" icon={<IconClipboardData size={iconSize} />}>
+        <SettingsSection
+          idForAriaLabelledBy="resultsSettingsSection"
+          title="Results"
+          icon={<IconClipboardData aria-labelledby="resultsSettingsSection" size={iconSize} />}
+        >
           <Checkbox
             label="Shuffled"
             checked={shuffleResults}
@@ -58,7 +66,10 @@ export default function Settings() {
               onChange={(event) => setHideResults(event.currentTarget.checked)}
             />
             <Group classNames={{ root: `${classes.indented_setting}` }}>
-              <IconRadiusBottomLeft className={hideResults ? "" : classes.disabled_setting} />
+              <IconRadiusBottomLeft
+                className={hideResults ? "" : classes.disabled_setting}
+                aria-label="Path to nested setting"
+              />
               <Checkbox
                 label="Only hide unknown characters"
                 checked={onlyHideUnknownChars}
@@ -79,14 +90,23 @@ export default function Settings() {
               max={100}
               step={5}
               size="lg"
+              thumbLabel="Slider thumb"
             />
           </Stack>
         </SettingsSection>
-        <SettingsSection title="Word list" icon={<IconBook2 size={iconSize} />}>
+        <SettingsSection
+          idForAriaLabelledBy="wordListSettingsSection"
+          title="Word list"
+          icon={<IconBook2 aria-labelledby="wordListSettingsSection" size={iconSize} />}
+        >
           <WordsBadges />
           <CustomWordsForm />
         </SettingsSection>
-        <SettingsSection title="Accessibility" icon={<IconAccessible size={iconSize} />}>
+        <SettingsSection
+          idForAriaLabelledBy="accessibilitySettingsSection"
+          title="Accessibility"
+          icon={<IconAccessible aria-labelledby="accessibilitySettingsSection" size={iconSize} />}
+        >
           <Checkbox
             label="Animations"
             checked={doAnimations}
@@ -105,10 +125,12 @@ export default function Settings() {
 }
 
 function SettingsSection({
+  idForAriaLabelledBy,
   title,
   icon,
   children,
 }: {
+  idForAriaLabelledBy: string;
   title: string;
   icon: ReactElement;
   children?: ReactNode;
@@ -121,7 +143,11 @@ function SettingsSection({
         label={
           <>
             {icon}
-            <Title order={6} classNames={{ root: classes.settings_section_title }}>
+            <Title
+              id={idForAriaLabelledBy}
+              order={6}
+              classNames={{ root: classes.settings_section_title }}
+            >
               {title}
             </Title>
           </>

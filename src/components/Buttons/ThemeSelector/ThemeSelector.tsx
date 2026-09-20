@@ -15,6 +15,7 @@ export function ThemeSelector() {
   return (
     <Tooltip refProp="rootRef" label={tooltipText}>
       <Switch
+        id="colourSchemeSwitch"
         classNames={{
           trackLabel: classes.colour_theme_switch_track_label,
           track: classes.colour_theme_switch_track,
@@ -22,8 +23,8 @@ export function ThemeSelector() {
         }}
         size="lg"
         aria-label="Toggle colour theme"
-        onLabel={<IconMoonStars aria-label="Moon and stars" />}
-        offLabel={<IconSun aria-label="Sun" />}
+        onLabel={<IconMoonStars aria-labelledby="colourSchemeSwitch" />}
+        offLabel={<IconSun aria-labelledby="colourSchemeSwitch" />}
         checked={isDarkTheme}
         onClick={toggleColorScheme}
       />

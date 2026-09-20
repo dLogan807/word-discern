@@ -21,6 +21,7 @@ export default function Header({ settingsOpened, toggleSettingsOpened }: HeaderP
       <Group>
         <ThemeSelector />
         <ActionIcon
+          id="settingsButton"
           variant="transparent"
           aria-label="Settings"
           onClick={toggleSettingsOpened}
@@ -31,7 +32,11 @@ export default function Header({ settingsOpened, toggleSettingsOpened }: HeaderP
                   ${!doAnimations ? classes.no_animation : undefined}`,
           }}
         >
-          {settingsOpened ? <IconXFilled /> : <IconSettings />}
+          {settingsOpened ? (
+            <IconXFilled aria-labelledby="settingsButton" />
+          ) : (
+            <IconSettings aria-labelledby="settingsButton" />
+          )}
         </ActionIcon>
       </Group>
     </Box>
