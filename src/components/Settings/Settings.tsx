@@ -13,12 +13,7 @@ import { useSettingsContext } from "@/hooks/useSettingsContext";
 import Footer from "../Footer/Footer";
 import classes from "./Settings.module.css";
 
-type SettingsProps = {
-  replaceDefaultWords: boolean;
-  numCustomFormWords: number;
-};
-
-export default function Settings({ replaceDefaultWords, numCustomFormWords }: SettingsProps) {
+export default function Settings() {
   const {
     setOnlyAllowWordListGuesses,
     shuffleResults,
@@ -88,10 +83,7 @@ export default function Settings({ replaceDefaultWords, numCustomFormWords }: Se
           </Stack>
         </SettingsSection>
         <SettingsSection title="Word list" icon={<IconBook2 size={iconSize} />}>
-          <WordsBadges
-            replaceDefaultWords={replaceDefaultWords}
-            numCustomFormWords={numCustomFormWords}
-          />
+          <WordsBadges />
           <CustomWordsForm />
         </SettingsSection>
         <SettingsSection title="Accessibility" icon={<IconAccessible size={iconSize} />}>

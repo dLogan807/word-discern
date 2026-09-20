@@ -3,8 +3,8 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "@/App.tsx";
 import { theme } from "@/theme";
-import WordListProvider from "./components/Providers/DefaultWordListProvider";
 import SettingsProvider from "./components/Providers/SettingsProvider";
+import WordListProvider from "./components/Providers/WordListProvider";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
@@ -13,11 +13,11 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
       defaultColorScheme="auto"
       cssVariablesResolver={v8CssVariablesResolver}
     >
-      <SettingsProvider>
-        <WordListProvider>
+      <WordListProvider>
+        <SettingsProvider>
           <App />
-        </WordListProvider>
-      </SettingsProvider>
+        </SettingsProvider>
+      </WordListProvider>
     </MantineProvider>
   </React.StrictMode>
 );

@@ -1,31 +1,32 @@
 import "@mantine/core/styles.css";
-import { ActionIcon, Box, Button, Group, Title } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { IconSearch, IconSettings, IconXFilled } from "@tabler/icons-react";
-import { useState } from "react";
+import { Button } from "@mantine/core";
+import { IconExclamationCircle, IconSearch } from "@tabler/icons-react";
+import { Suspense, useState } from "react";
 import { Guess } from "@/classes/guess";
 import GuessInputList from "@/components/Guesses/GuessInputList/GuessInputList";
 import Results from "@/components/Results/Results";
-import Settings from "@/components/Settings/Settings";
 import getResults, { EMPTY_RESULTS, IResults } from "@/utils/resultBuilder";
-import { ThemeSelector } from "./components/Buttons/ThemeSelector/ThemeSelector";
-import HelpPopover from "./components/Overlays/HelpPopover/HelpPopover";
+import WordInfoBadge from "./components/Badges/WordInfoBadge/WordInfoBadge";
+import RootLayout from "./components/Layout/RootLayout/RootLayout";
+import AppContentSkeleton from "./components/Skeletons/AppContentSkeleton/AppContentSkeleton";
 import { useSettingsContext } from "./hooks/useSettingsContext";
 import { useWordListContext } from "./hooks/useWordListContext";
-import classes from "./App.module.css";
 
 export default function App() {
-  const {
-    customWordsFormData,
-    doAnimations,
-    hideResults,
-    numResultsShown,
-    onlyHideUnknownChars,
-    showHelpButton,
-    shuffleResults,
-  } = useSettingsContext();
+  return (
+    <RootLayout>
+      <Suspense fallback={<AppContentSkeleton />}>
+        <AppBody />
+      </Suspense>
+    </RootLayout>
+  );
+}
 
-  const { wordSets } = useWordListContext();
+function AppBody() {
+  const { doAnimations, hideResults, numResultsShown, onlyHideUnknownChars, shuffleResults } =
+    useSettingsContext();
+
+  const { fetchSuccess, wordSets } = useWordListContext();
 
   // Word data
   const [guesses, setGuesses] = useState<Guess[]>([]);
@@ -34,9 +35,6 @@ export default function App() {
   // Result state
   const [showResults, setShowResults] = useState(false);
   const [resultsUpdateKey, setResultsUpdateKey] = useState(0);
-
-  // Settings
-  const [settingsOpened, { toggle }] = useDisclosure(false);
 
   function handleGetPossibleWords() {
     if (guesses.length === 0 || !guesses[0]) return;
@@ -59,66 +57,29 @@ export default function App() {
   }
 
   return (
-    <Box
-      className={`${classes.layout}
-            ${!settingsOpened ? classes.layout_settings_pane_closed : undefined}
-            ${!doAnimations ? classes.no_animation : undefined}
-          `}
-    >
-      <Box className={classes.header}>
-        <Title order={1} classNames={{ root: classes.header_logo }}>
-          Word Discern
-        </Title>
-
-        <Group>
-          <ThemeSelector />
-          <ActionIcon
-            variant="transparent"
-            aria-label="Settings"
-            onClick={toggle}
-            classNames={{
-              root: classes.settings_button,
-              icon: `${classes.settings_button_icon}
-                  ${settingsOpened ? classes.settings_button_icon_opened : undefined}
-                  ${!doAnimations ? classes.no_animation : undefined}`,
-            }}
-          >
-            {settingsOpened ? <IconXFilled /> : <IconSettings />}
-          </ActionIcon>
-        </Group>
-      </Box>
-
-      <Box
-        className={`${classes.settings_pane}
-            ${!settingsOpened ? classes.settings_pane_closed : undefined}
-            ${!doAnimations ? classes.no_animation : undefined}`}
+    <>
+      {fetchSuccess === false && (
+        <WordInfoBadge color="red" icon={<IconExclamationCircle size={16} />}>
+          Failed to fetch default word list
+        </WordInfoBadge>
+      )}
+      <GuessInputList guesses={guesses} setGuesses={setGuesses} />
+      <Button
+        variant="filled"
+        onClick={handleGetPossibleWords}
+        disabled={!guesses.length}
+        rightSection={<IconSearch />}
       >
-        <Settings
-          replaceDefaultWords={customWordsFormData.replaceDefaultWords}
-          numCustomFormWords={customWordsFormData.words.length}
+        Find possible words
+      </Button>
+      {showResults && (
+        <Results
+          results={results}
+          resultsUpdateKey={resultsUpdateKey}
+          numberToShow={numResultsShown}
+          doAnimations={doAnimations}
         />
-      </Box>
-
-      <Box className={classes.content_body}>
-        <GuessInputList guesses={guesses} setGuesses={setGuesses} />
-        <Button
-          variant="filled"
-          onClick={handleGetPossibleWords}
-          disabled={!guesses.length}
-          rightSection={<IconSearch />}
-        >
-          Find possible words
-        </Button>
-        {showResults && (
-          <Results
-            results={results}
-            resultsUpdateKey={resultsUpdateKey}
-            numberToShow={numResultsShown}
-            doAnimations={doAnimations}
-          />
-        )}
-        {showHelpButton && <HelpPopover />}
-      </Box>
-    </Box>
+      )}
+    </>
   );
 }
