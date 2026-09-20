@@ -1,14 +1,8 @@
 import { Box } from "@mantine/core";
-import {
-  IconAdjustments,
-  IconCheck,
-  IconCopyOff,
-  IconExclamationCircle,
-  IconList,
-  IconX,
-} from "@tabler/icons-react";
+import { IconAdjustments, IconCheck, IconCopyOff, IconList, IconX } from "@tabler/icons-react";
 import { Suspense } from "react";
 import WordInfoBadge from "@/components/Badges/WordInfoBadge/WordInfoBadge";
+import WordListFetchFailureBadge from "@/components/Badges/WordListFetchFailureBadge/WordListFetchFailureBadge";
 import WordInfoBadgePopover from "@/components/Overlays/WordInfoBadgePopover/WordInfoBadgePopover";
 import WordBadgesSkeleton from "@/components/Skeletons/WordBadgesSkeleton/WordBadgesSkeleton";
 import { useSettingsContext } from "@/hooks/useSettingsContext";
@@ -76,11 +70,7 @@ function WordsBadgesInner() {
           {invalidWordsWordsText}
         </WordInfoBadgePopover>
       )}
-      {fetchSuccess === false && (
-        <WordInfoBadge color="red" icon={<IconExclamationCircle size={iconSize} />}>
-          Failed to fetch default word list
-        </WordInfoBadge>
-      )}
+      {fetchSuccess === false && <WordListFetchFailureBadge iconSize={iconSize} />}
     </>
   );
 }

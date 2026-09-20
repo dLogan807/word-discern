@@ -1,12 +1,12 @@
 import "@mantine/core/styles.css";
 import { Button } from "@mantine/core";
-import { IconExclamationCircle, IconSearch } from "@tabler/icons-react";
+import { IconSearch } from "@tabler/icons-react";
 import { Suspense, useState } from "react";
 import { Guess } from "@/classes/guess";
 import GuessInputList from "@/components/Guesses/GuessInputList/GuessInputList";
 import Results from "@/components/Results/Results";
 import getResults, { EMPTY_RESULTS, IResults } from "@/utils/resultBuilder";
-import WordInfoBadge from "./components/Badges/WordInfoBadge/WordInfoBadge";
+import WordListFetchFailureBadge from "./components/Badges/WordListFetchFailureBadge/WordListFetchFailureBadge";
 import RootLayout from "./components/Layout/RootLayout/RootLayout";
 import AppContentSkeleton from "./components/Skeletons/AppContentSkeleton/AppContentSkeleton";
 import { useSettingsContext } from "./hooks/useSettingsContext";
@@ -58,11 +58,7 @@ function AppBody() {
 
   return (
     <>
-      {fetchSuccess === false && (
-        <WordInfoBadge color="red" icon={<IconExclamationCircle size={16} />}>
-          Failed to fetch default word list
-        </WordInfoBadge>
-      )}
+      {fetchSuccess === false && <WordListFetchFailureBadge iconSize={16} />}
       <GuessInputList guesses={guesses} setGuesses={setGuesses} />
       <Button
         variant="filled"
