@@ -16,6 +16,21 @@
   }
 }
 
+.logo_image {
+  height: 2.5rem;
+  width: 2.5rem;
+
+  @media (max-width: $mantine-breakpoint-sm) {
+    height: 2rem;
+    width: 2rem;
+  }
+
+  @media (max-width: $mantine-breakpoint-xs) {
+    height: 1.8rem;
+    width: 1.8rem;
+  }
+}
+
 .settings_button {
   --ai-size: var(--ai-size-lg);
 }
