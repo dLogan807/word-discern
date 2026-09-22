@@ -1,9 +1,10 @@
 import { Box } from "@mantine/core";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, Suspense } from "react";
 import { Guess } from "@/classes/guess";
 import { Letter } from "@/classes/letter";
 import GuessItem from "@/components/Guesses/GuessItem/GuessItem";
 import GuessProvider from "@/components/Providers/GuessProvider";
+import GuessAutocompleteInputSkeleton from "@/components/Skeletons/GuessAutocompleteInputSkeleton/GuessAutocompleteInputSkeleton";
 import { LetterCorrectness } from "@/enums/enums";
 import GuessAutocompleteInput from "../GuessAutocompleteInput/GuessAutocompleteInput";
 import classes from "./GuessInputList.module.css";
@@ -65,7 +66,9 @@ export default function GuessInputList({ guesses, setGuesses }: GuessInputListPr
 
   return (
     <>
-      <GuessAutocompleteInput guesses={guesses} addGuess={addGuess} />
+      <Suspense fallback={<GuessAutocompleteInputSkeleton />}>
+        <GuessAutocompleteInput guesses={guesses} addGuess={addGuess} />
+      </Suspense>
 
       {guesses.length > 0 && (
         <Box className={classes.guess_list}>

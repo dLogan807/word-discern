@@ -1,0 +1,7 @@
+.reload_anchor {
+  color: var(--mantine-color-red-light-color);
+  font-size: var(--badge-fz);
+  line-height: var(--badge-lh);
+  font-weight: var(--mantine-font-weight-bold);
+  letter-spacing: calc(0.015625rem * var(--mantine-scale));
+}
