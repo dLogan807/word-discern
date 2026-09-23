@@ -16,7 +16,7 @@ export default function Header({ settingsOpened, toggleSettingsOpened }: HeaderP
   return (
     <Box className={classes.header}>
       <Group>
-        <Image src={logoUrl} classNames={{ root: classes.logo_image }} />
+        <Image src={logoUrl} classNames={{ root: classes.logo_image }} alt="Word Discern logo" />
         <Title order={1} classNames={{ root: classes.header_logo }}>
           Word Discern
         </Title>
