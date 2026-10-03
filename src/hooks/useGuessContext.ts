@@ -5,7 +5,7 @@ export function useGuessContext(): GuessContextType {
   const context = useContext(GuessContext);
 
   if (context === undefined) {
-    throw new Error("useGuessContext must be used within a SettingsProvider");
+    throw new Error("useGuessContext must be used within a GuessProvider");
   }
 
   return context;

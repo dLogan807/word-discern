@@ -1,7 +1,6 @@
 import { Box } from "@mantine/core";
-import { Dispatch, SetStateAction, Suspense } from "react";
+import { Suspense, Dispatch, SetStateAction } from "react";
 import { Guess } from "@/classes/guess";
-import { Letter } from "@/classes/letter";
 import GuessItem from "@/components/Guesses/GuessItem/GuessItem";
 import GuessProvider from "@/components/Providers/GuessProvider";
 import GuessAutocompleteInputSkeleton from "@/components/Skeletons/GuessAutocompleteInputSkeleton/GuessAutocompleteInputSkeleton";
@@ -26,47 +25,6 @@ export default function GuessInputList({ guesses, setGuesses }: GuessInputListPr
     });
   }
 
-  function setNextLetterCorrectnessForAllGuesses(
-    letter: Letter,
-    letterIndex: number,
-    guessIndex: number
-  ) {
-    setGuesses((currentGuesses) =>
-      currentGuesses.map((guess, currentGuessIndex) => {
-        const correctness = getCorrectnessToApply(
-          guess,
-          guessIndex,
-          currentGuessIndex,
-          letter,
-          letterIndex
-        );
-
-        return correctness === undefined
-          ? guess
-          : updateLetterCorrectness(guess, letterIndex, correctness);
-      })
-    );
-  }
-
-  function updateLetterCorrectness(
-    guess: Guess,
-    letterIndex: number,
-    nextLetterCorrectness: LetterCorrectness
-  ) {
-    return new Guess(
-      guess.wordString,
-      guess.letters.map((guessLetter, index) =>
-        index === letterIndex ? nextLetterCorrectness : guessLetter.correctness
-      )
-    );
-  }
-
-  function removeGuess(guessToRemove: Guess) {
-    setGuesses((currentGuesses) =>
-      currentGuesses.filter((g) => g.wordString !== guessToRemove.wordString)
-    );
-  }
-
   return (
     <>
       <Suspense fallback={<GuessAutocompleteInputSkeleton />}>
@@ -75,7 +33,7 @@ export default function GuessInputList({ guesses, setGuesses }: GuessInputListPr
 
       {guesses.length > 0 && (
         <Box className={classes.guess_list}>
-          <GuessProvider guessOperations={{ removeGuess, setNextLetterCorrectnessForAllGuesses }}>
+          <GuessProvider setGuesses={setGuesses}>
             {guesses.map((guess, idx) => (
               <GuessItem key={guess.wordString} guess={guess} guessIndex={idx} />
             ))}
@@ -106,32 +64,4 @@ function getInitialCorrectnessValuesFromGuesses(
   }
 
   return initialLetterCorrectnessValues;
-}
-
-function getCorrectnessToApply(
-  guess: Guess,
-  guessIndex: number,
-  currentGuessIndex: number,
-  letter: Letter,
-  letterIndex: number
-): LetterCorrectness | undefined {
-  const targetLetter = guess.letters[letterIndex];
-  const isSameLetter = letter.value === targetLetter.value;
-  const nextLetterCorrectness = letter.getNextLetterCorrectness();
-
-  if (letter.correctness === LetterCorrectness.Correct) {
-    return isSameLetter ? LetterCorrectness.NotPresent : undefined;
-  }
-
-  if (nextLetterCorrectness === LetterCorrectness.Correct) {
-    if (isSameLetter) {
-      return LetterCorrectness.Correct;
-    }
-
-    return targetLetter.correctness === LetterCorrectness.Correct
-      ? LetterCorrectness.NotPresent
-      : undefined;
-  }
-
-  return currentGuessIndex === guessIndex ? nextLetterCorrectness : undefined;
 }

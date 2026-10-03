@@ -66,9 +66,7 @@ export default function Settings() {
               onChange={(event) => setHideResults(event.currentTarget.checked)}
             />
             <Group classNames={{ root: `${classes.indented_setting}` }}>
-              <IconRadiusBottomLeft
-                className={hideResults ? "" : classes.disabled_setting}
-              />
+              <IconRadiusBottomLeft className={hideResults ? "" : classes.disabled_setting} />
               <Checkbox
                 label="Only hide unknown characters"
                 checked={onlyHideUnknownChars}
