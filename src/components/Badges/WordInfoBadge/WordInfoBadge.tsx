@@ -4,7 +4,7 @@ import classes from "./WordInfoBadge.module.css";
 
 type WordInfoBadgeProps = {
   children: ReactNode;
-  icon?: React.ReactNode;
+  icon?: ReactNode;
   color?: string;
   clickable?: boolean;
 };

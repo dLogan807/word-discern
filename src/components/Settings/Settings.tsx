@@ -41,7 +41,7 @@ export default function Settings() {
         <SettingsSection
           idForAriaLabelledBy="guessInputSettingsSection"
           title="Guess input"
-          icon={<IconZoomQuestion aria-labelledby="guessInputSettingsSection" size={iconSize} />}
+          icon={<IconZoomQuestion aria-hidden="true" size={iconSize} />}
         >
           <Checkbox
             label="Only allow words from the word list"
@@ -52,7 +52,7 @@ export default function Settings() {
         <SettingsSection
           idForAriaLabelledBy="resultsSettingsSection"
           title="Results"
-          icon={<IconClipboardData aria-labelledby="resultsSettingsSection" size={iconSize} />}
+          icon={<IconClipboardData aria-hidden="true" size={iconSize} />}
         >
           <Checkbox
             label="Shuffled"
@@ -68,7 +68,6 @@ export default function Settings() {
             <Group classNames={{ root: `${classes.indented_setting}` }}>
               <IconRadiusBottomLeft
                 className={hideResults ? "" : classes.disabled_setting}
-                aria-label="Path to nested setting"
               />
               <Checkbox
                 label="Only hide unknown characters"
@@ -97,7 +96,7 @@ export default function Settings() {
         <SettingsSection
           idForAriaLabelledBy="wordListSettingsSection"
           title="Word list"
-          icon={<IconBook2 aria-labelledby="wordListSettingsSection" size={iconSize} />}
+          icon={<IconBook2 aria-hidden="true" size={iconSize} />}
         >
           <WordsBadges />
           <CustomWordsForm />
@@ -105,7 +104,7 @@ export default function Settings() {
         <SettingsSection
           idForAriaLabelledBy="accessibilitySettingsSection"
           title="Accessibility"
-          icon={<IconAccessible aria-labelledby="accessibilitySettingsSection" size={iconSize} />}
+          icon={<IconAccessible aria-hidden="true" size={iconSize} />}
         >
           <Checkbox
             label="Animations"

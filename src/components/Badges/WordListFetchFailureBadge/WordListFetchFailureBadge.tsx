@@ -13,7 +13,7 @@ export default function WordListFetchFailureBadge({
   showReloadLink,
 }: WordListFetchFailureBadgeProps) {
   return (
-    <WordInfoBadge color="red" icon={<IconExclamationCircle size={iconSize} />}>
+    <WordInfoBadge color="red" icon={<IconExclamationCircle size={iconSize} aria-hidden="true" />}>
       Failed to fetch default word list
       {showReloadLink && (
         <>

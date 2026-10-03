@@ -3,6 +3,7 @@ import { useState, AnimationEvent } from "react";
 import { Letter } from "@/classes/letter";
 import { useGuessContext } from "@/hooks/useGuessContext";
 import { useSettingsContext } from "@/hooks/useSettingsContext";
+import { getTextualLetterCorrectness } from "@/utils/letterCorrectness";
 import classes from "./LetterButton.module.css";
 
 type LetterButtonProps = {
@@ -63,7 +64,11 @@ export default function LetterButton({ letter, letterIndex, guessIndex }: Letter
   const char = letter.value.toLocaleUpperCase();
 
   return (
-    <UnstyledButton classNames={{ root: classes.letter_button }} onClick={handleClick}>
+    <UnstyledButton
+      classNames={{ root: classes.letter_button }}
+      onClick={handleClick}
+      aria-label={getNextLetterCorrectnessAriaLabel(letter)}
+    >
       <Box
         className={classes.letter_button_inner}
         style={{
@@ -78,4 +83,10 @@ export default function LetterButton({ letter, letterIndex, guessIndex }: Letter
       </Box>
     </UnstyledButton>
   );
+}
+
+function getNextLetterCorrectnessAriaLabel(char: Letter): string {
+  const nextCorrectness = char.getNextLetterCorrectness();
+
+  return `Cycle ${char.value.toLocaleUpperCase()} from '${getTextualLetterCorrectness(nextCorrectness)}' to '${getTextualLetterCorrectness(nextCorrectness)}'`;
 }

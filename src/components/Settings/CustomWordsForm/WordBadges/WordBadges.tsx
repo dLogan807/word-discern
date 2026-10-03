@@ -47,26 +47,32 @@ function WordsBadgesInner() {
 
   return (
     <>
-      <WordInfoBadge icon={<IconList size={iconSize} />}>{totalWordsText}</WordInfoBadge>
-      <WordInfoBadge color="yellow" icon={<IconAdjustments size={iconSize} />}>
+      <WordInfoBadge icon={<IconList size={iconSize} aria-hidden="true" />}>
+        {totalWordsText}
+      </WordInfoBadge>
+      <WordInfoBadge color="yellow" icon={<IconAdjustments size={iconSize} aria-hidden="true" />}>
         {customWordsText}
       </WordInfoBadge>
       {wordsAlreadyExisting > 0 && (
         <WordInfoBadgePopover
           words={duplicateWords}
           color="yellow"
-          icon={<IconCopyOff size={iconSize} />}
+          icon={<IconCopyOff size={iconSize} aria-hidden="true" />}
         >
           {alreadyExistingText}
         </WordInfoBadgePopover>
       )}
       {customWordsInUse > 0 && (
-        <WordInfoBadge color="green" icon={<IconCheck size={iconSize} />}>
+        <WordInfoBadge color="green" icon={<IconCheck size={iconSize} aria-hidden="true" />}>
           {addedWordsText}
         </WordInfoBadge>
       )}
       {invalidWords.size > 0 && (
-        <WordInfoBadgePopover words={invalidWords} color="red" icon={<IconX size={iconSize} />}>
+        <WordInfoBadgePopover
+          words={invalidWords}
+          color="red"
+          icon={<IconX size={iconSize} aria-hidden="true" />}
+        >
           {invalidWordsWordsText}
         </WordInfoBadgePopover>
       )}

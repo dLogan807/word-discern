@@ -165,7 +165,9 @@ export default function CustomWordsForm() {
               minRows={4}
               maxRows={10}
               rightSection={
-                form.values.text && <ResetTextFieldActionIcon reset={resetCurrentField} />
+                form.values.text && (
+                  <ResetTextFieldActionIcon reset={resetCurrentField} fieldInputMode={inputMode} />
+                )
               }
               rightSectionWidth={0}
             />
@@ -177,7 +179,9 @@ export default function CustomWordsForm() {
               placeholder='["a","list","of","words"]'
               validationError={validateJSON(form.getValues().json)}
               rightSection={
-                form.values.json && <ResetTextFieldActionIcon reset={resetCurrentField} />
+                form.values.json && (
+                  <ResetTextFieldActionIcon reset={resetCurrentField} fieldInputMode={inputMode} />
+                )
               }
               formatOnBlur
               autosize
