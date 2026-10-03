@@ -16,9 +16,14 @@ type GuessInputListProps = {
 
 export default function GuessInputList({ guesses, setGuesses }: GuessInputListProps) {
   function addGuess(newGuess: string) {
-    const initialCorrectnessValues = getInitialCorrectnessValuesFromGuesses(newGuess, guesses);
-    const guess = new Guess(newGuess, initialCorrectnessValues);
-    setGuesses([...guesses, guess]);
+    setGuesses((currentGuesses) => {
+      const initialCorrectnessValues = getInitialCorrectnessValuesFromGuesses(
+        newGuess,
+        currentGuesses
+      );
+      const guess = new Guess(newGuess, initialCorrectnessValues);
+      return [...currentGuesses, guess];
+    });
   }
 
   function setNextLetterCorrectnessForAllGuesses(
@@ -48,20 +53,18 @@ export default function GuessInputList({ guesses, setGuesses }: GuessInputListPr
     letterIndex: number,
     nextLetterCorrectness: LetterCorrectness
   ) {
-    return {
-      ...guess,
-      letters: guess.letters.map((guessLetter, index) => {
-        if (index !== letterIndex) {
-          return guessLetter;
-        }
-
-        return new Letter(guessLetter.value, nextLetterCorrectness);
-      }),
-    };
+    return new Guess(
+      guess.wordString,
+      guess.letters.map((guessLetter, index) =>
+        index === letterIndex ? nextLetterCorrectness : guessLetter.correctness
+      )
+    );
   }
 
   function removeGuess(guessToRemove: Guess) {
-    setGuesses(guesses.filter((g) => g.wordString !== guessToRemove.wordString));
+    setGuesses((currentGuesses) =>
+      currentGuesses.filter((g) => g.wordString !== guessToRemove.wordString)
+    );
   }
 
   return (
