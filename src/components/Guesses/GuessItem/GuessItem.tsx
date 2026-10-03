@@ -11,10 +11,12 @@ type GuessItemProps = {
 
 export default function GuessItem({ guess, guessIndex }: GuessItemProps) {
   return (
-    <Box className={classes.guess_item}>
-      {guess.letters.map((letter, idx) => (
-        <LetterButton key={idx} letter={letter} letterIndex={idx} guessIndex={guessIndex} />
-      ))}
+    <Box className={classes.guess_box}>
+      <Box className={classes.guess_chars}>
+        {guess.letters.map((letter, idx) => (
+          <LetterButton key={idx} letter={letter} letterIndex={idx} guessIndex={guessIndex} />
+        ))}
+      </Box>
       <RemoveButton guess={guess} />
     </Box>
   );

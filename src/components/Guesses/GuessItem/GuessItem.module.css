@@ -1,4 +1,19 @@
-.guess_item {
+.guess_box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--mantine-spacing-md);
+
+  @media (max-width: $mantine-breakpoint-sm) {
+    gap: var(--mantine-spacing-sm);
+  }
+
+  @media (max-width: $mantine-breakpoint-xs) {
+    gap: var(--mantine-spacing-xs);
+  }
+}
+
+.guess_chars {
   display: flex;
   gap: var(--mantine-spacing-md);
   align-items: center;
