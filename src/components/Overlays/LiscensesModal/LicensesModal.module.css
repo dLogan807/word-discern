@@ -16,7 +16,7 @@
   display: flex;
   justify-content: space-between;
   flex-direction: column;
-  gap: var(--mantine-spacing-sm);
+  gap: var(--mantine-spacing-md);
 }
 
 .package_link {
@@ -69,4 +69,14 @@
     position: absolute;
     right: 1rem;
   }
+}
+
+.word_list_licence_box {
+  align-self: center;
+}
+
+.word_list_licence_button {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--mantine-spacing-xs);
 }

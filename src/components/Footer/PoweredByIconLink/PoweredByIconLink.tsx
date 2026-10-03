@@ -10,7 +10,13 @@ type PoweredByIconLinkProps = {
 
 export default function PoweredByIconLink({ href, ariaLabel, icon }: PoweredByIconLinkProps) {
   return (
-    <Anchor classNames={{ root: classes.centered_icon_link }} href={href} aria-label={ariaLabel}>
+    <Anchor
+      classNames={{ root: classes.centered_icon_link }}
+      href={href}
+      aria-label={ariaLabel}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
       <ThemeIcon>{icon}</ThemeIcon>
     </Anchor>
   );
