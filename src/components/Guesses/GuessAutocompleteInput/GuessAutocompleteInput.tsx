@@ -38,7 +38,7 @@ export default function GuessAutocompleteInput({ guesses, addGuess }: GuessAutoc
     setGuessError(null);
 
     const setAutocompleteOpened =
-      guessValue.length > 0 && debouncedSearch.length > 0 && guessError == null;
+      guess.length > 0 && guess.trim().length > 0 && guessError == null;
     setSearchDropDownOpened(setAutocompleteOpened);
   }
 

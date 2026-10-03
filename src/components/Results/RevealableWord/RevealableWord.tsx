@@ -29,15 +29,17 @@ export default function RevealableWord({ result, initialCharRevealStates }: Reve
   }
 
   function toggleAllCharRevealStates() {
-    const nextRevealState = allCharsRevealed ? CharRevealState.HIDDEN : CharRevealState.REVEALED;
-    setCharRevealStates(
-      charRevealStates.map((currentState) =>
-        currentState === CharRevealState.PERM_REVEALED
-          ? CharRevealState.PERM_REVEALED
-          : nextRevealState
-      )
-    );
-    setAllCharsRevealed(!allCharsRevealed);
+    setAllCharsRevealed((prev) => {
+      const nextRevealState = prev ? CharRevealState.HIDDEN : CharRevealState.REVEALED;
+      setCharRevealStates((states) =>
+        states.map((currentState) =>
+          currentState === CharRevealState.PERM_REVEALED
+            ? CharRevealState.PERM_REVEALED
+            : nextRevealState
+        )
+      );
+      return !prev;
+    });
   }
 
   return (
