@@ -11,11 +11,8 @@ type RemoveButtonProps = {
 export default function RemoveButton({ guess }: RemoveButtonProps) {
   const { removeGuess } = useGuessContext();
 
-  const id = `${guess.wordString}RemoveButton`;
-
   return (
     <ActionIcon
-      id={id}
       variant="light"
       color="red"
       aria-label={`Remove '${guess.wordString}' from guesses`}
@@ -24,7 +21,7 @@ export default function RemoveButton({ guess }: RemoveButtonProps) {
         root: classes.remove_button,
       }}
     >
-      <IconTrash aria-labelledby={id} />
+      <IconTrash aria-hidden="true" />
     </ActionIcon>
   );
 }

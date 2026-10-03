@@ -25,9 +25,8 @@ export default function Header({ settingsOpened, toggleSettingsOpened }: HeaderP
       <Group>
         <ThemeSelector />
         <ActionIcon
-          id="settingsButton"
           variant="transparent"
-          aria-label="Settings"
+          aria-label={`${settingsOpened ? "Close" : "Open"} settings`}
           onClick={toggleSettingsOpened}
           classNames={{
             root: classes.settings_button,
@@ -37,9 +36,9 @@ export default function Header({ settingsOpened, toggleSettingsOpened }: HeaderP
           }}
         >
           {settingsOpened ? (
-            <IconXFilled aria-labelledby="settingsButton" />
+            <IconXFilled aria-hidden="true" />
           ) : (
-            <IconSettings aria-labelledby="settingsButton" />
+            <IconSettings aria-hidden="true" />
           )}
         </ActionIcon>
       </Group>

@@ -5,10 +5,7 @@
   gap: var(--mantine-spacing-md);
   padding: var(--mantine-spacing-md);
 
-  background-color: light-dark(
-    var(--mantine-color-gray-4),
-    var(--mantine-color-dark-7)
-  );
+  background-color: light-dark(var(--mantine-color-gray-4), var(--mantine-color-dark-7));
   border-radius: var(--mantine-radius-xl);
 
   @media (max-width: $mantine-breakpoint-sm) {

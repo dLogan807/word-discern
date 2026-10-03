@@ -109,7 +109,6 @@ function ResultWords({
       </Box>
       {numResultsMounted < results.words.length && (
         <Button
-          id="showMoreResultsButton"
           classNames={{ root: classes.show_more_results_button }}
           key={numResultsMounted}
           style={{
@@ -119,7 +118,7 @@ function ResultWords({
             animationFillMode: "backwards",
           }}
           onClick={handleShowMoreWords}
-          rightSection={<IconArrowDown aria-labelledby="showMoreResultsButton" />}
+          rightSection={<IconArrowDown aria-hidden="true" />}
         >
           Show more words
         </Button>

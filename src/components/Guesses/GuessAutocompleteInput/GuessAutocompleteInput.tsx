@@ -75,7 +75,6 @@ export default function GuessAutocompleteInput() {
       limit={5}
       rightSection={
         <ActionIcon
-          id="addGuessButton"
           onClick={tryAddGuess}
           aria-label="Add Guess"
           classNames={{
@@ -83,7 +82,7 @@ export default function GuessAutocompleteInput() {
             icon: classes.add_guess_button_icon,
           }}
         >
-          <IconPlus aria-labelledby="addGuessButton" />
+          <IconPlus aria-hidden="true" />
         </ActionIcon>
       }
       classNames={{

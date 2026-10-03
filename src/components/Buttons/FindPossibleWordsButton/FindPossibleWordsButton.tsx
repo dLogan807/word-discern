@@ -42,11 +42,10 @@ export default function FindPossibleWordsButton({
   return (
     <>
       <Button
-        id="findWordsButton"
         variant="filled"
         onClick={handleGetPossibleWords}
         disabled={!guesses.length}
-        rightSection={<IconSearch aria-labelledby="findWordsButton" />}
+        rightSection={<IconSearch aria-hidden="true" />}
       >
         Find possible words
       </Button>

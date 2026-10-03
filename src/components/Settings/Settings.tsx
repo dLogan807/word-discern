@@ -39,7 +39,6 @@ export default function Settings() {
           Settings
         </Title>
         <SettingsSection
-          idForAriaLabelledBy="guessInputSettingsSection"
           title="Guess input"
           icon={<IconZoomQuestion aria-hidden="true" size={iconSize} />}
         >
@@ -50,7 +49,6 @@ export default function Settings() {
           />
         </SettingsSection>
         <SettingsSection
-          idForAriaLabelledBy="resultsSettingsSection"
           title="Results"
           icon={<IconClipboardData aria-hidden="true" size={iconSize} />}
         >
@@ -91,16 +89,11 @@ export default function Settings() {
             />
           </Stack>
         </SettingsSection>
-        <SettingsSection
-          idForAriaLabelledBy="wordListSettingsSection"
-          title="Word list"
-          icon={<IconBook2 aria-hidden="true" size={iconSize} />}
-        >
+        <SettingsSection title="Word list" icon={<IconBook2 aria-hidden="true" size={iconSize} />}>
           <WordsBadges />
           <CustomWordsForm />
         </SettingsSection>
         <SettingsSection
-          idForAriaLabelledBy="accessibilitySettingsSection"
           title="Accessibility"
           icon={<IconAccessible aria-hidden="true" size={iconSize} />}
         >
@@ -122,12 +115,10 @@ export default function Settings() {
 }
 
 function SettingsSection({
-  idForAriaLabelledBy,
   title,
   icon,
   children,
 }: {
-  idForAriaLabelledBy: string;
   title: string;
   icon: ReactElement;
   children?: ReactNode;
@@ -140,11 +131,7 @@ function SettingsSection({
         label={
           <>
             {icon}
-            <Title
-              id={idForAriaLabelledBy}
-              order={6}
-              classNames={{ root: classes.settings_section_title }}
-            >
+            <Title order={6} classNames={{ root: classes.settings_section_title }}>
               {title}
             </Title>
           </>
