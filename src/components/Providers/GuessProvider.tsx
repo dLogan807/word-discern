@@ -1,16 +1,27 @@
-import { useCallback, ReactNode } from "react";
+import { useCallback, ReactNode, useState } from "react";
 import { Guess } from "@/classes/guess";
 import { Letter } from "@/classes/letter";
 import { GuessContext } from "@/contexts/GuessContext";
 import { LetterCorrectness } from "@/enums/enums";
 
-export default function GuessProvider({
-  children,
-  setGuesses,
-}: {
-  children: ReactNode;
-  setGuesses: React.Dispatch<React.SetStateAction<Guess[]>>;
-}) {
+export default function GuessProvider({ children }: { children: ReactNode }) {
+  const [guesses, setGuesses] = useState<Guess[]>([]);
+
+  const addGuess = useCallback(
+    (guess: string) => {
+      setGuesses((currentGuesses) => {
+        const initialCorrectnessValues = getInitialCorrectnessValuesFromGuesses(
+          guess,
+          currentGuesses
+        );
+        const newGuess = new Guess(guess, initialCorrectnessValues);
+
+        return [...currentGuesses, newGuess];
+      });
+    },
+    [setGuesses]
+  );
+
   const removeGuess = useCallback(
     (guessToRemove: Guess) => {
       setGuesses((currentGuesses) =>
@@ -85,8 +96,30 @@ export default function GuessProvider({
   );
 
   return (
-    <GuessContext value={{ removeGuess, setNextLetterCorrectnessForAllGuesses }}>
+    <GuessContext value={{ guesses, addGuess, removeGuess, setNextLetterCorrectnessForAllGuesses }}>
       {children}
     </GuessContext>
   );
+}
+
+function getInitialCorrectnessValuesFromGuesses(
+  newGuess: string,
+  guesses: Guess[]
+): LetterCorrectness[] {
+  const initialLetterCorrectnessValues: LetterCorrectness[] = [];
+
+  for (let i = 0; i < newGuess.length; i++) {
+    let initialLetterCorrectness = LetterCorrectness.NotPresent;
+
+    for (const guess of guesses) {
+      if (guess.letters[i].value === newGuess[i]) {
+        initialLetterCorrectness = guess.letters[i].correctness;
+        break;
+      }
+    }
+
+    initialLetterCorrectnessValues.push(initialLetterCorrectness);
+  }
+
+  return initialLetterCorrectnessValues;
 }

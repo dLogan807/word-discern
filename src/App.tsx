@@ -1,6 +1,5 @@
 import "@mantine/core/styles.css";
 import { Suspense, useState } from "react";
-import { Guess } from "@/classes/guess";
 import GuessInputList from "@/components/Guesses/GuessInputList/GuessInputList";
 import Results from "@/components/Results/Results";
 import { EMPTY_RESULTS, IResults } from "@/utils/resultBuilder";
@@ -12,16 +11,14 @@ import { useSettingsContext } from "./hooks/useSettingsContext";
 export default function App() {
   const { doAnimations, numResultsShown } = useSettingsContext();
 
-  const [guesses, setGuesses] = useState<Guess[]>([]);
   const [results, setResults] = useState<IResults>(EMPTY_RESULTS);
   const [resultsUpdateKey, setResultsUpdateKey] = useState(0);
 
   return (
     <RootLayout>
-      <GuessInputList guesses={guesses} setGuesses={setGuesses} />
+      <GuessInputList />
       <Suspense fallback={<FindPossibleWordsButtonSkeleton />}>
         <FindPossibleWordsButton
-          guesses={guesses}
           setResults={setResults}
           setResultsUpdateKey={setResultsUpdateKey}
         />

@@ -3,17 +3,14 @@ import { useDebouncedValue } from "@mantine/hooks";
 import { IconPlus } from "@tabler/icons-react";
 import { useMemo, useState, KeyboardEvent } from "react";
 import { Guess } from "@/classes/guess";
+import { useGuessContext } from "@/hooks/useGuessContext";
 import { useSettingsContext } from "@/hooks/useSettingsContext";
 import { useWordListContext } from "@/hooks/useWordListContext";
 import { validateGuess } from "@/utils/guessValidation";
 import classes from "./GuessAutocompleteInput.module.css";
 
-type GuessAutocompleteInputProps = {
-  guesses: Guess[];
-  addGuess: (guess: string) => void;
-};
-
-export default function GuessAutocompleteInput({ guesses, addGuess }: GuessAutocompleteInputProps) {
+export default function GuessAutocompleteInput() {
+  const { guesses, addGuess } = useGuessContext();
   const { doAnimations, onlyAllowWordListGuesses } = useSettingsContext();
   const { wordSets } = useWordListContext();
 

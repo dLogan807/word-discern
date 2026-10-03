@@ -1,23 +1,22 @@
 import { Button } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
 import { Dispatch, SetStateAction } from "react";
-import { Guess } from "@/classes/guess";
 import WordListFetchFailureBadge from "@/components/Badges/WordListFetchFailureBadge/WordListFetchFailureBadge";
+import { useGuessContext } from "@/hooks/useGuessContext";
 import { useSettingsContext } from "@/hooks/useSettingsContext";
 import { useWordListContext } from "@/hooks/useWordListContext";
 import getResults, { EMPTY_RESULTS, IResults } from "@/utils/resultBuilder";
 
 type FindPossibleWordsButtonProps = {
-  guesses: Guess[];
   setResults: Dispatch<SetStateAction<IResults>>;
   setResultsUpdateKey: Dispatch<SetStateAction<number>>;
 };
 
 export default function FindPossibleWordsButton({
-  guesses,
   setResults,
   setResultsUpdateKey,
 }: FindPossibleWordsButtonProps) {
+  const { guesses } = useGuessContext();
   const { hideResults, onlyHideUnknownChars, shuffleResults } = useSettingsContext();
   const { fetchSuccess, wordSets } = useWordListContext();
 
