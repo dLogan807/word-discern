@@ -38,14 +38,20 @@ export default function Settings() {
         <Title order={2} classNames={{ root: classes.settings_title }}>
           Settings
         </Title>
-        <SettingsSection title="Guess input" icon={<IconZoomQuestion size={iconSize} />}>
+        <SettingsSection
+          title="Guess input"
+          icon={<IconZoomQuestion aria-hidden="true" size={iconSize} />}
+        >
           <Checkbox
             label="Only allow words from the word list"
             onChange={(event) => setOnlyAllowWordListGuesses(event.currentTarget.checked)}
             defaultChecked
           />
         </SettingsSection>
-        <SettingsSection title="Results" icon={<IconClipboardData size={iconSize} />}>
+        <SettingsSection
+          title="Results"
+          icon={<IconClipboardData aria-hidden="true" size={iconSize} />}
+        >
           <Checkbox
             label="Shuffled"
             checked={shuffleResults}
@@ -79,14 +85,18 @@ export default function Settings() {
               max={100}
               step={5}
               size="lg"
+              thumbLabel="Slider thumb"
             />
           </Stack>
         </SettingsSection>
-        <SettingsSection title="Word list" icon={<IconBook2 size={iconSize} />}>
+        <SettingsSection title="Word list" icon={<IconBook2 aria-hidden="true" size={iconSize} />}>
           <WordsBadges />
           <CustomWordsForm />
         </SettingsSection>
-        <SettingsSection title="Accessibility" icon={<IconAccessible size={iconSize} />}>
+        <SettingsSection
+          title="Accessibility"
+          icon={<IconAccessible aria-hidden="true" size={iconSize} />}
+        >
           <Checkbox
             label="Animations"
             checked={doAnimations}

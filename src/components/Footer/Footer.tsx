@@ -19,12 +19,12 @@ export default function Footer() {
             <PoweredByIconLink
               href="https://vite.dev/"
               ariaLabel="Vite"
-              icon={<IconBrandVite aria-label="Vite icon" />}
+              icon={<IconBrandVite aria-hidden="true" />}
             />
             <PoweredByIconLink
               href="https://mantine.dev/"
               ariaLabel="Mantine"
-              icon={<IconBrandMantine aria-label="Mantine icon" />}
+              icon={<IconBrandMantine aria-hidden="true" />}
             />
           </Box>
           <Button

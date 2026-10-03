@@ -33,6 +33,7 @@ export default function RevealableChar({
     <Button
       onClick={handleClick}
       variant="default"
+      aria-label={`Reveal character at position ${index + 1}`}
       classNames={{
         root: `${classes.result_char_button} ${edgeClass}`,
       }}

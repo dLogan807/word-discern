@@ -2,6 +2,7 @@ import { Popover, ScrollArea, Box, Text, ActionIcon } from "@mantine/core";
 import { IconHelp } from "@tabler/icons-react";
 import CharacterBadge from "@/components/Badges/CharacterBadge/CharacterBadge";
 import { LetterCorrectness } from "@/enums/enums";
+import { getTextualLetterCorrectness } from "@/utils/letterCorrectness";
 import classes from "./HelpPopover.module.css";
 
 export default function HelpPopover() {
@@ -16,7 +17,7 @@ export default function HelpPopover() {
             icon: classes.icon_icon,
           }}
         >
-          <IconHelp />
+          <IconHelp aria-label="Help button" />
         </ActionIcon>
       </Popover.Target>
       <Popover.Dropdown>
@@ -27,18 +28,21 @@ export default function HelpPopover() {
               character="A"
               separator="="
               explanation="Correct letter at the correct position"
+              equivalentLetterCorrectness={LetterCorrectness.Correct}
             />
             <CharacterColourExplanation
               colour={LetterCorrectness.WrongPosition}
               character="A"
               separator="="
-              explanation="At the wrong position but required in the word"
+              explanation="Required elsewhere in the word"
+              equivalentLetterCorrectness={LetterCorrectness.WrongPosition}
             />
             <CharacterColourExplanation
               colour={LetterCorrectness.NotPresent}
               character="A"
               separator="="
               explanation="Not in the word"
+              equivalentLetterCorrectness={LetterCorrectness.NotPresent}
             />
           </Box>
         </ScrollArea.Autosize>
@@ -52,6 +56,7 @@ type CharacterColourExplanationProps = {
   colour: string;
   separator: string;
   explanation: string;
+  equivalentLetterCorrectness: LetterCorrectness;
 };
 
 function CharacterColourExplanation({
@@ -59,12 +64,18 @@ function CharacterColourExplanation({
   colour,
   separator,
   explanation,
+  equivalentLetterCorrectness,
 }: CharacterColourExplanationProps) {
+  const textualLetterCorrectness = getTextualLetterCorrectness(equivalentLetterCorrectness);
+
   return (
-    <Box className={classes.character_colour_explanation_box}>
-      <CharacterBadge colour={colour} character={character} />
-      <Text>{separator}</Text>
-      <Text>{explanation}</Text>
+    <Box
+      className={classes.character_colour_explanation_box}
+      aria-label={`'${textualLetterCorrectness}' ${separator} ${explanation}`}
+    >
+      <CharacterBadge colour={colour} character={character} ariaHidden />
+      <Text aria-hidden="true">{separator}</Text>
+      <Text aria-hidden="true">{explanation}</Text>
     </Box>
   );
 }

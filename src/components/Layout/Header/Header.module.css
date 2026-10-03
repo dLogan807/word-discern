@@ -11,8 +11,27 @@
 .header_logo {
   color: light-dark(var(--mantine-color-dark-4), var(--mantine-color-gray-3));
 
-  @media (max-width: $mantine-breakpoint-xs) {
+  @media (max-width: $mantine-breakpoint-sm) {
     font-size: 1.5rem;
+  }
+
+  @media (max-width: $mantine-breakpoint-xs) {
+    font-size: 1.2rem;
+  }
+}
+
+.logo_image {
+  height: 2.5rem;
+  width: 2.5rem;
+
+  @media (max-width: $mantine-breakpoint-sm) {
+    height: 2rem;
+    width: 2rem;
+  }
+
+  @media (max-width: $mantine-breakpoint-xs) {
+    height: 1.6rem;
+    width: 1.6rem;
   }
 }
 

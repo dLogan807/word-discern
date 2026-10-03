@@ -1,4 +1,4 @@
-import { Group, ActionIcon } from "@mantine/core";
+import { Group, ActionIcon, Box } from "@mantine/core";
 import { IconEyeOff, IconEye } from "@tabler/icons-react";
 import { useState } from "react";
 import { CharRevealState } from "@/enums/enums";
@@ -27,38 +27,38 @@ export default function RevealableWord({ result, initialCharRevealStates }: Reve
   }
 
   function toggleAllCharRevealStates() {
-    const nextRevealState = allCharsRevealed ? CharRevealState.HIDDEN : CharRevealState.REVEALED;
-    setCharRevealStates(
-      charRevealStates.map((currentState) =>
-        currentState === CharRevealState.PERM_REVEALED
-          ? CharRevealState.PERM_REVEALED
-          : nextRevealState
-      )
-    );
-    setAllCharsRevealed(!allCharsRevealed);
+    setAllCharsRevealed((prev) => {
+      const nextRevealState = prev ? CharRevealState.HIDDEN : CharRevealState.REVEALED;
+      setCharRevealStates((states) =>
+        states.map((currentState) =>
+          currentState === CharRevealState.PERM_REVEALED
+            ? CharRevealState.PERM_REVEALED
+            : nextRevealState
+        )
+      );
+      return !prev;
+    });
   }
 
   return (
-    <Group classNames={{ root: classes.result_chars_group }}>
-      {upperCaseResult.split("").map((char, idx) => (
-        <RevealableChar
-          key={idx}
-          char={char}
-          index={idx}
-          isFirst={idx === 0}
-          isLast={idx === upperCaseResult.length - 1}
-          revealState={charRevealStates[idx]}
-          toggleCharRevealed={toggleCharRevealed}
-        />
-      ))}
-      <ActionIcon
-        classNames={{ root: classes.result_chars_reveal_all_button }}
-        variant="light"
-        onClick={() => toggleAllCharRevealStates()}
-      >
-        {allCharsRevealed ? <IconEyeOff /> : <IconEye />}
+    <Box className={classes.result_chars_box}>
+      <Group classNames={{ root: classes.result_chars_group }}>
+        {upperCaseResult.split("").map((char, idx) => (
+          <RevealableChar
+            key={idx}
+            char={char}
+            index={idx}
+            isFirst={idx === 0}
+            isLast={idx === upperCaseResult.length - 1}
+            revealState={charRevealStates[idx]}
+            toggleCharRevealed={toggleCharRevealed}
+          />
+        ))}
+      </Group>
+      <ActionIcon variant="light" onClick={toggleAllCharRevealStates} aria-label="Reveal result">
+        {allCharsRevealed ? <IconEyeOff aria-hidden="true" /> : <IconEye aria-hidden="true" />}
       </ActionIcon>
-    </Group>
+    </Box>
   );
 }
 

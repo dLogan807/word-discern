@@ -21,6 +21,7 @@ export default function WordInfoBadgePopover({
       <Popover.Target>
         <Button
           variant="transparent"
+          aria-label={`Show ${children}`}
           classNames={{
             root: classes.word_badge_button,
           }}

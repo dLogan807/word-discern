@@ -1,3 +1,4 @@
+import wordListLicenseUrl from "/words.txt.licence?url";
 import { Box, Paper, Button, Text, ThemeIcon, Anchor, Modal } from "@mantine/core";
 import { IconExternalLink } from "@tabler/icons-react";
 import licenses from "@/generated/licenses.json";
@@ -42,7 +43,9 @@ export default function LicenseModal({ opened, close }: LicensesModalProps) {
       centered
     >
       <Box className={classes.licenses_box}>
-        <Text>The following open source libraries were used in the making of this website</Text>
+        <Text>
+          The following open source libraries and resources were used in the making of this website
+        </Text>
         <Paper classNames={{ root: classes.license_paper }} withBorder>
           {typedLicenses.map((license) => (
             <Anchor
@@ -58,13 +61,29 @@ export default function LicenseModal({ opened, close }: LicensesModalProps) {
                   <Text>{`${license.name} ${license.installedVersion}`}</Text>
                   <Text>{`License: ${license.licenseType}`}</Text>
                   <ThemeIcon classNames={{ root: classes.license_link_icon }}>
-                    <IconExternalLink aria-label="External website link" />
+                    <IconExternalLink aria-hidden="true" />
                   </ThemeIcon>
                 </Box>
               </Button>
             </Anchor>
           ))}
         </Paper>
+
+        <Box className={classes.word_list_licence_box}>
+          <Anchor
+            href={wordListLicenseUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Open default word list license"
+          >
+            <Button variant="subtle" classNames={{ label: classes.word_list_licence_button }}>
+              Word List License
+              <ThemeIcon>
+                <IconExternalLink aria-hidden="true" />
+              </ThemeIcon>
+            </Button>
+          </Anchor>
+        </Box>
       </Box>
     </Modal>
   );

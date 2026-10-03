@@ -3,17 +3,14 @@ import { useDebouncedValue } from "@mantine/hooks";
 import { IconPlus } from "@tabler/icons-react";
 import { useMemo, useState, KeyboardEvent } from "react";
 import { Guess } from "@/classes/guess";
+import { useGuessContext } from "@/hooks/useGuessContext";
 import { useSettingsContext } from "@/hooks/useSettingsContext";
 import { useWordListContext } from "@/hooks/useWordListContext";
 import { validateGuess } from "@/utils/guessValidation";
 import classes from "./GuessAutocompleteInput.module.css";
 
-type GuessAutocompleteInputProps = {
-  guesses: Guess[];
-  addGuess: (guess: string) => void;
-};
-
-export default function GuessAutocompleteInput({ guesses, addGuess }: GuessAutocompleteInputProps) {
+export default function GuessAutocompleteInput() {
+  const { guesses, addGuess } = useGuessContext();
   const { doAnimations, onlyAllowWordListGuesses } = useSettingsContext();
   const { wordSets } = useWordListContext();
 
@@ -37,8 +34,7 @@ export default function GuessAutocompleteInput({ guesses, addGuess }: GuessAutoc
     setGuessValue(guess);
     setGuessError(null);
 
-    const setAutocompleteOpened =
-      guessValue.length > 0 && debouncedSearch.length > 0 && guessError == null;
+    const setAutocompleteOpened = guess.length > 0 && guess.trim().length > 0 && guessError == null;
     setSearchDropDownOpened(setAutocompleteOpened);
   }
 
@@ -86,7 +82,7 @@ export default function GuessAutocompleteInput({ guesses, addGuess }: GuessAutoc
             icon: classes.add_guess_button_icon,
           }}
         >
-          <IconPlus />
+          <IconPlus aria-hidden="true" />
         </ActionIcon>
       }
       classNames={{

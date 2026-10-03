@@ -15,13 +15,13 @@ export default function RemoveButton({ guess }: RemoveButtonProps) {
     <ActionIcon
       variant="light"
       color="red"
-      aria-label="Remove"
+      aria-label={`Remove '${guess.wordString}' from guesses`}
       onClick={() => removeGuess(guess)}
       classNames={{
         root: classes.remove_button,
       }}
     >
-      <IconTrash />
+      <IconTrash aria-hidden="true" />
     </ActionIcon>
   );
 }

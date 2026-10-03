@@ -1,14 +1,8 @@
 import { Box } from "@mantine/core";
-import {
-  IconAdjustments,
-  IconCheck,
-  IconCopyOff,
-  IconExclamationCircle,
-  IconList,
-  IconX,
-} from "@tabler/icons-react";
+import { IconAdjustments, IconCheck, IconCopyOff, IconList, IconX } from "@tabler/icons-react";
 import { Suspense } from "react";
 import WordInfoBadge from "@/components/Badges/WordInfoBadge/WordInfoBadge";
+import WordListFetchFailureBadge from "@/components/Badges/WordListFetchFailureBadge/WordListFetchFailureBadge";
 import WordInfoBadgePopover from "@/components/Overlays/WordInfoBadgePopover/WordInfoBadgePopover";
 import WordBadgesSkeleton from "@/components/Skeletons/WordBadgesSkeleton/WordBadgesSkeleton";
 import { useSettingsContext } from "@/hooks/useSettingsContext";
@@ -53,34 +47,36 @@ function WordsBadgesInner() {
 
   return (
     <>
-      <WordInfoBadge icon={<IconList size={iconSize} />}>{totalWordsText}</WordInfoBadge>
-      <WordInfoBadge color="yellow" icon={<IconAdjustments size={iconSize} />}>
+      <WordInfoBadge icon={<IconList size={iconSize} aria-hidden="true" />}>
+        {totalWordsText}
+      </WordInfoBadge>
+      <WordInfoBadge color="yellow" icon={<IconAdjustments size={iconSize} aria-hidden="true" />}>
         {customWordsText}
       </WordInfoBadge>
       {wordsAlreadyExisting > 0 && (
         <WordInfoBadgePopover
           words={duplicateWords}
           color="yellow"
-          icon={<IconCopyOff size={iconSize} />}
+          icon={<IconCopyOff size={iconSize} aria-hidden="true" />}
         >
           {alreadyExistingText}
         </WordInfoBadgePopover>
       )}
       {customWordsInUse > 0 && (
-        <WordInfoBadge color="green" icon={<IconCheck size={iconSize} />}>
+        <WordInfoBadge color="green" icon={<IconCheck size={iconSize} aria-hidden="true" />}>
           {addedWordsText}
         </WordInfoBadge>
       )}
       {invalidWords.size > 0 && (
-        <WordInfoBadgePopover words={invalidWords} color="red" icon={<IconX size={iconSize} />}>
+        <WordInfoBadgePopover
+          words={invalidWords}
+          color="red"
+          icon={<IconX size={iconSize} aria-hidden="true" />}
+        >
           {invalidWordsWordsText}
         </WordInfoBadgePopover>
       )}
-      {fetchSuccess === false && (
-        <WordInfoBadge color="red" icon={<IconExclamationCircle size={iconSize} />}>
-          Failed to fetch default word list
-        </WordInfoBadge>
-      )}
+      {fetchSuccess === false && <WordListFetchFailureBadge iconSize={iconSize} />}
     </>
   );
 }

@@ -118,7 +118,7 @@ function ResultWords({
             animationFillMode: "backwards",
           }}
           onClick={handleShowMoreWords}
-          rightSection={<IconArrowDown />}
+          rightSection={<IconArrowDown aria-hidden="true" />}
         >
           Show more words
         </Button>

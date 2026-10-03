@@ -12,7 +12,6 @@ import {
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { parse, ParseError, printParseErrorCode } from "jsonc-parser";
-import { useState } from "react";
 import FileUploadModal from "@/components/Overlays/FileUploadModal/FileUploadModal";
 import { WordInput } from "@/enums/enums";
 import { useSettingsContext } from "@/hooks/useSettingsContext";
@@ -55,10 +54,9 @@ function validateJSON(value: string | undefined): string | null {
 
 export default function CustomWordsForm() {
   const { customWordsFormData, setCustomWordsFormData } = useSettingsContext();
-  const [inputMode, setInputMode] = useState<WordInput>(
-    customWordsFormData.lastUpdatedWithInputMode
-  );
   const [modalOpened, { open, close }] = useDisclosure(false);
+
+  const inputMode = customWordsFormData.lastUpdatedWithInputMode;
 
   const initialFormValues: CustomWordsFormValues = {
     text: customWordsFormData.text,
@@ -114,10 +112,10 @@ export default function CustomWordsForm() {
     const fileText = await file.text();
 
     if (file.type === "application/json") {
-      setInputMode(WordInput.JSON);
+      setCustomWordsFormData({ ...customWordsFormData, lastUpdatedWithInputMode: WordInput.JSON });
       form.setFieldValue("json", fileText);
     } else {
-      setInputMode(WordInput.TEXT);
+      setCustomWordsFormData({ ...customWordsFormData, lastUpdatedWithInputMode: WordInput.TEXT });
       form.setFieldValue("text", fileText);
     }
   }
@@ -130,7 +128,12 @@ export default function CustomWordsForm() {
           <Fieldset variant="filled" classNames={{ root: classes.text_controls_fieldset }}>
             <SegmentedControl
               value={inputMode}
-              onChange={(value) => setInputMode(value as WordInput)}
+              onChange={(value) =>
+                setCustomWordsFormData({
+                  ...customWordsFormData,
+                  lastUpdatedWithInputMode: value as WordInput,
+                })
+              }
               data={[
                 { label: "Text", value: WordInput.TEXT },
                 { label: "JSON", value: WordInput.JSON },
@@ -162,7 +165,9 @@ export default function CustomWordsForm() {
               minRows={4}
               maxRows={10}
               rightSection={
-                form.values.text && <ResetTextFieldActionIcon reset={resetCurrentField} />
+                form.values.text && (
+                  <ResetTextFieldActionIcon reset={resetCurrentField} fieldInputMode={inputMode} />
+                )
               }
               rightSectionWidth={0}
             />
@@ -174,7 +179,9 @@ export default function CustomWordsForm() {
               placeholder='["a","list","of","words"]'
               validationError={validateJSON(form.getValues().json)}
               rightSection={
-                form.values.json && <ResetTextFieldActionIcon reset={resetCurrentField} />
+                form.values.json && (
+                  <ResetTextFieldActionIcon reset={resetCurrentField} fieldInputMode={inputMode} />
+                )
               }
               formatOnBlur
               autosize

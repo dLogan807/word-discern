@@ -74,7 +74,7 @@ export default function FileUploadModal({ opened, close, submit }: FileInputModa
         aria-label="Upload word list file"
         description={<CodeBlocks preface="Accepts: " values={[".txt", ".json"]} />}
         placeholder="Select file"
-        leftSection={<IconFileUpload />}
+        leftSection={<IconFileUpload aria-hidden="true" />}
         accept="text/plain,application/json"
         clearable
       />

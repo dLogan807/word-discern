@@ -1,4 +1,5 @@
-import { Box, Title, Group, ActionIcon } from "@mantine/core";
+import logoUrl from "/favicon.png?url";
+import { Box, Title, Group, ActionIcon, Image } from "@mantine/core";
 import { IconXFilled, IconSettings } from "@tabler/icons-react";
 import { ThemeSelector } from "@/components/Buttons/ThemeSelector/ThemeSelector";
 import { useSettingsContext } from "@/hooks/useSettingsContext";
@@ -14,15 +15,18 @@ export default function Header({ settingsOpened, toggleSettingsOpened }: HeaderP
 
   return (
     <Box className={classes.header}>
-      <Title order={1} classNames={{ root: classes.header_logo }}>
-        Word Discern
-      </Title>
+      <Group>
+        <Image src={logoUrl} classNames={{ root: classes.logo_image }} alt="Word Discern logo" />
+        <Title order={1} classNames={{ root: classes.header_logo }}>
+          Word Discern
+        </Title>
+      </Group>
 
       <Group>
         <ThemeSelector />
         <ActionIcon
           variant="transparent"
-          aria-label="Settings"
+          aria-label={`${settingsOpened ? "Close" : "Open"} settings`}
           onClick={toggleSettingsOpened}
           classNames={{
             root: classes.settings_button,
@@ -31,7 +35,11 @@ export default function Header({ settingsOpened, toggleSettingsOpened }: HeaderP
                   ${!doAnimations ? classes.no_animation : undefined}`,
           }}
         >
-          {settingsOpened ? <IconXFilled /> : <IconSettings />}
+          {settingsOpened ? (
+            <IconXFilled aria-hidden="true" />
+          ) : (
+            <IconSettings aria-hidden="true" />
+          )}
         </ActionIcon>
       </Group>
     </Box>
