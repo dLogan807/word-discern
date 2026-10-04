@@ -10,11 +10,12 @@ export default function GuessProvider({ children }: { children: ReactNode }) {
   const addGuess = useCallback(
     (guess: string) => {
       setGuesses((currentGuesses) => {
+        const lowerCaseGuess = guess.toLocaleLowerCase();
         const initialCorrectnessValues = getInitialCorrectnessValuesFromGuesses(
-          guess,
+          lowerCaseGuess,
           currentGuesses
         );
-        const newGuess = new Guess(guess, initialCorrectnessValues);
+        const newGuess = new Guess(lowerCaseGuess, initialCorrectnessValues);
 
         return [...currentGuesses, newGuess];
       });

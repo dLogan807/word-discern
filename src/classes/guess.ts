@@ -6,7 +6,7 @@ export class Guess {
   wordString: string;
 
   constructor(wordString: string, initialCorrectnessValues?: LetterCorrectness[]) {
-    this.wordString = wordString.toLocaleLowerCase();
+    this.wordString = wordString;
 
     this.letters = [];
     for (let i = 0; i < wordString.length; i++) {
