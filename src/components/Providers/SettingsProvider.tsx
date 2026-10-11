@@ -21,7 +21,7 @@ export default function SettingsProvider({ children }: { children: ReactNode }) 
   });
   const [showPossibleWordNumAfterEachGuess, setShowPossibleWordNumAfterEachGuess] = useLocalStorage(
     {
-      key: "only-allow-word-list-guesses",
+      key: "show-possible-word-num-after-each-guess",
       defaultValue: false,
       getInitialValueInEffect: false,
     }
