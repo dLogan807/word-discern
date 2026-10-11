@@ -13,6 +13,13 @@
   }
 }
 
+.guess_box_inner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--mantine-spacing-xs);
+}
+
 .guess_chars {
   display: flex;
   gap: var(--mantine-spacing-md);
@@ -26,4 +33,17 @@
   @media (max-width: $mantine-breakpoint-xs) {
     gap: var(--mantine-spacing-xs);
   }
+}
+
+.possible_words_box {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.2rem;
+}
+
+.possible_words_text {
+  font-size: var(--mantine-font-size-xs);
+  line-height: var(--mantine-line-height-xs);
+  color: var(--mantine-color-discerning-purple-light-color);
 }

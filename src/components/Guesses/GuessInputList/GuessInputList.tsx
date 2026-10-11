@@ -18,7 +18,9 @@ export default function GuessInputList() {
       {guesses.length > 0 && (
         <Box className={classes.guess_list}>
           {guesses.map((guess, idx) => (
-            <GuessItem key={guess.wordString} guess={guess} guessIndex={idx} />
+            <Suspense key={guess.wordString}>
+              <GuessItem key={guess.wordString} guess={guess} guessIndex={idx} />
+            </Suspense>
           ))}
         </Box>
       )}

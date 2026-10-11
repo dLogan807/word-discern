@@ -16,6 +16,8 @@ export type SettingsContextType = {
   setOnlyHideUnknownChars: Dispatch<SetStateAction<boolean>>;
   showHelpButton: boolean;
   setShowHelpButton: Dispatch<SetStateAction<boolean>>;
+  showPossibleWordNumAfterEachGuess: boolean;
+  setShowPossibleWordNumAfterEachGuess: Dispatch<SetStateAction<boolean>>;
   shuffleResults: boolean;
   setShuffleResults: Dispatch<SetStateAction<boolean>>;
 };
