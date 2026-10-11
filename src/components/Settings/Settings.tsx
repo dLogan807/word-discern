@@ -27,6 +27,7 @@ import classes from "./Settings.module.css";
 
 export default function Settings() {
   const {
+    onlyAllowWordListGuesses,
     setOnlyAllowWordListGuesses,
     shuffleResults,
     setShuffleResults,
@@ -58,12 +59,13 @@ export default function Settings() {
         >
           <Checkbox
             label="Only allow words from the word list"
+            checked={onlyAllowWordListGuesses}
             onChange={(event) => setOnlyAllowWordListGuesses(event.currentTarget.checked)}
-            defaultChecked
           />
           <Box>
             <Checkbox
               label="Show the number of possible words after each guess"
+              checked={showPossibleWordNumAfterEachGuess}
               onChange={(event) =>
                 setShowPossibleWordNumAfterEachGuess(event.currentTarget.checked)
               }
