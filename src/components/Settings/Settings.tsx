@@ -67,7 +67,6 @@ export default function Settings() {
               onChange={(event) =>
                 setShowPossibleWordNumAfterEachGuess(event.currentTarget.checked)
               }
-              defaultChecked
             />
             {showPossibleWordNumAfterEachGuess && (
               <Alert
