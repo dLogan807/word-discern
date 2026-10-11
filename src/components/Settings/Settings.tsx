@@ -1,8 +1,20 @@
-import { Box, Checkbox, Divider, Group, InputLabel, Slider, Stack, Title } from "@mantine/core";
+import {
+  Alert,
+  Box,
+  Checkbox,
+  Divider,
+  Group,
+  InputLabel,
+  Slider,
+  Stack,
+  Text,
+  Title,
+} from "@mantine/core";
 import {
   IconAccessible,
   IconBook2,
   IconClipboardData,
+  IconInfoCircle,
   IconRadiusBottomLeft,
   IconZoomQuestion,
 } from "@tabler/icons-react";
@@ -26,6 +38,8 @@ export default function Settings() {
     setNumResultsShown,
     showHelpButton,
     setShowHelpButton,
+    showPossibleWordNumAfterEachGuess,
+    setShowPossibleWordNumAfterEachGuess,
     doAnimations,
     setDoAnimations,
   } = useSettingsContext();
@@ -47,6 +61,27 @@ export default function Settings() {
             onChange={(event) => setOnlyAllowWordListGuesses(event.currentTarget.checked)}
             defaultChecked
           />
+          <Box>
+            <Checkbox
+              label="Show the number of possible words after each guess"
+              onChange={(event) =>
+                setShowPossibleWordNumAfterEachGuess(event.currentTarget.checked)
+              }
+              defaultChecked
+            />
+            {showPossibleWordNumAfterEachGuess && (
+              <Alert
+                classNames={{
+                  root: classes.alert_root,
+                  icon: classes.alert_icon,
+                }}
+                variant="transparent"
+                color="yellow"
+                title={<Text inherit>Reduces performance</Text>}
+                icon={<IconInfoCircle />}
+              />
+            )}
+          </Box>
         </SettingsSection>
         <SettingsSection
           title="Results"

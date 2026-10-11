@@ -19,6 +19,13 @@ export default function SettingsProvider({ children }: { children: ReactNode }) 
     defaultValue: true,
     getInitialValueInEffect: false,
   });
+  const [showPossibleWordNumAfterEachGuess, setShowPossibleWordNumAfterEachGuess] = useLocalStorage(
+    {
+      key: "only-allow-word-list-guesses",
+      defaultValue: false,
+      getInitialValueInEffect: false,
+    }
+  );
   const [shuffleResults, setShuffleResults] = useLocalStorage({
     key: "shuffle-results",
     defaultValue: true,
@@ -72,6 +79,8 @@ export default function SettingsProvider({ children }: { children: ReactNode }) 
         setOnlyHideUnknownChars,
         showHelpButton,
         setShowHelpButton,
+        showPossibleWordNumAfterEachGuess,
+        setShowPossibleWordNumAfterEachGuess,
         shuffleResults,
         setShuffleResults,
       }}

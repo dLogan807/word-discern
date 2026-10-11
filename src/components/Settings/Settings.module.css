@@ -43,3 +43,12 @@
 .disabled_setting {
   opacity: 0.3;
 }
+
+.alert_root {
+  padding: var(--mantine-spacing-xs);
+  margin-left: 1.5rem;
+}
+
+.alert_icon {
+  margin-right: var(--mantine-spacing-xs);
+}
