@@ -3,20 +3,49 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.png" />
-    <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
+    <meta name="viewport" content="initial-scale=1, width=device-width" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <title>Word Discern</title>
+    <meta
+      name="description"
+      content="A tool for narrowing down guesses words in word games."
+    />
+    <meta property="og:title" content="Word Discern" />
+    <meta
+      property="og:description"
+      content="A tool for narrowing down guesses words in word games."
+    />
+    <meta
+      property="og:url"
+      content="https://dlogan807.github.io/word-discern/"
+    />
+    <meta property="og:site_name" content="Word Discern" />
+    <meta
+      property="og:image"
+      content="https://dlogan807.github.io/word-discern/opengraph.png"
+    />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:type" content="website" />
+
     <script data-mantine-script="true">
       // Mantine ColorSchemeScript
       try {
-        var colorScheme = window.localStorage.getItem("mantine-color-scheme-value");
+        var colorScheme = window.localStorage.getItem(
+          "mantine-color-scheme-value",
+        );
         if (colorScheme !== "light" && colorScheme !== "dark") {
-          colorScheme = window.matchMedia("(prefers-color-scheme: dark)").matches
+          colorScheme = window.matchMedia("(prefers-color-scheme: dark)")
+            .matches
             ? "dark"
             : "light";
         }
 
-        document.documentElement.setAttribute("data-mantine-color-scheme", colorScheme);
+        document.documentElement.setAttribute(
+          "data-mantine-color-scheme",
+          colorScheme,
+        );
       } catch (e) {}
     </script>
   </head>
